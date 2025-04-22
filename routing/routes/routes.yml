@@ -1,0 +1,36 @@
+thissiodisco-main:
+    path: /disco
+    defaults:
+        _controller: SimpleSAML\Module\thissdisco\Controller\ThissDisco
+    methods: [GET]
+
+thissiodisco-discoconfjs:
+    path: /discoconf.js
+    defaults:
+        _controller: SimpleSAML\Module\thissdisco\Controller\ThissDisco::discoconfjs
+    methods: [GET]
+
+# As somewhat of a hack, this route is called "remove_trailing_slash" to
+# override the module routing behavour of SimpleSAMLphp. thiss-ds uses a
+# PyFF-like endpoint for queries, including a trailing slash. However, SSP
+# usually redirects that to remove the slash without preserving the query
+# parameters. This allows us to both remove the slash (conforming better with
+# https://datatracker.ietf.org/doc/draft-young-md-query/) and still preserve
+# the associated query parameters.
+remove_trailing_slash:
+    path: /entities/
+    defaults:
+        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+        route: thissiodisco-mdq
+        permanent: false
+        keepQueryParams: true
+    methods: [GET]
+
+thissiodisco-mdq:
+    path: /entities/{identifier}
+    defaults:
+        _controller: SimpleSAML\Module\thissdisco\Controller\MDQ
+        identifier: null
+    requirements:
+        identifier: .*
+    methods: [GET]

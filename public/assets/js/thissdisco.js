@@ -1,0 +1,379 @@
+
+/**
+ * This Javascript is required to render the thiss-js web application.
+ * It is derived from the thiss-js discovery service at
+ * https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/index.js
+ */
+
+$(document).ready(function() {
+    let timer = null;
+
+    $('#learn-more-trigger, #learn-more-close').on('click', function() {
+      $("#learn-more-banner").toggleClass("d-none");
+    })
+
+    $("#search").on('hidden.bs.collapse',function(event) {
+        $("#choose").toggleClass("d-none");
+        $("#search").toggleClass("d-none");
+        $("#searchinput").val('');
+    }).on('shown.bs.collapse',function(event) {
+        $("#choose").toggleClass("d-none");
+        $("#search").toggleClass("d-none");
+        $("#searchinput").focus();
+    });
+
+    $("#ds-search-list").on('show.bs', function(event) {
+        timer = setTimeout( function () { if (timer) { console.log('searching'); $("#searching").removeClass('d-none') } }, 2500);
+    }).on('hide.bs', function(event) {
+        $("#searching").addClass('d-none');
+
+        if (timer) {
+            clearTimeout(timer);
+        }
+    });
+
+    $("#add_button").on('click',function(event) {
+        event.preventDefault();
+        $("#choose").toggleClass("d-none");
+        $("#search").toggleClass("d-none");
+    });
+
+    $("#edit_button").on('click',function(event) {
+        $("#choosetools").toggleClass("d-none");
+        $(".warning-banner").toggleClass("d-none");
+        $("#done_button").toggleClass("d-none").toggleClass("display-block");
+        $("#savedchoices").removeClass('choose').addClass('edit');
+        $("#choose > span.choose").toggleClass("d-none");
+        $("#choose > span.edit").toggleClass("d-none");
+        $(".institution-text").addClass("item-fade");
+        $(".institution-icon").addClass("item-fade");
+        $(".institution-select").toggleClass("d-none");
+        $(".institution-remove").toggleClass("d-none");
+    });
+
+    $("#done_button").on('click',function(event) {
+        event.preventDefault();
+        $("#done_button").toggleClass("d-none").toggleClass("display-block");
+        $("#choosetools").toggleClass("d-none");
+        $(".warning-banner").toggleClass("d-none");
+        $("#savedchoices").removeClass('edit').addClass('choose');
+        $("#choose > span.edit").toggleClass("d-none");
+        $("#choose > span.choose").toggleClass("d-none");
+        $(".institution-text").removeClass("item-fade");
+        $(".institution-icon").removeClass("item-fade");
+        $(".institution-select").toggleClass("d-none");
+        $(".institution-remove").toggleClass("d-none");
+    });
+
+    $("#discovery-response-warning-header-link").on('click',function(event) {
+        event.preventDefault();
+        const visibleChild = $("#dsclient").children().not(".d-none")[0];
+        $("#dsclient").addClass('d-none');
+        $("#discovery-response-warning").removeClass("d-none");
+    });
+
+    $("#warning-done-button").on('click',function(event) {
+        event.preventDefault();
+        $("#dsclient").removeClass('d-none');
+        $("#discovery-response-warning").addClass("d-none");
+    });
+
+    $("#dsclient").discovery_client({
+        mdq: mdq_url,
+        persistence: persistence_url,
+        search: search_url,
+        entityID: entityID,
+        trustProfile: trustProfile,
+        context: persistence_context,
+        inputfieldselector: "#searchinput",
+        _render_search_result: function(items, strict, spEntity) {
+            let lang = navigator.language;
+            lang = (lang.split('-'))[0];
+            let htmlItemList = []
+
+            items.forEach((item) => {
+                let hint = false;
+                if (!strict && 'hint' in item) {
+                    hint = true;
+                }
+                const title_i18n = item.entityID;
+                let title = item.title;
+                if ('title_langs' in item && lang in item.title_langs) {
+                    title = item.title_langs[lang];
+                }
+
+                // https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/templates/search.html
+                let html = '<li class="col list-item pb-0" aria-label="Select ' + title + '">';
+                html += '<a class="row institution identityprovider" data-href="' + item.entity_id + '" href="#">';
+                html += '<div class="col-9 pl-0">';
+                html += '<div class="text-truncate label primary" data-i18n="' + title_i18n + '">' + title + '</div>';
+                html += '<div class="text-truncate label-url secondary">' + (item.domain ?? '') + '</div>';
+                html += '</div>';
+
+                if (!strict && !hint) {
+                    html += '<div class="col-3 pr-0">';
+                    html += '<i class="fa fa-exclamation-triangle mt-2 mr-2 list-item-warning"></i>';
+                    html += '</div>';
+                }
+                html += '<i class="arrow fa fa-angle-right"></i>';
+                html += '</a>';
+
+                if (!strict && !hint) {
+                    html += '<div class="row list-item-legend">';
+                    html += '<div class="col px-0 mt-3 institution-warning">';
+                    html += '<p class="px-2 py-2 mt-0 mb-0"><i class="fa fa-exclamation-triangle mr-1"></i> <span data-i18n="ds-search-may-not-provide">This institution may not provide access.</span> <!-- a href="https://seamlessaccess.org/" target="_blank" data-i18n="ds-search-learn-more">Learn more</a --></p>';
+                    html += '</div>';
+                    html += '</div>'
+                }
+                html += '</li>';
+                htmlItemList.push(html)
+            })
+
+            if (items) {
+                if (items.length > 0) {
+                    if (items[0].hasOwnProperty('counter')) {
+                        if (items[0].counter > 1) {
+                            $("#ds-search-list").append(htmlItemList);
+                        } else {
+                            $("#ds-search-list").html(htmlItemList);
+                        }
+                    } else {
+                        $("#ds-search-list").html(htmlItemList);
+                    }
+                }
+            }
+        },
+        render_search_result: function(items) {
+            const self = this;
+            $("#searching").addClass('d-none');
+
+            if (timer) {
+                clearTimeout(timer); timer = null;
+            }
+
+            try {
+                thiss.json_mdq_get_sp(entityID, mdq_url).then(spEntity => {
+                    let strict = true;
+                    if (trustProfile && 'tinfo' in spEntity &&
+                              'profiles' in spEntity.tinfo &&
+                               trustProfile in spEntity.tinfo.profiles)
+                        strict = spEntity.tinfo.profiles[trustProfile].strict;
+
+                    self._render_search_result(items, strict, spEntity);
+                }).catch(err => {
+                    self._render_search_result(items, true, null);
+                });
+            } catch (err) {
+                self._render_search_result(items, true, null);
+            }
+        },
+        _render_saved_choice: function(items, strict, spEntity) {
+
+            let lang = navigator.language;
+            lang = (lang.split('-'))[0];
+
+            let hasNonHinted = false;
+
+            items.forEach((item) => {
+                let hint = false;
+                if (strict === false && 'hint' in item) {
+                    hint = true;
+                }
+                if (!hint) hasNonHinted = true;
+                const title_i18n = item.entityID;
+                let title = item.title;
+                if ('title_langs' in item && lang in item.title_langs) {
+                    title = item.title_langs[lang];
+                }
+
+                // https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/templates/saved.html
+                let html = '<li class="col list-item pb-0" aria-label="Select ' + title + '">';
+                html += '<a class="row institution identityprovider" data-href="' + item.entity_id + '" href="#">';
+                html += '<div class="col-9 pl-0">';
+                html += '<span class="top-right institution-remove remove d-none">';
+                html += '<div class="institution-remove-cross-wrapper" title="remove">';
+                html += '<svg class="svg-inline--fa fa-times fa-w-11" tabindex="0" aria-label="Remove Institute from remembered institutions" focusable="true" data-prefix="fa" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" data-fa-i2svg=""><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg>';
+                html += '</div>';
+                html += '</span>';
+                if (item.entity_icon) {
+                    html += '<div class="institution-mask">';
+                    html += '<img class="institution-icon" alt="' + (item.name_tag ?? title) + '" src="' + item.entity_icon + '" />';
+                    html += '</div>';
+                } else if (item.entity_icon_url) {
+                    html += '<div class="institution-mask">';
+                    html += '<img class="institution-icon" alt="' + (item.name_tag ?? title) + '" src="' + item.entity_icon_url.url + '" />';
+                    html += '</div>';
+                } else {
+                    html += '<svg class="institution-icon logo" width="40" height="40"><circle cx="20" cy="20" r="20" fill="#aeaeae" />';
+                    html += '<text x="50%" y="50%" text-anchor="middle" fill="white" font-size="12px" font-family="Arial" dy=".3em">';
+                    html += item.name_tag ?? title;
+                    html += '</text></svg>';
+                }
+                html += '<div class="text-truncate label primary" data-i18n="' + title_i18n + '">' + title + '</div>';
+                html += '<div class="text-truncate label-url secondary">' + (item.domain ?? '') + '</div>';
+                html += '</div>';
+                if (!strict && !hint) {
+                    html += '<div class="col-3 pr-0">';
+                    html += '<i class="fa fa-exclamation-triangle mt-2 mr-2 list-item-warning"></i>';
+                    html += '</div>';
+                }
+                html += '<i class="arrow fa fa-angle-right"></i>';
+                html += '</a>';
+                html += '</li>';
+                $("#ds-saved-choices").append(html);
+            })
+
+            if (strict === false && hasNonHinted) {
+                let org = spEntity.title;
+                if (spEntity.title_langs && spEntity.title_langs[lang]) {
+                    org = spEntity.title_langs[lang];
+                }
+
+                // https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/templates/filter_warning.html
+                let html = '<div class="col warning-banner pt-3 px-3 mb-4">';
+                html += '<div class="row">';
+                html += '<div class="col-1">';
+                html += '<i class="fa fa-exclamation-triangle mt-2 mr-2 list-item-warning"></i>';
+                html += '</div>';
+                html += '<div class="col-11">';
+                html += '<div class="row">';
+                html += '<div class="col">';
+                html += '<p class="primary"><strong>' + org +'</strong> indicated your chosen institution may not have access to this service.</p>';
+                html += '</div>';
+                html += '</div>';
+                html += '<!-- div class="row">';
+                html += '<div class="col">';
+                html += '<p>Choose an alternative institute or try <a href="#">other access options</a>.</p>';
+                html += '</div>';
+                html += '</div -->';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+                $("#filter-warning").append(html);
+            }
+        },
+        render_saved_choice: function(items) {
+            const self = this;
+            $("#searching").addClass('d-none');
+
+            if (timer) {
+                clearTimeout(timer); timer = null;
+            }
+
+            if (entityID) {
+                thiss.json_mdq_get_sp(entityID, mdq_url).then(spEntity => {
+                    let strict = true;
+                    if (trustProfile && 'tinfo' in spEntity &&
+                              'profiles' in spEntity.tinfo &&
+                               trustProfile in spEntity.tinfo.profiles) {
+                        strict = spEntity.tinfo.profiles[trustProfile].strict;
+                    }
+
+                    self._render_saved_choice(items, strict, spEntity);
+                }).catch(err => {
+                    self._render_saved_choice(items, true, null);
+                });
+            }
+        },
+        too_many_results: function(bts, count) {
+            $("#searching").addClass('d-none');
+            document.getElementById('ds-search-list').innerHTML = ''
+
+            if (timer) {
+                clearTimeout(timer); timer = null;
+            }
+            let html = '<li role="region" class="type-ahead-alert" aria-live="assertive">';
+            html += '<div role="alert">'
+            html += '<p><span class="bold">' + count + ' <span data-i18n="ds-too-many-result-matches">Matches</span></span> <span data-i18n="ds-too-many-result-keep-typing">keep typing to refine your search</span></p>';
+            html += '<p><a id="showall" href="#" data-i18n="ds-too-many-result-show">Show me all matches anyway</a></p>';
+            html += '</div>';
+            html += '</li>';
+            $("#ds-search-list").append(html);
+        },
+        no_results: function() {
+            $("#searching").addClass('d-none');
+            document.getElementById('ds-search-list').innerHTML = ''
+
+            if (timer) {
+                clearTimeout(timer); timer = null;
+            }
+
+            let html ='<li>';
+            html += '<div class="no-results-alert" role="alert">';
+            html += '<h3 class="bold" data-i18n="ds-no-results-no-matching">No matching institutions found</h3>';
+            html += '<ul>';
+            html += '<li data-i18n="ds-no-results-try-entering">Try entering an institution name, abbreviation or your institution email</li>';
+            html += '<li data-i18n="ds-no-results-try-accessing">Try accessing through your library website</li>';
+            html += '<li data-i18n="ds-no-results-contact-librarian">Contact your librarian</li>';
+            html += '</ul>';
+            html += '</div>';
+            html += '</li>';
+            $("#ds-search-list").append(html);
+        },
+        persist: function() {
+            return $("#rememberThisChoice").is(':checked');
+        },
+        before: function(items) {
+            let now = Date.now();
+            let o = this;
+            return Promise.all(items.map(item => {
+                return thiss.json_mdq_get(encodeURIComponent(item.entity.id), trustProfile, entityID, o.mdq).then(entity => {
+                    item.entity = entity;
+                    item.modified = true;
+                    item.last_refresh = now;
+                    item.last_use = now;
+                    return item;
+                }).catch(err => {
+                    console.log(`Error refreshing entity: ${err}`)
+                })
+            })).then(items => items.filter(item => item && item.entity !== undefined))
+               .catch(err => {
+                    console.log(`Error filtering entities: ${err}`)
+               });
+        },
+        after: function(count,elt) {
+            $("#searching").addClass('d-none');
+            if (count == 0) {
+                $("#search").removeClass("d-none");
+                $("#choose").addClass("d-none");
+                $("#searchinput").focus();
+            } else {
+                $("#choose").removeClass("d-none");
+                $("#search").addClass("d-none");
+            }
+        }
+    }).discovery_client("sp").then(entity => {
+        $(".sp_title").text(entity.title);
+        $("#discovery-response-warning-site").text(entity.title);
+
+        let goodReturn = true;  //TODO: change to false to reactivate the warning
+
+        if (entity.discovery_responses) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            let returnUrl = null;
+            if (urlParams.has('return'))
+                returnUrl = urlParams.get('return')
+
+            entity.discovery_responses.forEach(dr => {
+                if (returnUrl !== null && returnUrl.startsWith(dr)) {
+                    goodReturn = true;
+                }
+            });
+        }
+        if (goodReturn === false) {
+            $("#warning-discovery-response").removeClass("d-none");
+        }
+    })
+
+    /* merge the langauge selector with SSP's translations */
+    $('#locale-selector').on('change', function() {
+        let lang = $(this).val();
+        let search = window.location.search;
+        if (search) {
+            window.location.search = search + lang.replace('?', '&')
+        } else {
+            window.location.search = lang;
+        }
+    });
+});

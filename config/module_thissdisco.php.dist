@@ -1,0 +1,34 @@
+<?php
+
+/*
+ * Configuration for the thissdisco module
+ */
+
+$config = [
+    /*
+     * The base template to use. Can be one of "simplesamlphp" (to inherit from base.twig)
+     * or "thissio" (to use a template derived from use.thiss.io / SeamlessAccess)
+     */
+    'basetemplate' => 'thissio',
+
+    /*
+     * The URL to the metadata query service. Defaults to our own MDQ if unset or null
+     */
+    'mdq_url' => null,
+
+    /*
+     * The URL to the metadata query service's search extension. Defaults to mdq_url if unset
+     */
+    'search_url' => null,
+
+    /*
+     * The URL to the persistence service
+     */
+    'persistence_url' => 'https://use.thiss.io/ps/',
+    //'persistence_context' => 'thiss.io',
+
+    /*
+     * Optional URL to a page with further information
+     */
+    'learn_more_url' => 'https://example.org/learn-more',
+];

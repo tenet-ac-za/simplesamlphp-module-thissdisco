@@ -1,0 +1,624 @@
+/**
+ * SSP fixups to get things into alignment with the rest of the UI
+ */
+#dsclient p, #dsclient a,
+#dsclient a:hover, #dsclient a:active, #dsclient a:focus {
+  background-color: inherit;
+  padding: 0;
+}
+
+#dsclient h2 {
+  border-bottom: none;
+}
+
+.svg-inline--fa {
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}
+
+/**
+ * The portions of this CSS that follow are derived from thiss-js,
+ * but have been modified to anchor them to the thiss-js UI and allow
+ * it to render correctly within a SimpleSAMLphp theme.
+ */
+
+/**
+ * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/main.scss
+ */
+@font-face {
+  font-family: 'Libre Franklin';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/LibreFranklin-Regular.woff2') format('woff2');
+  src: local('Libre Franklin'), local('LibreFranklin-Regular'),
+  url('../fonts/LibreFranklin-Regular.woff2') format('woff2'),
+  url('../fonts/LibreFranklin-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Libre Franklin';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/LibreFranklin-Bold.woff2') format('woff2');
+  src: local('Libre Franklin'), local('LibreFranklin-Bold'),
+  url('../fonts/LibreFranklin-Bold.woff2') format('woff2'),
+  url('../fonts/LibreFranklin-Bold.ttf') format('truetype');
+}
+
+ #dsclient .d-flex {
+  display: -ms-flexbox!important;
+  display: flex!important;
+}
+
+#dsclient {
+  --white: #ffffff;
+  --text-grey: #444444;
+  --warm-grey: #767676;
+  --footer-grey: #ebebeb;
+  --pastel-blue: #216e93;
+  --primary-blue: #1465DB;
+  --secondary-blue: #0056b3;
+  --dark-blue: #0c1c27;
+  --white-50: rgba(255, 255, 255, 0.5);
+  --white-two: #f6f6f6;
+  --white-three: #e6e6e6;
+  --warm-grey-two: #bfbfbf;
+}
+
+/**
+ * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/nc.scss
+ */
+#dsclient label {
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.46;
+  color: var(--warm-grey);
+  text-decoration: none;
+}
+#dsclient a.disabled, #dsclient label.disabled {
+  color: #6c757d;
+  pointer-events: none;
+}
+#dsclient .custom-control-label {
+  line-height: 24px;
+}
+#dsclient .alert {
+  padding: 0.5rem 0.75rem;
+}
+#dsclient .alert.alert-warning {
+  color: black;
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+#dsclient .alert p {
+  color: black;
+}
+#dsclient #notice-and-consent-actions {
+  margin-bottom: 1rem;
+}
+#dsclient #notice-and-consent-actions p {
+  line-height: 24px;
+}
+#dsclient #learn-more-close {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 15px;
+}
+
+/**
+ * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/ds.scss
+ */
+#dsclient *, #dsclient *::before, #dsclient *::after {
+  box-sizing: border-box;
+}
+
+#dsclient p, #dsclient a, #dsclient h1, #dsclient h2, #dsclient h3, #dsclient .H2-inactive-text, #dsclient input, #dsclient ul, #dsclient li, #dsclient .primary, #dsclient .secondary, #dsclient label, #dsclient legend {
+  font-family: "Libre Franklin", Arial, sans-serif;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: normal;
+}
+#dsclient .align-left, #dsclient .left {
+  float: left;
+}
+#dsclient .align-right, #dsclient .right {
+  float: right;
+}
+#dsclient .center {
+  text-align: center;
+}
+/* Text styles */
+#dsclient p, #dsclient a {
+  /* Zep */
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.46;
+  color: var(--warm-grey);
+  text-decoration: none;
+}
+#dsclient a {
+  /* Zep */
+  color: var(--primary-blue);
+}
+#dsclient a:hover {
+  text-decoration: underline;
+}
+#dsclient a:active {
+  text-decoration: underline;
+}
+#dsclient .btn {
+  text-decoration: none;
+  padding: 10px !important;
+  border-radius: 5px;
+  /* border: solid 1px var(--footer-grey); */
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+#dsclient .btn .collapse {
+  display: none;
+}
+#dsclient .btn .collapse.in {
+  display: inline-block;
+}
+#dsclient .btn-light {
+  background-color: var(--white-two);
+  color: var(--warm-grey);
+}
+#dsclient .btn-blue {
+  background-color: var(--primary-blue);
+  color: var(--white-two);
+}
+#dsclient .btn-blue:hover {
+  background-color: var(--secondary-blue);
+  color: var(--white-two);
+}
+#dsclient .btn-blue:active {
+  background-color: var(--primary-blue);
+  border: 2px solid var(--secondary-blue);
+  color: var(--white-two);
+}
+#dsclient h1, #dsclient h2, #dsclient h3, #dsclient legend {
+  color: var(--text-grey);
+}
+#dsclient h1 {
+  /* Zep */
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.17;
+  margin-bottom: 0px;
+}
+#dsclient h2, #dsclient .type-ahead-alert p, #dsclient .type-ahead-alert a {
+  /* Zep */
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.43;
+  margin: 5px 0 20px 0;
+}
+#dsclient h3, #dsclient legend {
+  /* Zep */
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.46;
+}
+#dsclient .H2-inactive-text {
+  font-size: 14px;
+  font-weight: normal;
+  font-style: italic;
+  color: rgba(68, 68, 68, 0.66);
+}
+#dsclient .bold {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+/* Structure */
+#dsclient {
+  display: flex;
+  -moz-display: box;
+  -ms-display: flexbox;
+  -webkit-display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 2em 2em 2.25em 2em;
+  /* Master Width Definition */
+  max-width: 500px;
+  min-height: 350px !important;
+  /* Zep */
+  border-radius: 5px;
+  border: solid 1px rgba(187, 187, 187, 0.33);
+  background-color: var(--white);
+  box-shadow: 0 10px 40px -14px rgba(0, 0, 0, 0.25);
+}
+
+/* Form */
+#dsclient form {
+  margin-bottom: 2em;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: 100%;
+}
+#dsclient .form-content {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+#dsclient input {
+  padding: 10px;
+  /* Zep */
+  height: 48px;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px 2px rgba(25, 134, 255, 0.29);
+  border: solid 1px #0077ff;
+  background-color: var(--white);
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  color: var(--text-grey);
+}
+#dsclient .custom-checkbox > .custom-control-input {
+  height: 100%;
+  padding-top: 10px;
+}
+#dsclient .custom-checkbox > .custom-control-label {
+  display: inline-block;
+  float: right;
+  clear: left;
+  margin-left: 5px;
+  margin-top: 0px;
+}
+#dsclient .search {
+  position: relative;
+}
+#dsclient #search, #dsclient .search, #dsclient .search input {
+  width: 100%;
+}
+#dsclient .form-content legend {
+  margin-top: 13px;
+}
+#dsclient .search .fa-magnifying-glass {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  font-size: 20px;
+  color: var(--primary-blue);
+}
+#dsclient .signup-message {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#dsclient ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#dsclient ul li a:hover {
+  color: var(--primary-blue);
+}
+
+/* Primary Name Match/Non-Match Classes */
+#dsclient .primary {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.43;
+  margin: 0;
+  color: var(--text-grey);
+}
+#dsclient .primary .match {
+  font-weight: 700;
+}
+#dsclient .secondary {
+  display: block;
+  /* Zep */
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.46;
+  color: var(--warm-grey);
+}
+#dsclient .examples {
+  padding-top: 15px;
+}
+#dsclient .top-right {
+  top: -5px;
+  right: 0;
+  position: absolute;
+}
+#dsclient .institution i {
+  float: right;
+  color: var(--primary-blue);
+}
+#dsclient .search-list .primary, #dsclient .choose .primary, #dsclient .edit .primary {
+  font-weight: normal;
+}
+#dsclient .search-list li, #dsclient .choose li, #dsclient .edit li {
+  border-bottom: 1px solid rgba(118, 118, 118, 0.2);
+  cursor: pointer;
+  min-height: 4rem;
+  padding-bottom: 15px;
+  padding-top: 12px;
+}
+#dsclient .search-list li:first-child, #dsclient .choose li:first-child, #dsclient .edit li:first-child {
+  border-top: 1px solid rgba(118, 118, 118, 0.2);
+}
+#dsclient .edit .list-item-warning {
+  display: none;
+}
+#dsclient .edit .top-right {
+  right: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+#dsclient .edit .top-right svg {
+  right: 10px;
+  position: absolute;
+}
+#dsclient .edit li, #dsclient .edit li:first-child {
+  border: solid 1px var(--primary-blue);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+#dsclient .results.choose .list-item-legend i, #dsclient .results.search-list .list-item-legend i {
+  color: rgb(255, 184, 0);
+}
+#dsclient .results.choose .list-item .list-item-legend, #dsclient .results.search-list .list-item .list-item-legend {
+  display: none;
+}
+#dsclient .results.choose .list-item:hover .list-item-legend, #dsclient .results.search-list .list-item:hover .list-item-legend {
+  display: block;
+}
+#dsclient .results.choose .institution:hover i.arrow, #dsclient .results.search-list .institution:hover i.arrow {
+  right: 0;
+  width: 12px;
+  margin-right: 20px;
+  color: var(--primary-blue);
+  display: block;
+  position: absolute;
+}
+#dsclient .results.choose .institution:hover i.list-item-warning, #dsclient .results.search-list .institution:hover i.list-item-warning {
+  display: none;
+}
+#dsclient .results.choose .institution:hover .primary, #dsclient .results.search-list .institution:hover .primary {
+  color: var(--primary-blue);
+  text-decoration: underline;
+}
+#dsclient .results.choose .institution:hover .secondary, #dsclient .results.search-list .institution:hover .secondary {
+  text-decoration: underline;
+}
+#dsclient .results.choose .institution-warning, #dsclient .results.search-list .institution-warning {
+  background: lightgray;
+}
+#dsclient .results.choose li.institution, #dsclient .results.search-list li.institution {
+  border-bottom: 1px solid rgba(118, 118, 118, 0.2);
+  cursor: pointer;
+  padding-bottom: 15px;
+  padding-top: 15px;
+}
+#dsclient .results.choose a:first-child li, #dsclient .results.search-list a:first-child li {
+  border-top: 1px solid rgba(118, 118, 118, 0.2);
+}
+#dsclient input:focus, #dsclient input:active, #dsclient input:focus-visible {
+  outline: unset;
+  border-color: var(--secondary-blue);
+}
+#dsclient .identityprovider:focus, #dsclient .identityprovider:active, #dsclient .identityprovider:focus-visible {
+  outline: solid var(--secondary-blue);
+  border-color: var(--secondary-blue);
+}
+#dsclient .institution {
+  position: relative;
+}
+#dsclient .institution .label {
+  max-width: 80%;
+}
+#dsclient .institution .label-url {
+  height: 1rem;
+  max-width: 200px;
+}
+#dsclient .edit .institution:hover .primary {
+  color: var(--text-grey);
+}
+#dsclient .edit .institution:hover .institution-text {
+  opacity: 0.5;
+}
+#dsclient .edit .institution:hover .institution-icon {
+  opacity: 0.5;
+}
+#dsclient .edit ul:before {
+  border: none;
+  margin: 0;
+}
+#dsclient .edit ul li:after {
+  content: "";
+  display: block;
+  margin: 3px 0 3px 0;
+  border: none;
+}
+#dsclient .edit li.institution {
+  border: solid 1px var(--primary-blue);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+#dsclient .item-fade {
+  transition: opacity 0.25s ease-in-out;
+  -moz-transition: opacity 0.25s ease-in-out;
+  -webkit-transition: opacity 0.25s ease-in-out;
+}
+#dsclient .institution-mask {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  float: left;
+  margin-right: 10px;
+}
+#dsclient .institution-mask img {
+  display: inline;
+  margin: 0 auto;
+  height: 100%;
+  object-fit: contain;
+  min-width: 40px;
+  margin-left: 0px;
+}
+#dsclient .institution-circle img {
+  display: inline;
+  min-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: 40px;
+  margin: auto;
+  position: absolute;
+  top: -100%;
+  right: -100%;
+  bottom: -100%;
+  left: -100%;
+}
+#dsclient .institution-icon {
+  float: left;
+  width: 40px;
+  margin-right: 10px;
+}
+#dsclient .institution-icon img {
+  width: 40px;
+  display: block;
+}
+#dsclient .institution-icon i {
+  width: 40px;
+  display: block;
+}
+#dsclient .institution-text {
+  display: block;
+  overflow: hidden;
+}
+#dsclient i.arrow {
+  padding-top: 4px;
+  padding-right: 7px;
+  font-size: 1.4rem;
+  display: none;
+}
+#dsclient i.list-item-warning {
+  color: rgb(133, 99, 29);
+  font-size: 16px;
+}
+#dsclient .link-bar {
+  margin: 15px 0 3px 0;
+}
+#dsclient .link-bar i {
+  font-size: 14px;
+  vertical-align: middle;
+  margin-bottom: 3px;
+}
+/* Alerts */
+#dsclient .type-ahead-alert, #dsclient .no-results-alert {
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: var(--white-two);
+  color: var(--text-grey);
+  text-align: center;
+}
+#dsclient .warning-banner {
+  border: 1px solid rgb(133, 99, 29);
+  background: rgb(245, 245, 245);
+  border-radius: 2px;
+}
+#dsclient .no-results-alert {
+  text-align: left;
+}
+#dsclient .no-results-alert h3, #dsclient .no-results-alert legend {
+  color: var(--text-grey);
+}
+#dsclient .no-results-alert ul {
+  list-style-type: square;
+  margin: 0 0 0 20px;
+  padding: 0;
+  /* Zep */
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.46;
+  color: var(--text-grey);
+}
+#dsclient .no-results-alert li {
+  border: none;
+  height: auto;
+  min-height: auto;
+  padding: 0 0 5px 0;
+}
+#dsclient .type-ahead-alert p, #dsclient .no-results-alert p {
+  color: var(--text-grey);
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+#dsclient .no-results ul, #dsclient .no-results-alert h2 {
+  color: var(--text-grey);
+}
+#dsclient .no-results ul li, #dsclient .no-results-alert h2 li {
+  padding-top: 0px;
+}
+/* Loader */
+#dsclient .loader {
+  height: 4px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: #ddd;
+}
+#dsclient .loader:before {
+  display: block;
+  position: absolute;
+  content: "";
+  left: -200px;
+  width: 200px;
+  height: 4px;
+  background-color: var(--primary-blue);
+  animation: loading 2s linear infinite;
+}
+@keyframes loading {
+  from {
+    left: -200px;
+    width: 30%;
+  }
+  50% {
+    width: 30%;
+  }
+  70% {
+    width: 70%;
+  }
+  80% {
+    left: 50%;
+  }
+  95% {
+    left: 120%;
+  }
+  to {
+    left: 100%;
+  }
+}
+#dsclient .d-none {
+  display: none;
+}
+#dsclient .display-block {
+  display: block;
+}
+#dsclient .warning-fa-item {
+  color: rgb(133, 99, 29);
+  margin-right: 0.6rem;
+  margin-left: 0.3rem;
+}
+#dsclient .institution-remove {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+#dsclient .institution-remove .institution-remove-cross-wrapper {
+  height: 60px;
+  width: 40px;
+}

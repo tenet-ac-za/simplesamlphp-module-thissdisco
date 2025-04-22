@@ -1,0 +1,150 @@
+{% set pagetitle = 'Select your identity provider'|trans %}
+{% extends base_template %}{# config selects which base template #}
+
+{% block preload %}
+  <link rel="stylesheet" media="screen" href="{{ asset('components/bootstrap/css/bootstrap.min.css', 'thissdisco') }}">
+  <link rel="stylesheet" media="screen" href="{{ asset('components/fontawesome-free/css/all.min.css', 'thissdisco') }}">
+  <link rel="stylesheet" media="screen" href="{{ asset('css/disco.css', 'thissdisco') }}">
+{% endblock %}
+
+{% block postload %}
+  <script src="{{ asset('js/jquery.min.js', 'jquery') }}"></script>
+  <script src="{{ asset('js/jquery-ui.min.js', 'jquery') }}"></script>
+  <script src="{{ asset('components/thiss-ds.js', 'thissdisco') }}"></script>
+  <!-- bits of the thiss-js page -->
+  <script src="{{ asset('js/ds-widget.js', 'thissdisco') }}"></script>
+  <script src="{{ asset('js/bootstrap-list-filter.js', 'thissdisco') }}"></script>
+  <!-- the config for our disco service -->
+  <script src="{{ asset('js/thissdisco.js', 'thissdisco') }}"></script>
+  <script src="{{ moduleURL('thissdisco/discoconf.js') }}"></script>
+{% endblock %}
+
+{#
+  Portions of this template's content block are derived from thiss-js
+  https://github.com/TheIdentitySelector/thiss-js/blob/staging/src/ds/index.ejs
+#}
+{% block content %}
+  <main class="content">
+    <!--
+      The Identity Selector discovery widget, see https://use.thiss.io/
+    -->
+    <div class="container" id="dsclient">
+      <!-- choose -->
+      <div class="d-none" id="choose">
+        <span class="choose">
+          <h1 data-i18n="ds-choose-heading">{{ 'Choose Your Institution' | trans }}</h1>
+          <h2 data-i18n="ds-choose-subheading">{{ 'Recent institutions' | trans }}</h2>
+        </span>
+        <span class="edit d-none">
+          <h1 data-i18n="ds-edit-heading">{{ 'Edit institutions' | trans }}</h1>
+          <h2 data-i18n="ds-edit-subheading">{{ 'If you no longer want an institution to be remembered on this device, remove it from the list below.' | trans }}</h2>
+        </span>
+        <div class="results choose" id="savedchoices">
+          <div id="filter-warning"></div>
+          <ul id="ds-saved-choices"></ul>
+        </div>
+        <div id="choosetools" class="link-bar">
+          <a id="add_button" href="#"
+             class="align-left"
+             role="button"
+             aria-expanded="false"><i class="fa fa-plus-square"></i> <span data-i18n="ds-choose-add-another">{{ 'Add another institution' | trans }}</span></a>
+          <a id="edit_button" href="#"
+             class="align-right"
+             role="button"
+             aria-expanded="false"><i class="fa fa-pen"></i> <span data-i18n="ds-choose-edit">{{ 'Edit' | trans }}</span></a>
+        </div>
+        <a id="done_button" role="button" class="d-none center btn btn-block btn-blue" href="#" data-i18n="ds-choose-done">{{ 'Done' | trans }}</a>
+      </div>
+
+      <!-- search -->
+      <div class="d-none d-block" id="search">
+        <h1 data-i18n="ds-search-heading">{{ 'Find Your Institution' | trans }}</h1>
+        <h2 data-i18n="ds-search-subheading">{{ 'Your university, organization or company' | trans }}</h2>
+        <form>
+          <div class="form-content">
+            <div class="search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input tabindex="0" type="text" autocomplete="off" id="searchinput" placeholder="" aria-label="{{ 'Find your institution, university, organization or company edit text' | trans }}" aria-describedby="{{ 'Find your institution, university, organization or company edit text' | trans }}" autofocus>
+            </div>
+            <legend data-i18n="ds-search-example">{{ 'Examples: Science Institute, Lee@uni.edu, UCLA' | trans }}</legend>
+            <div id="notice-and-consent-actions">
+                <div class="row">
+                    <div class="col col-auto pr-3">
+                        <div class="custom-control custom-checkbox">
+                            <span id="ps-checkbox-holder"></span>
+                            <input type="checkbox" class="custom-control-input" checked="checked" id="rememberThisChoice">
+                            <label class="custom-control-label" for="rememberThisChoice" data-i18n="ds-notice-and-consent-remember">
+                                {{ 'Remember this choice' | trans }}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col pl-2">
+                        <p class="mb-0">
+                            <a id="learn-more-trigger" href="#" data-i18n="ds-notice-and-consent-learn-more">{{ 'Learn More' | trans }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div id="learn-more-banner" class="alert alert-secondary d-none">
+                <div class="row">
+                    <div class="col py-2 px-4">
+                        <i id="learn-more-close" class="fa fa-times"></i>
+                        <p>
+                            <span data-i18n="ds-notice-and-consent-banner-storage-info">{{ "The institution you select will be saved in this browser's local storage and will be made available to this and other sites that use SeamlessAccess. You may clear your browser local storage at any time." | trans }}</span>
+                        </p>
+
+                        <p data-i18n="ds-notice-and-consent-banner-personal-info">
+                            {{ 'No login, email or personal information is stored.' | trans }}
+                        </p>
+
+                        {% if learn_more_url is defined %}
+                        <p class="text-center mb-0">
+                            <a href="{{ learn_more_url }}" data-i18n="ds-notice-and-consent-banner-more-info">
+                                {{ 'Additional Privacy Information' | trans }}
+                            </a>
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="d-none" id="searching" role="region" aria-live="assertive">
+              <h3 data-i18n="ds-search-placeholder">{{ 'Searching for institutions...' | trans }}</h3>
+              <div class="loader">
+
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="results search-list" id="resultwidget">
+          <ul id="ds-search-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- discovery response warning -->
+    <div class="container d-none" id="discovery-response-warning">
+      <div class="" id="discovery-response-warning-body">
+        <p class="discovery-response-warning-item">
+        <i class="fa fa-exclamation-triangle"></i>
+        <span  class="discovery-response-warning-title" data-i18n="ds-search-unable-to-verify">
+            {{ 'Unable to verify returning site' | trans }}
+        </span>
+        </p>
+        <p class="discovery-response-warning-item discovery-response-warning-text">
+        <span data-i18n="ds-search-unable-to-verify-long">{{ 'We are unable to verify if you will be sent back to' | trans }}</span> <span id="discovery-response-warning-site"></span>
+        </p>
+        <p class="discovery-response-warning-item discovery-response-warning-text" data-i18n="ds-search-unable-to-verify-longer">
+        {{ 'You may not return to the site you started this access path on, in this case verify upon completion of your institution access if you arrived at your desired content.' | trans }}
+        </p>
+        <p class="discovery-response-warning-item discovery-response-warning-text">
+        <a href="https://seamlessaccess.atlassian.net/wiki/x/B4C_Vw" target="_blank" data-i18n="ds-search-why-unable-to-verify">
+            {{ 'Why are we unable to verify?' | trans }}
+        </a>
+        </p>
+        <div class="discovery-response-warning-item">
+        <a id="warning-done-button" role="button" class="center btn btn-block btn-blue display-block" href="#" data-i18n="ds-warning-continue">{{ 'Continue' | trans }}</a>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
