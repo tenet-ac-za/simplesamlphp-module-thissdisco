@@ -1,26 +1,17 @@
 {
   "symbol-whitelist": [
-    "League\\OAuth2\\Client\\Provider\\GenericProvider",
-    "SAML2\\Constants",
-    "SimpleSAML\\Auth\\ProcessingFilter",
-    "SimpleSAML\\Auth\\State",
     "SimpleSAML\\Configuration",
     "SimpleSAML\\Error\\BadRequest",
     "SimpleSAML\\Error\\Error",
     "SimpleSAML\\Error\\Exception",
     "SimpleSAML\\Error\\MetadataNotFound",
-    "SimpleSAML\\Locale\\Localization",
-    "SimpleSAML\\Locale\\Translate",
-    "SimpleSAML\\Logger",
-    "SimpleSAML\\Metadata\\MetaDataStorageHandler",
-    "SimpleSAML\\Module",
-    "SimpleSAML\\Module\\saml\\BaseNameIDGenerator",
     "SimpleSAML\\Session",
-    "SimpleSAML\\Store\\StoreFactory",
-    "SimpleSAML\\Utils\\Config",
-    "SimpleSAML\\Utils\\HTTP",
     "SimpleSAML\\XHTML\\Template",
     "SimpleSAML\\XHTML\\TemplateControllerInterface",
-    "SimpleSAML\\XHTML\\TemplateLoader"
+    "SimpleSAML\\XHTML\\TemplateLoader",
+    "Symfony\\Component\\HttpFoundation\\JsonResponse",
+    "Symfony\\Component\\HttpFoundation\\Request",
+    "Symfony\\Component\\HttpFoundation\\Response",
+    "Symfony\\Component\\HttpFoundation\\StreamedResponse"
   ]
 }
