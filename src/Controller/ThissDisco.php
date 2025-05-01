@@ -66,7 +66,7 @@ class ThissDisco
         $persistence = $this->moduleConfig->getOptionalArray('persistence', []);
         if (
             isset($headers['Content-Security-Policy'])
-            && ( !empty($persistence) || !empty($mdq) )
+            && (!empty($persistence) || !empty($mdq))
         ) {
             $csp = $headers['Content-Security-Policy'];
             /* the mdq service needs to connect */

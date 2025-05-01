@@ -42,7 +42,11 @@ class ThissIdPDisco extends IdPDisco
         );
 
         $t = new Template($this->config, 'thissdisco:disco.twig');
-        $basetemplate = $this->moduleConfig->getOptionalValueValidate('basetemplate', ['simplesamlphp', 'thissio', 'seamlessaccess'], 'simplesamlphp');
+        $basetemplate = $this->moduleConfig->getOptionalValueValidate(
+            'basetemplate',
+            ['simplesamlphp', 'thissio', 'seamlessaccess'],
+            'simplesamlphp',
+        );
         if ($basetemplate === 'simplesamlphp') {
             $t->data['base_template'] = 'base.twig';
         } else {

@@ -81,13 +81,21 @@ class MDQ
      */
     protected function entityAsDiscoJSON(array $entity): array
     {
-        $title = $entity['UIInfo']['DisplayName'] ?? $entity['name'] ?? $entity['OrganizationDisplayName'] ?? $entity['OrganizationName'] ?? [];
+        $title = $entity['UIInfo']['DisplayName']
+            ?? $entity['name']
+            ?? $entity['OrganizationDisplayName']
+            ?? $entity['OrganizationName']
+            ?? [];
         $descr = $entity['UIInfo']['Description'] ?? $entity['description'] ?? [];
         $data['title'] = $this->filterLangs($title);
         $data['descr'] = $this->filterLangs($descr);
         $data['title_langs'] = $title;
         $data['descr_langs'] = $descr;
-        $data['auth'] = in_array($entity['metadata-set'], ['saml20-sp-remote', 'saml20-idp-remote']) ? 'saml' : 'unknown';
+        if (in_array($entity['metadata-set'], ['saml20-sp-remote', 'saml20-idp-remote'])) {
+            $data['auth'] = 'saml';
+        } else {
+            $data['auth'] = 'unknown';
+        }
         $data['entity_id'] = $entity['entityid'];
         $data['entityID'] = $entity['entityid']; // per pyFF, but not in the spec
 
@@ -100,11 +108,18 @@ class MDQ
                 $data['entity_category'] = $entity['EntityAttributes']['http://macedir.org/entity-category'];
             }
 
-            if (array_key_exists('urn:oasis:names:tc:SAML:attribute:assurance-certification', $entity['EntityAttributes'])) {
+            if (
+                array_key_exists(
+                    'urn:oasis:names:tc:SAML:attribute:assurance-certification',
+                    $entity['EntityAttributes'],
+                )
+            ) {
+                // phpcs:ignore
                 $data['assurance_certification'] = $entity['EntityAttributes']['urn:oasis:names:tc:SAML:attribute:assurance-certification'];
             }
 
             if (array_key_exists('http://macedir.org/entity-category-support', $entity['EntityAttributes'])) {
+                // phpcs:ignore
                 $data['entity_category_support'] = $entity['EntityAttributes']['http://macedir.org/entity-category-support'];
             }
         }
@@ -220,7 +235,11 @@ class MDQ
             }
         } else {
             /* we're using the entityID */
-            $identifier = preg_replace('/^(https?):\/(?=[^\/])/', '\1://', $identifier); /* fixup any lost slash in the protocol */
+            $identifier = preg_replace(
+                '/^(https?):\/(?=[^\/])/', /* fixup any lost slash in the protocol */
+                '\1://',
+                $identifier,
+            );
             foreach ($md as $entity) {
                 if ($entity['entityid'] === $identifier) {
                     return $this->entityAsDiscoJSON($entity);
@@ -345,7 +364,11 @@ class MDQ
             if (str_contains($query, '@') && !str_ends_with($query, '@')) {
                 $query = end(explode('@', $query));
             }
-            $entity_filter = str_replace('{http://pyff.io/role}', '', strtolower($request->query->get('entity_filter', 'idp')));
+            $entity_filter = str_replace(
+                '{http://pyff.io/role}',
+                '',
+                strtolower($request->query->get('entity_filter', 'idp')),
+            );
 
             $data = $this->searchEntities($md, $query, $entity_filter);
             Logger::debug(
