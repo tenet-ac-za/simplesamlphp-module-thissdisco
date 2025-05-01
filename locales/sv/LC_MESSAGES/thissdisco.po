@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: SimpleSAMLphp\n"
+"X-Domain: thissdisco\n"
+
+#: ds-footer-about-us
+msgid "About Us"
+msgstr "Om oss"
+
+#: cta-button-header
+msgid "Access through"
+msgstr "Inloggning via"
+
+#: cta-button-placeholder
+msgid "Access through your institution"
+msgstr "Inloggning via din organisation"
+
+#: ds-button-access-through
+msgid "Access through your institution"
+msgstr "Inloggning via din organisation"
+
+#: ds-header
+msgid "Access to"
+msgstr "Inloggning till"
+
+#: ds-choose-add-another
+msgid "Add another institution"
+msgstr "Välj en annan organisation"
+
+#: ds-notice-and-consent-banner-more-info
+msgid "Additional Privacy Information"
+msgstr "Hantering av personuppgifter i SeamlessAccess"
+
+#: cta-link
+msgid "Add or change institution"
+msgstr "Lägg till eller ändra organisation"
+
+#: ds-button-add-or-change
+msgid "Add or Change Institution"
+msgstr "Lägg till eller ändra organisation"
+
+#: ds-result-back-to-start
+msgid "Back to start"
+msgstr "Tillbaka till startsidan"
+
+#: filter-warning-choose-alternative
+msgid "Choose an alternative institute or try"
+msgstr "Välj en alternativ organisation eller använd"
+
+#: ds-choose-heading
+msgid "Choose Your Institution"
+msgstr "Välj din organisation"
+
+#: ds-no-results-contact-librarian
+msgid "Contact your librarian"
+msgstr "Kontakta din bibliotekarie"
+
+#: ds-warning-continue
+msgid "Continue"
+msgstr "Fortsätt"
+
+#: ds-choose-done
+msgid "Done"
+msgstr "Klar"
+
+#: ds-choose-edit
+msgid "Edit"
+msgstr "Ändra"
+
+#: ds-edit-heading
+msgid "Edit institutions"
+msgstr "Ändra organisationer"
+
+#: ds-search-example
+msgid "Examples: Science Institute, Lee@uni.edu, UCLA"
+msgstr "Exempel: Umeå universitet, eduID Sweden"
+
+#: ds-search-heading
+msgid "Find Your Institution"
+msgstr "Hitta din organisation"
+
+#: filter-warning-back-to-choose
+msgid "Go back to Edit institutions"
+msgstr "Gå tillbaka och till Ändra organisationer"
+
+#: filter-warning-back-to-search
+msgid "Go back to Search"
+msgstr "Gå tillbaka till Sök organisation"
+
+#: ds-edit-subheading
+msgid "If you no longer want an institution to be remembered on this device, remove it from the list below."
+msgstr "Om du inte längre vill att en organisation ska listas på denna enhet, ta bort den från listan nedan."
+
+#: filter-warning-no-access
+msgid "indicated your chosen institution may not have access to this service."
+msgstr "har indikerat att en inloggning med din organisation inte kommer ge dig tillgång till tjänsten."
+
+#: ds-too-many-result-keep-typing
+msgid "keep typing to refine your search"
+msgstr "fortsätt skriva för att begränsa sökresultatet"
+
+#: ds-notice-and-consent-learn-more
+msgid "Learn More"
+msgstr "Mer information"
+
+#: ds-search-learn-more
+msgid "Learn more"
+msgstr "Läs mer"
+
+#: ds-too-many-result-matches
+msgid "Matches"
+msgstr "träffar"
+
+#: ds-notice-and-consent-banner-personal-info
+msgid "No login, email or personal information is stored."
+msgstr "Inga personuppgifter sparas."
+
+#: ds-no-results-no-matching
+msgid "No matching institutions found"
+msgstr "Din sökning gav inga sökresultat."
+
+#: list-filter-no-results
+msgid "No results"
+msgstr "Inga resultat"
+
+#: filter-warning-other-options
+msgid "other access options"
+msgstr "andra inloggningsmetoder"
+
+#: ds-choose-subheading
+msgid "Recent institutions"
+msgstr "Nyligen använda"
+
+#: ds-notice-and-consent-remember
+msgid "Remember this choice"
+msgstr "Kom ihåg mitt val"
+
+#: ds-search-placeholder
+msgid "Searching for institutions..."
+msgstr "Söker efter organisationer..."
+
+#: ds-too-many-result-show
+msgid "Show me all matches anyway"
+msgstr "Visa alla träffar"
+
+#: ds-result-title
+msgid "The Identity Selector"
+msgstr "Identitetsväljaren"
+
+#: ps-index-title
+msgid "The Identity Selector: Persistence Service"
+msgstr "Identitetsväljaren: Persistenstjänsten"
+
+#: ds-notice-and-consent-banner-storage-info
+msgid "The institution you select will be saved in this browser's local storage and will be made available to this and other sites that use SeamlessAccess. You may clear your browser local storage at any time."
+msgstr "Organisationen du väljer kommer att sparas i denna enhets lokala lagring och kommer att vara tillgänglig för denna och andra tjänster som använder SeamlessAccess. Du kan rensa den lokala lagringen i din enhet när du vill."
+
+#: ds-search-may-not-provide
+msgid "This institution may not provide access."
+msgstr "Tjänsten har indikerat att detta val inte ger dig åtkomst"
+
+#: ds-result-sp-login
+msgid "Thiss.io SP Login"
+msgstr "Thiss.io SP Login"
+
+#: list-filter-too-many-results
+msgid "Too many results - keep typing to refine search"
+msgstr "fortsätt skriva för att begränsa sökresultatet"
+
+#: ds-no-results-try-accessing
+msgid "Try accessing through your library website"
+msgstr "Försök att komma åt genom ditt biblioteks hemsida"
+
+#: ds-no-results-try-entering
+msgid "Try entering an institution name, abbreviation or your institution email"
+msgstr "Skriv in namnet på ditt lärosäte, en förkortning eller din epostadress hos din organisation"
+
+#: ds-search-unable-to-verify
+msgid "Unable to verify returning site"
+msgstr "Vi lyckades inte verifiera sidan du återvänder till"
+
+#: ds-unable-to-verify-return
+msgid "Unable to verify returning website"
+msgstr "Vi lyckades inte verifiera sidan du återvänder till"
+
+#: ds-search-unable-to-verify-long
+msgid "We are unable to verify if you will be sent back to"
+msgstr "Vi lyckades inte verifiera att du kommer återvända till"
+
+#: ds-search-why-unable-to-verify
+msgid "Why are we unable to verify?"
+msgstr "Vad betyder det att vi inte lyckas verifiera sidan?"
+
+#: ds-result-chosen-to-login
+msgid "You have chosen to log in with "
+msgstr "Du har valt att logga in med "
+
+#: ds-search-unable-to-verify-longer
+msgid "You may not return to the site you started this access path on, in this case verify upon completion of your institution access if you arrived at your desired content."
+msgstr "Vi rekommenderar att du, efter du loggat in, kontrollerar att du kommit till den tjänst du hade för avsikt att få åtkomst till."
+
+#: ds-search-subheading
+msgid "Your university, organization or company"
+msgstr "Ditt lärosäte, organisation eller företag"

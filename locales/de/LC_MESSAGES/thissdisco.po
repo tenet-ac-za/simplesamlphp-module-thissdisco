@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: SimpleSAMLphp\n"
+"X-Domain: thissdisco\n"
+
+#: ds-footer-about-us
+msgid "About Us"
+msgstr "Über uns"
+
+#: cta-button-header
+msgid "Access through"
+msgstr "Zugriff über"
+
+#: cta-button-placeholder
+msgid "Access through your institution"
+msgstr "Zugriff über Ihre Institution"
+
+#: ds-button-access-through
+msgid "Access through your institution"
+msgstr "Zugriff über Ihre Institution"
+
+#: ds-header
+msgid "Access to"
+msgstr "Zugriff auf"
+
+#: ds-choose-add-another
+msgid "Add another institution"
+msgstr "Eine weitere Institution hinzufügen"
+
+#: ds-notice-and-consent-banner-more-info
+msgid "Additional Privacy Information"
+msgstr "Weitere Datenschutzinformationen"
+
+#: cta-link
+msgid "Add or change institution"
+msgstr "Institution hinzufügen oder ändern"
+
+#: ds-button-add-or-change
+msgid "Add or Change Institution"
+msgstr "Institution hinzufügen oder ändern"
+
+#: ds-result-back-to-start
+msgid "Back to start"
+msgstr ""
+
+#: filter-warning-choose-alternative
+msgid "Choose an alternative institute or try"
+msgstr ""
+
+#: ds-choose-heading
+msgid "Choose Your Institution"
+msgstr "Wählen Sie Ihre Institution aus"
+
+#: ds-no-results-contact-librarian
+msgid "Contact your librarian"
+msgstr ""
+
+#: ds-warning-continue
+msgid "Continue"
+msgstr ""
+
+#: ds-choose-done
+msgid "Done"
+msgstr "Fertig"
+
+#: ds-choose-edit
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: ds-edit-heading
+msgid "Edit institutions"
+msgstr "Institutionen bearbeiten"
+
+#: ds-search-example
+msgid "Examples: Science Institute, Lee@uni.edu, UCLA"
+msgstr "Beispiele: Technische Universität, jane.doe@example.edu, TU"
+
+#: ds-search-heading
+msgid "Find Your Institution"
+msgstr "Finden Sie Ihre Institution"
+
+#: filter-warning-back-to-choose
+msgid "Go back to Edit institutions"
+msgstr ""
+
+#: filter-warning-back-to-search
+msgid "Go back to Search"
+msgstr ""
+
+#: ds-edit-subheading
+msgid "If you no longer want an institution to be remembered on this device, remove it from the list below."
+msgstr "Wenn Sie nicht möchten, dass eine Institution auf diesem Gerät gespeichert wird, entfernen Sie sie aus der unten stehenden Liste."
+
+#: filter-warning-no-access
+msgid "indicated your chosen institution may not have access to this service."
+msgstr ""
+
+#: ds-too-many-result-keep-typing
+msgid "keep typing to refine your search"
+msgstr "Geben Sie weiter ein, um Ihre Suche zu verfeinern"
+
+#: ds-notice-and-consent-learn-more
+msgid "Learn More"
+msgstr "Mehr erfahren"
+
+#: ds-search-learn-more
+msgid "Learn more"
+msgstr "Mehr erfahren"
+
+#: ds-too-many-result-matches
+msgid "Matches"
+msgstr "Treffer"
+
+#: ds-notice-and-consent-banner-personal-info
+msgid "No login, email or personal information is stored."
+msgstr "Es werden keine Anmelde-, E-Mail- oder persönlichen Informationen gespeichert."
+
+#: ds-no-results-no-matching
+msgid "No matching institutions found"
+msgstr ""
+
+#: list-filter-no-results
+msgid "No results"
+msgstr ""
+
+#: filter-warning-other-options
+msgid "other access options"
+msgstr ""
+
+#: ds-choose-subheading
+msgid "Recent institutions"
+msgstr "Vorherige Institutionen"
+
+#: ds-notice-and-consent-remember
+msgid "Remember this choice"
+msgstr "Diese Auswahl merken"
+
+#: ds-search-placeholder
+msgid "Searching for institutions..."
+msgstr "Suche nach Institutionen..."
+
+#: ds-too-many-result-show
+msgid "Show me all matches anyway"
+msgstr "Zeigen Sie mir trotzdem alle Treffer an"
+
+#: ds-result-title
+msgid "The Identity Selector"
+msgstr ""
+
+#: ps-index-title
+msgid "The Identity Selector: Persistence Service"
+msgstr ""
+
+#: ds-notice-and-consent-banner-storage-info
+msgid "The institution you select will be saved in this browser's local storage and will be made available to this and other sites that use SeamlessAccess. You may clear your browser local storage at any time."
+msgstr "Die von Ihnen ausgewählte Institution wird im lokalen Speicher dieses Browsers gespeichert und steht dieser und anderen Websites, die SeamlessAccess verwenden, zur Verfügung. Sie können den lokalen Speicher Ihres Browsers jederzeit löschen."
+
+#: ds-search-may-not-provide
+msgid "This institution may not provide access."
+msgstr ""
+
+#: ds-result-sp-login
+msgid "Thiss.io SP Login"
+msgstr ""
+
+#: list-filter-too-many-results
+msgid "Too many results - keep typing to refine search"
+msgstr ""
+
+#: ds-no-results-try-accessing
+msgid "Try accessing through your library website"
+msgstr ""
+
+#: ds-no-results-try-entering
+msgid "Try entering an institution name, abbreviation or your institution email"
+msgstr ""
+
+#: ds-search-unable-to-verify
+msgid "Unable to verify returning site"
+msgstr ""
+
+#: ds-unable-to-verify-return
+msgid "Unable to verify returning website"
+msgstr ""
+
+#: ds-search-unable-to-verify-long
+msgid "We are unable to verify if you will be sent back to"
+msgstr ""
+
+#: ds-search-why-unable-to-verify
+msgid "Why are we unable to verify?"
+msgstr ""
+
+#: ds-result-chosen-to-login
+msgid "You have chosen to log in with "
+msgstr ""
+
+#: ds-search-unable-to-verify-longer
+msgid "You may not return to the site you started this access path on, in this case verify upon completion of your institution access if you arrived at your desired content."
+msgstr ""
+
+#: ds-search-subheading
+msgid "Your university, organization or company"
+msgstr "Ihre Universität, Organisation oder Firma"

@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: SimpleSAMLphp\n"
+"X-Domain: thissdisco\n"
+
+#: ds-footer-about-us
+msgid "About Us"
+msgstr "About Us"
+
+#: cta-button-header
+msgid "Access through"
+msgstr "Access through"
+
+#: cta-button-placeholder
+msgid "Access through your institution"
+msgstr "Access through your institution"
+
+#: ds-button-access-through
+msgid "Access through your institution"
+msgstr "Access through your institution"
+
+#: ds-header
+msgid "Access to"
+msgstr "Access to"
+
+#: ds-choose-add-another
+msgid "Add another institution"
+msgstr "Add another institution"
+
+#: ds-notice-and-consent-banner-more-info
+msgid "Additional Privacy Information"
+msgstr "Additional Privacy Information"
+
+#: cta-link
+msgid "Add or change institution"
+msgstr "Add or change institution"
+
+#: ds-button-add-or-change
+msgid "Add or Change Institution"
+msgstr "Add or Change Institution"
+
+#: ds-result-back-to-start
+msgid "Back to start"
+msgstr "Back to start"
+
+#: filter-warning-choose-alternative
+msgid "Choose an alternative institute or try"
+msgstr "Choose an alternative institute or try"
+
+#: ds-choose-heading
+msgid "Choose Your Institution"
+msgstr "Choose Your Institution"
+
+#: ds-no-results-contact-librarian
+msgid "Contact your librarian"
+msgstr "Contact your librarian"
+
+#: ds-warning-continue
+msgid "Continue"
+msgstr "Continue"
+
+#: ds-choose-done
+msgid "Done"
+msgstr "Done"
+
+#: ds-choose-edit
+msgid "Edit"
+msgstr "Edit"
+
+#: ds-edit-heading
+msgid "Edit institutions"
+msgstr "Edit institutions"
+
+#: ds-search-example
+msgid "Examples: Science Institute, Lee@uni.edu, UCLA"
+msgstr "Examples: Science Institute, Lee@uni.edu, UCLA"
+
+#: ds-search-heading
+msgid "Find Your Institution"
+msgstr "Find Your Institution"
+
+#: filter-warning-back-to-choose
+msgid "Go back to Edit institutions"
+msgstr "Go back to Edit institutions"
+
+#: filter-warning-back-to-search
+msgid "Go back to Search"
+msgstr "Go back to Search"
+
+#: ds-edit-subheading
+msgid "If you no longer want an institution to be remembered on this device, remove it from the list below."
+msgstr "If you no longer want an institution to be remembered on this device, remove it from the list below."
+
+#: filter-warning-no-access
+msgid "indicated your chosen institution may not have access to this service."
+msgstr "indicated your chosen institution may not have access to this service."
+
+#: ds-too-many-result-keep-typing
+msgid "keep typing to refine your search"
+msgstr "keep typing to refine your search"
+
+#: ds-notice-and-consent-learn-more
+msgid "Learn More"
+msgstr "Learn More"
+
+#: ds-search-learn-more
+msgid "Learn more"
+msgstr "Learn more"
+
+#: ds-too-many-result-matches
+msgid "Matches"
+msgstr "Matches"
+
+#: ds-notice-and-consent-banner-personal-info
+msgid "No login, email or personal information is stored."
+msgstr "No login, email or personal information is stored."
+
+#: ds-no-results-no-matching
+msgid "No matching institutions found"
+msgstr "No matching institutions found"
+
+#: list-filter-no-results
+msgid "No results"
+msgstr "No results"
+
+#: filter-warning-other-options
+msgid "other access options"
+msgstr "other access options"
+
+#: ds-choose-subheading
+msgid "Recent institutions"
+msgstr "Recent institutions"
+
+#: ds-notice-and-consent-remember
+msgid "Remember this choice"
+msgstr "Remember this choice"
+
+#: ds-search-placeholder
+msgid "Searching for institutions..."
+msgstr "Searching for institutions..."
+
+#: ds-too-many-result-show
+msgid "Show me all matches anyway"
+msgstr "Show me all matches anyway"
+
+#: ds-result-title
+msgid "The Identity Selector"
+msgstr "The Identity Selector"
+
+#: ps-index-title
+msgid "The Identity Selector: Persistence Service"
+msgstr "The Identity Selector: Persistence Service"
+
+#: ds-notice-and-consent-banner-storage-info
+msgid "The institution you select will be saved in this browser's local storage and will be made available to this and other sites that use SeamlessAccess. You may clear your browser local storage at any time."
+msgstr "The institution you select will be saved in this browser's local storage and will be made available to this and other sites that use SeamlessAccess. You may clear your browser local storage at any time."
+
+#: ds-search-may-not-provide
+msgid "This institution may not provide access."
+msgstr "This institution may not provide access."
+
+#: ds-result-sp-login
+msgid "Thiss.io SP Login"
+msgstr "Thiss.io SP Login"
+
+#: list-filter-too-many-results
+msgid "Too many results - keep typing to refine search"
+msgstr "Too many results - keep typing to refine search"
+
+#: ds-no-results-try-accessing
+msgid "Try accessing through your library website"
+msgstr "Try accessing through your library website"
+
+#: ds-no-results-try-entering
+msgid "Try entering an institution name, abbreviation or your institution email"
+msgstr "Try entering an institution name, abbreviation or your institution email"
+
+#: ds-search-unable-to-verify
+msgid "Unable to verify returning site"
+msgstr "Unable to verify returning site"
+
+#: ds-unable-to-verify-return
+msgid "Unable to verify returning website"
+msgstr "Unable to verify returning website"
+
+#: ds-search-unable-to-verify-long
+msgid "We are unable to verify if you will be sent back to"
+msgstr "We are unable to verify if you will be sent back to"
+
+#: ds-search-why-unable-to-verify
+msgid "Why are we unable to verify?"
+msgstr "Why are we unable to verify?"
+
+#: ds-result-chosen-to-login
+msgid "You have chosen to log in with "
+msgstr "You have chosen to log in with "
+
+#: ds-search-unable-to-verify-longer
+msgid "You may not return to the site you started this access path on, in this case verify upon completion of your institution access if you arrived at your desired content."
+msgstr "You may not return to the site you started this access path on, in this case verify upon completion of your institution access if you arrived at your desired content."
+
+#: ds-search-subheading
+msgid "Your university, organization or company"
+msgstr "Your university, organization or company"

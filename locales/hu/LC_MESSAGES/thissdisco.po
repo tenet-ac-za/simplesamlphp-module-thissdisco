@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: SimpleSAMLphp\n"
+"X-Domain: thissdisco\n"
+
+#: ds-footer-about-us
+msgid "About Us"
+msgstr "Rólunk"
+
+#: cta-button-header
+msgid "Access through"
+msgstr "Bejelentkezés ezzel:"
+
+#: cta-button-placeholder
+msgid "Access through your institution"
+msgstr "Belépés intézményi azonosítóval"
+
+#: ds-button-access-through
+msgid "Access through your institution"
+msgstr "Belépés intézményi azonosítóval"
+
+#: ds-header
+msgid "Access to"
+msgstr "Hozzáférés:"
+
+#: ds-choose-add-another
+msgid "Add another institution"
+msgstr "Új intézmény hozzáadása"
+
+#: ds-notice-and-consent-banner-more-info
+msgid "Additional Privacy Information"
+msgstr "További adatvédelmi információk"
+
+#: cta-link
+msgid "Add or change institution"
+msgstr "Intézmény hozzáadása vagy módosítása"
+
+#: ds-button-add-or-change
+msgid "Add or Change Institution"
+msgstr "Intézmény hozzáadása vagy módosítása"
+
+#: ds-result-back-to-start
+msgid "Back to start"
+msgstr "Vissza az elejére"
+
+#: filter-warning-choose-alternative
+msgid "Choose an alternative institute or try"
+msgstr "Válasszon másik intézményt vagy próbálkozzon"
+
+#: ds-choose-heading
+msgid "Choose Your Institution"
+msgstr "Intézmény kiválasztása"
+
+#: ds-no-results-contact-librarian
+msgid "Contact your librarian"
+msgstr "Vegye fel a kapcsolatot a könyvtárosával"
+
+#: ds-warning-continue
+msgid "Continue"
+msgstr ""
+
+#: ds-choose-done
+msgid "Done"
+msgstr "Kész"
+
+#: ds-choose-edit
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: ds-edit-heading
+msgid "Edit institutions"
+msgstr "Intézmények szerkesztése"
+
+#: ds-search-example
+msgid "Examples: Science Institute, Lee@uni.edu, UCLA"
+msgstr "Példák: Wigner Fizikai Kutatóközpont, gipszjakab@student.elte.hu, SZTAKI"
+
+#: ds-search-heading
+msgid "Find Your Institution"
+msgstr "Keresse meg az azonosító intézményét"
+
+#: filter-warning-back-to-choose
+msgid "Go back to Edit institutions"
+msgstr ""
+
+#: filter-warning-back-to-search
+msgid "Go back to Search"
+msgstr ""
+
+#: ds-edit-subheading
+msgid "If you no longer want an institution to be remembered on this device, remove it from the list below."
+msgstr "Ha már nem szeretné, hogy egy intézmény ezen az eszközön meg legyen jegyezve, törölje azt az alábbi listából."
+
+#: filter-warning-no-access
+msgid "indicated your chosen institution may not have access to this service."
+msgstr "jelzett, hogy az Ön által választott intézmény nem biztos, hogy hozzáférhet ehhez a szolgáltatáshoz."
+
+#: ds-too-many-result-keep-typing
+msgid "keep typing to refine your search"
+msgstr "folytassa a gépelést a keresés pontosításához"
+
+#: ds-notice-and-consent-learn-more
+msgid "Learn More"
+msgstr "Tudjon meg többet"
+
+#: ds-search-learn-more
+msgid "Learn more"
+msgstr "Tudjon meg többet"
+
+#: ds-too-many-result-matches
+msgid "Matches"
+msgstr "Egyezések"
+
+#: ds-notice-and-consent-banner-personal-info
+msgid "No login, email or personal information is stored."
+msgstr "Nem tárolunk bejelentkezési, e-mail vagy személyes adatokat."
+
+#: ds-no-results-no-matching
+msgid "No matching institutions found"
+msgstr "Nem találtunk egyező intézményeket"
+
+#: list-filter-no-results
+msgid "No results"
+msgstr "Nincs találat"
+
+#: filter-warning-other-options
+msgid "other access options"
+msgstr "más hozzáférési lehetőségekkel"
+
+#: ds-choose-subheading
+msgid "Recent institutions"
+msgstr "Legutóbbi intézmények"
+
+#: ds-notice-and-consent-remember
+msgid "Remember this choice"
+msgstr "Emlékezzen erre a választásra"
+
+#: ds-search-placeholder
+msgid "Searching for institutions..."
+msgstr "Intézmények keresése..."
+
+#: ds-too-many-result-show
+msgid "Show me all matches anyway"
+msgstr "Mutassa így is az összes egyezést"
+
+#: ds-result-title
+msgid "The Identity Selector"
+msgstr "The Identity Selector"
+
+#: ps-index-title
+msgid "The Identity Selector: Persistence Service"
+msgstr "The Identity Selector: Persistence Service"
+
+#: ds-notice-and-consent-banner-storage-info
+msgid "The institution you select will be saved in this browser's local storage and will be made available to this and other sites that use SeamlessAccess. You may clear your browser local storage at any time."
+msgstr "Az Ön által kiválasztott intézményt a böngésző helyi tárolójába mentjük, és elérhetővé tesszük itt és más, a SeamlessAccess-t használó webhelyek számára. A böngésző helyi tárolóját bármikor törölheti."
+
+#: ds-search-may-not-provide
+msgid "This institution may not provide access."
+msgstr "Ez az intézmény nem biztos, hogy biztosít hozzáférést."
+
+#: ds-result-sp-login
+msgid "Thiss.io SP Login"
+msgstr "Thiss.io SP bejelentkezés"
+
+#: list-filter-too-many-results
+msgid "Too many results - keep typing to refine search"
+msgstr "Túl sok találat - folytassa a gépelést a keresés pontosításához"
+
+#: ds-no-results-try-accessing
+msgid "Try accessing through your library website"
+msgstr "Próbálja meg a könyvtári weboldalán keresztül elérni"
+
+#: ds-no-results-try-entering
+msgid "Try entering an institution name, abbreviation or your institution email"
+msgstr "Próbálja meg megadni az intézmény nevét, rövidítését vagy az intézményi e-mail címét"
+
+#: ds-search-unable-to-verify
+msgid "Unable to verify returning site"
+msgstr "Visszatérő oldal nem ellenőrizhető"
+
+#: ds-unable-to-verify-return
+msgid "Unable to verify returning website"
+msgstr "Visszatérő weboldal nem ellenőrizhető"
+
+#: ds-search-unable-to-verify-long
+msgid "We are unable to verify if you will be sent back to"
+msgstr "Nem tudjuk ellenőrizni, hogy Ön vissza lesz-e irányítva"
+
+#: ds-search-why-unable-to-verify
+msgid "Why are we unable to verify?"
+msgstr "Miért nem tudjuk ellenőrizni?"
+
+#: ds-result-chosen-to-login
+msgid "You have chosen to log in with "
+msgstr "Ön az alábbi bejelentkezési módot választotta: "
+
+#: ds-search-unable-to-verify-longer
+msgid "You may not return to the site you started this access path on, in this case verify upon completion of your institution access if you arrived at your desired content."
+msgstr "Nem biztos, hogy visszatérhet arra az oldalra, amelyen ezt a hozzáférési útvonalat elindította, ebben az esetben az intézményi azonosítás befejeztével ellenőrizze, hogy eljutott-e a kívánt tartalomhoz."
+
+#: ds-search-subheading
+msgid "Your university, organization or company"
+msgstr "Az Ön egyetemét, szervezetét vagy vállalatát"
