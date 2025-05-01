@@ -1,5 +1,5 @@
 {
-    "name": "tenet-ac-za/simplesamlphp-module-thissdisco",
+    "name": "safire-ac-za/simplesamlphp-module-thissdisco",
     "description": "SimpleSAMLphp module for thiss.io/SeamlessAccess",
     "type": "simplesamlphp-module",
     "keywords": ["simplesamlphp", "thissio", "seamlessaccess", "saml2", "discovery"],
