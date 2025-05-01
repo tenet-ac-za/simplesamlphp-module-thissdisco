@@ -12,20 +12,33 @@ $config = [
     'basetemplate' => 'thissio',
 
     /*
-     * The URL to the metadata query service. Defaults to our own MDQ if unset or null
+     * Location of a remote metadata query (MDQ) service
+     * By default we use our own SimpleSAMLphp metadata via an internal
+     * endpoint. You probably only want to changes this in exceptional
+     * circumstances (and then you may be better of using SeamlessAccess)
      */
-    'mdq_url' => null,
+    /*
+    'mdq' => [
+        'lookup_base' => 'https://md.thiss.io/entities/',
+        // the PyFF-compatible search extension. leave unset to use lookup_base
+        // 'search' => 'https://md.thiss.io/entities',
+    ],
+    */
 
     /*
-     * The URL to the metadata query service's search extension. Defaults to mdq_url if unset
+     * Configuration for the persistence service
      */
-    'search_url' => null,
+    'persistence' => [
+        'url' => 'https://use.thiss.io/ps/',
+        'context' => 'thiss.io',
 
-    /*
-     * The URL to the persistence service
-     */
-    'persistence_url' => 'https://use.thiss.io/ps/',
-    //'persistence_context' => 'thiss.io',
+        /*
+         * Alter Content-Security-Policy to allow external images?
+         * Can be false to disable, true to add data: http:,
+         * or a string defining the additional CSP to add to image-src
+         */
+        'csp_images' => true,
+    ],
 
     /*
      * Optional URL to a page with further information

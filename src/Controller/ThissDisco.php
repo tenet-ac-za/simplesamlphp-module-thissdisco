@@ -33,6 +33,8 @@ class ThissDisco
     }
 
     /**
+     * Render the discovery service.
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
@@ -54,32 +56,59 @@ class ThissDisco
             // An error here should be caused by metadata
             throw new Error\Error('METADATA', $exception);
         }
+
         /*
-         * attempt to fix up the content security policy header to allow the persistence service
+         * attempt to fix up the content security policy header to allow the MDQ & persistence services
          * must happen here raher than in the StreamedResponse or else they get merged not replaced
          */
         $headers = $this->config->getOptionalArray('headers.security', Configuration::DEFAULT_SECURITY_HEADERS);
-        $persistence_url = $this->moduleConfig->getOptionalString('persistence_url', null);
-        if (isset($headers['Content-Security-Policy']) && $persistence_url !== null) {
+        $mdq = $this->moduleConfig->getOptionalArray('mdq', []);
+        $persistence = $this->moduleConfig->getOptionalArray('persistence', []);
+        if (
+            isset($headers['Content-Security-Policy'])
+            && ( !empty($persistence) || !empty($mdq) )
+        ) {
             $csp = $headers['Content-Security-Policy'];
-            if (str_contains($csp, 'child-src')) {
-                $csp = preg_replace(
-                    '/(^|;\s+)child-src/',
-                    "\\1child-src 'self' " . $persistence_url,
-                    $csp,
-                );
-            } else {
-                $csp .= "; child-src 'self' " . $persistence_url;
+            /* the mdq service needs to connect */
+            if (isset($mdq['lookup_base'])) {
+                $connect_src = $mdq['lookup_base'];
+                if (isset($mdq['search']) && $mdq['search'] !== $mdq['lookup_base']) {
+                    $connect_src .= ' ' . $mdq['search'];
+                }
+                if (str_contains($csp, 'connect-src')) {
+                    $csp = preg_replace(
+                        '/(^|;\s+)connect-src/',
+                        "\\1connect-src 'self' " . $connect_src,
+                        $csp,
+                    );
+                } else {
+                    $csp .= "; connect-src 'self' " . $connect_src;
+                }
+            }
+            /* the persistance service is an iframe child of the disco service */
+            if (isset($persistence['url'])) {
+                if (str_contains($csp, 'child-src')) {
+                    $csp = preg_replace(
+                        '/(^|;\s+)child-src/',
+                        "\\1child-src 'self' " . $persistence['url'],
+                        $csp,
+                    );
+                } else {
+                    $csp .= "; child-src 'self' " . $persistence['url'];
+                }
             }
             /* if we allow images from the persistence service we need to add https: and data: */
-            if (str_contains($csp, 'img-src')) {
-                $csp = preg_replace(
-                    '/(^|;\s+)img-src/',
-                    "\\1img-src 'self' https: data:",
-                    $csp,
-                );
-            } else {
-                $csp .= "; img-src 'self' https: data:";
+            if (isset($persistence['csp_images']) && $persistence['csp_images'] !== false) {
+                $imgsrc = $persistence['csp_images'] === true ? 'https: data:' : $persistence['csp_images'];
+                if (str_contains($csp, 'img-src')) {
+                    $csp = preg_replace(
+                        '/(^|;\s+)img-src/',
+                        "\\1img-src 'self' " . $imgsrc,
+                        $csp,
+                    );
+                } else {
+                    $csp .= "; img-src 'self' " . $imgsrc;
+                }
             }
             $response->headers->set('Content-Security-Policy', $csp);
         }
@@ -87,6 +116,10 @@ class ThissDisco
     }
 
     /**
+     * Retrieve paramaters from the session (originally from the request) and
+     * return them as a javascript file for inclusion. That avoids having to
+     * render javascript in the template and gets around CSP issues.
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.
      * @return \SimpleSAML\XHTML\Template
      */
@@ -95,13 +128,14 @@ class ThissDisco
         $session = Session::getSessionFromRequest();
         $requestParams = $session->getData(ThissIdPDisco::class, 'requestParms');
 
-        $mdqUrl = $this->moduleConfig->getOptionalString('mdq_url', Module::getModuleURL('thissdisco/entities/'));
-        $search_url = $this->moduleConfig->getOptionalString(
-            'search_url',
-            $this->moduleConfig->getOptionalString('mdq_url', Module::getModuleURL('thissdisco/entities')),
-        );
-        $persistence_url = $this->moduleConfig->getOptionalString('persistence_url', Module::getModuleURL('thissdisco/persistence'));
-        $persistence_context = $this->moduleConfig->getOptionalString('persistence_context', self::class);
+        $mdq = $this->moduleConfig->getOptionalArray('mdq', []);
+        $mdq_url = $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities/');
+        $search_url = $mdq['search'] ?? $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities');
+
+        $persistence = $this->moduleConfig->getOptionalArray('persistence', []);
+        $persistence_url = $persistence['url'] ?? Module::getModuleURL('thissdisco/persistence');
+        $persistence_context = $persistence['context'] ?? self::class;
+
         $learn_more_url = $this->moduleConfig->getOptionalString('learn_more_url', null);
 
         $t = new Template($this->config, 'thissdisco:discoconfjs.twig');
@@ -109,7 +143,7 @@ class ThissDisco
         $t->headers->set('Vary', 'Accept-Encoding, Cookie');
 
         $t->data['spEntityId'] = $requestParams['spEntityId'];
-        $t->data['mdq_url'] = $mdqUrl;
+        $t->data['mdq_url'] = $mdq_url;
         $t->data['search_url'] = $search_url;
         $t->data['persistence_url'] = $persistence_url;
         $t->data['persistence_context'] = $persistence_context;

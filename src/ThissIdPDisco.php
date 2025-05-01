@@ -4,17 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\thissdisco;
 
-use Exception;
-use GuzzleHttp\Psr7\Header;
-use PHPUnit\Event\TestRunner\Configured;
-use PSpell\Config;
-use SimpleSAML\Assert\Assert;
-use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
-use SimpleSAML\Logger;
-use SimpleSAML\Module;
-use SimpleSAML\Session;
-use SimpleSAML\Utils;
 use SimpleSAML\XHTML\IdPDisco;
 use SimpleSAML\XHTML\Template;
 
