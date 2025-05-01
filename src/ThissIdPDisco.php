@@ -8,6 +8,10 @@ use SimpleSAML\Configuration;
 use SimpleSAML\XHTML\IdPDisco;
 use SimpleSAML\XHTML\Template;
 
+/**
+ * @property \SimpleSAML\Configuration $config
+ * @property \SimpleSAML\Session $session
+ */
 class ThissIdPDisco extends IdPDisco
 {
     /** @var \SimpleSAML\Configuration The configuration for the module */
@@ -27,7 +31,6 @@ class ThissIdPDisco extends IdPDisco
     {
         $this->start();
 
-        /** @var \SimpleSAML\Session $this->session */
         $this->session->setData(
             self::class,
             'requestParms',
