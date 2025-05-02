@@ -44,4 +44,14 @@ $config = [
      * Optional URL to a page with further information
      */
     'learn_more_url' => 'https://example.org/learn-more',
+
+    /*
+     * The name of an entity selection profile ("trust profile") to use.
+     * Setting this overrides any profile set on the disco URL. Note that
+     * the profile itself needs to be defined in the SP metadata.
+     * See https://refeds.org/entity-selection-profile and
+     * https://seamlessaccess.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1397686273/Filtering+search+results+-+indicating+which+IdP+s+are+supported
+     * for info on how this works.
+     */
+    // 'trustProfile' => 'sirtfi',
 ];

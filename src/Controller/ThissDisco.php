@@ -137,6 +137,7 @@ class ThissDisco
         $persistence_context = $persistence['context'] ?? self::class;
 
         $learn_more_url = $this->moduleConfig->getOptionalString('learn_more_url', null);
+        $trustProfile = $this->moduleConfig->getOptionalString('trustProfile', null);
 
         $t = new Template($this->config, 'thissdisco:discoconfjs.twig');
         $t->headers->set('Content-Type', 'text/javascript');
@@ -148,7 +149,7 @@ class ThissDisco
         $t->data['persistence_url'] = $persistence_url;
         $t->data['persistence_context'] = $persistence_context;
         $t->data['learn_more_url'] = $learn_more_url;
-        $t->data['trustProfile'] = $request->query->get('trustProfile') ?? null;
+        $t->data['trustProfile'] = $trustProfile ?? $request->query->get('trustProfile') ?? null;
         return $t;
     }
 }
