@@ -9,7 +9,7 @@ $config = [
      * The base template to use. Can be one of "simplesamlphp" (to inherit from base.twig)
      * or "thissio" (to use a template derived from use.thiss.io / SeamlessAccess)
      */
-    'basetemplate' => 'thissio',
+    'basetemplate' => 'simplesamlphp',
 
     /*
      * Location of a remote metadata query (MDQ) service
