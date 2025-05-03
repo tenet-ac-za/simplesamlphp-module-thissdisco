@@ -31,6 +31,9 @@ class MDQ
     /** @var \SimpleSAML\Metadata\MetaDataStorageHandler */
     protected MetadataStorageHandler $mdHandler;
 
+    /** @var \SimpleSAML\Configuration The configuration for the module */
+    private Configuration $moduleConfig;
+
     /**
      * Controller constructor.
      *
@@ -44,8 +47,9 @@ class MDQ
         if (!isset($this->config)) {
             $this->config = Configuration::getInstance();
         }
-        $this->mdHandler = MetaDataStorageHandler::getMetadataHandler();
         $this->language = new Language($this->config);
+        $this->mdHandler = MetaDataStorageHandler::getMetadataHandler();
+        $this->moduleConfig = Configuration::getConfig('module_thissdisco.php');
     }
 
     public function __invoke(Request $request, ?string $identifier): Response
@@ -71,6 +75,53 @@ class MDQ
             return current($data);
         }
         return null;
+    }
+
+    /**
+     * Process the trust information / entity selection profile for an entity.
+     * Based on the schema at https://github.com/TheIdentitySelector/thiss-mdq/blob/1.5.8/trustinfo.schema.json
+     *
+     * @param array $entity The entity to get the trust information for.
+     * @return array The trust information
+     */
+    protected function getSelectionProfiles(array $entity): array
+    {
+        if (
+            array_key_exists('EntityAttributes', $entity)
+            && array_key_exists('https://refeds.org/entity-selection-profile', $entity['EntityAttributes'])
+        ) {
+            try {
+                $selectionProfiles = json_decode(
+                    base64_decode(
+                        $entity['EntityAttributes']['https://refeds.org/entity-selection-profile'][0],
+                    ),
+                    true,
+                );
+            } catch (Exception $e) {
+                Logger::warning(
+                    sprintf(
+                        'MDQ: Failed to decode selection profile for %s: %s',
+                        $entity['entityid'],
+                        $e->getMessage(),
+                    ),
+                );
+                $selectionProfiles = [];
+            }
+        }
+
+        $globalSelectionProfiles = $this->moduleConfig->getOptionalArray('entity_selection_profiles', []);
+        if (array_key_exists('profiles', $selectionProfiles) || !empty($globalSelectionProfiles)) {
+            $selectionProfiles['profiles'] = array_merge(
+                $globalSelectionProfiles,
+                $selectionProfiles['profiles'],
+            );
+
+        }
+        if (! empty($selectionProfiles)) {
+            $selectionProfiles['entity_id'] = $entity['entityid'];
+            $selectionProfiles['entityId'] = $entity['entityid'];
+        }
+        return $selectionProfiles;
     }
 
     /**
@@ -200,6 +251,13 @@ class MDQ
             $data['id'] = $entity['id'];
         } else {
             $data['id'] = '{SHA1}' . hash('sha1', $entity['entityid']);
+        }
+
+        if ($data['type'] === 'sp') {
+            $selectionProfiles = $this->getSelectionProfiles($entity);
+            if (! empty($selectionProfiles)) {
+                $data['tinfo'] = $selectionProfiles;
+            }
         }
 
         return $data;

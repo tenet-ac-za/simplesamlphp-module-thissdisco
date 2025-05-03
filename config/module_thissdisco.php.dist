@@ -49,9 +49,30 @@ $config = [
      * The name of an entity selection profile ("trust profile") to use.
      * Setting this overrides any profile set on the disco URL. Note that
      * the profile itself needs to be defined in the SP metadata.
+     */
+    //'trustProfile' => 'sirtfi',
+
+    /*
+     * Entity selection profile ("trust profile") descriptions to include
+     * in all SP metadata. This should be a PHP representation of the JSON
+     * that would normally be encoded in metadata (use json_encode() if you
+     * want to use the JSON form). Matching profiles declared in SP metadata
+     * take precidence over globally specified ones.
+     *
      * See https://refeds.org/entity-selection-profile and
      * https://seamlessaccess.atlassian.net/wiki/spaces/DOCUMENTAT/pages/1397686273/Filtering+search+results+-+indicating+which+IdP+s+are+supported
-     * for info on how this works.
+     * for info on defining trust profiles.
      */
-    // 'trustProfile' => 'sirtfi',
+    'entity_selection_profiles' => [
+        'sirtfi' => [
+            'entities' => [
+                [
+                    'include' => true,
+                    'match' => 'assurance_certification',
+                    'select' => 'https://refeds.org/sirtfi',
+                ],
+            ],
+            'strict' => true,
+        ],
+    ],
 ];

@@ -42,6 +42,7 @@ class ThissDisco
     {
         try {
             $discoHandler = new ThissIdPDisco(
+                $request,
                 ['saml20-idp-remote'],
                 'thissiodisco',
             );
@@ -149,7 +150,10 @@ class ThissDisco
         $t->data['persistence_url'] = $persistence_url;
         $t->data['persistence_context'] = $persistence_context;
         $t->data['learn_more_url'] = $learn_more_url;
-        $t->data['trustProfile'] = $trustProfile ?? $request->query->get('trustProfile') ?? null;
+        $t->data['trustProfile'] = $trustProfile
+            ?? $requestParams['trustProfile']
+            ?? $request->query->get('trustProfile')
+            ?? null;
         return $t;
     }
 }
