@@ -115,7 +115,6 @@ class MDQ
                 $globalSelectionProfiles,
                 $selectionProfiles['profiles'],
             );
-
         }
         if (! empty($selectionProfiles)) {
             $selectionProfiles['entity_id'] = $entity['entityid'];
