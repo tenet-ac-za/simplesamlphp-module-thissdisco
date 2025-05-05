@@ -1,11 +1,11 @@
 ---
-thissiodisco-main:
+thissdisco-main:
     path: /disco
     defaults:
         _controller: SimpleSAML\Module\thissdisco\Controller\ThissDisco
     methods: [GET]
 
-thissiodisco-discoconfjs:
+thissdisco-discoconfjs:
     path: /discoconf.js
     defaults:
         _controller: SimpleSAML\Module\thissdisco\Controller\ThissDisco::discoconfjs
@@ -22,12 +22,12 @@ remove_trailing_slash:
     path: /entities/
     defaults:
         _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
-        route: thissiodisco-mdq
+        route: thissdisco-mdq
         permanent: false
         keepQueryParams: true
     methods: [GET]
 
-thissiodisco-mdq:
+thissdisco-mdq:
     path: /entities/{identifier}
     defaults:
         _controller: SimpleSAML\Module\thissdisco\Controller\MDQ
@@ -35,3 +35,8 @@ thissiodisco-mdq:
     requirements:
         identifier: .*
     methods: [GET]
+
+thissdisco-persistance:
+    path: /persistence
+    defaults:
+        _controller: SimpleSAML\Module\thissdisco\Controller\Persistence
