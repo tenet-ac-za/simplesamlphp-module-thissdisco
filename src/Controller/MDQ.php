@@ -15,8 +15,9 @@ use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
 
 /**
  * Implement a discojson style metadata query service that implements the
- * PyFF search extentions. Output is designed to be compatible with
- * https://github.com/IdentityPython/pyFF/blob/2.1.3/src/pyff/samlmd.py#L885
+ * PyFF search extentions and the thiss-mdq trustinfo filtering.
+ * Output is designed to be compatible with
+ * https://github.com/TheIdentitySelector/thiss-mdq/tree/1.5.8
  *
  * @package SimpleSAMLphp
  */
@@ -86,6 +87,7 @@ class MDQ
      */
     protected function getSelectionProfiles(array $entity): array
     {
+        $selectionProfiles = [];
         if (
             array_key_exists('EntityAttributes', $entity)
             && array_key_exists('https://refeds.org/entity-selection-profile', $entity['EntityAttributes'])
@@ -307,6 +309,129 @@ class MDQ
     }
 
     /**
+     * Extension to getEntity() with trustinfo/entity selection handling
+     *
+     * @param array $md The metadata to search in.
+     * @param string $identifier The entity hash to look for.
+     * @param string $entityID The entity to source the trust profile.
+     * @param string $trustProfileName The name of the trust profile
+     * @return array The entity data.
+     */
+    protected function getEntityWithProfile(
+        array $md,
+        string $identifier,
+        string $entityID,
+        string $trustProfileName,
+    ): array {
+        $trustEntity = $this->getEntity($md, $entityID);
+        $entity = $this->getEntity($md, $identifier);
+        if (empty($trustEntity) || !isset($trustEntity['tinfo']['profiles'][$trustProfileName])) {
+            return $entity;
+        }
+        if (!empty($entity) && $entity['type'] === 'sp') {
+            return $entity;
+        }
+
+        $extraMetadata = $trustEntity['tinfo']['extra_md'] ?? [];
+        $trustProfile = $trustEntity['tinfo']['profiles'][$trustProfileName];
+        $strictProfile = boolval($trustProfile['strict']);
+
+        $fromExtraMd = false;
+        // first we check whether the entity comes from external metadata
+        if (isset($extraMetadata[$identifier])) {
+            $entity = $extraMetadata[$identifier];
+            if (!isset($entity['entity_id'])) {
+                $entity['entity_id'] = $identifier;
+            }
+            $fromExtraMd = true;
+        }
+
+        // if the entity is not in the internal or external metadata, return not found.
+        if (empty($entity)) {
+            return [];
+        }
+        $seen = null;
+        if (array_key_exists('entity', $trustProfile)) {
+            /*
+             * I'm sure there's an easier/more efficient way to do this, but use the same logic as
+             * https://github.com/TheIdentitySelector/thiss-mdq/blob/1.5.8/metadata.js#L269-L283
+             */
+            foreach ($trustProfile['entity'] as $e) {
+                if ($seen === true) {
+                    break;
+                }
+                $include = isset($e['include']) ? boolval($e['include']) : true;
+                if ($include && $e['entity_id'] === $entity['entity_id']) {
+                    $seen = true;
+                } elseif ($include && $e['entity_id'] !== $entity['entity_id']) {
+                    $seen = false;
+                } elseif (!$include) {
+                    if ($e['entity_id'] === $entity['entity_id']) {
+                        $seen = false;
+                    } else {
+                        $seen = true;
+                    }
+                }
+            }
+        }
+
+        // if the entity comes from external metadata,
+        // return it only if it was selectd by the entity clauses in the profile,
+        // otherwise return not found
+        if ($fromExtraMd) {
+            if ($seen !== false) {
+                $entity['hint'] = true;
+                return $entity;
+            } else {
+                return [];
+            }
+        }
+
+        // check whether the entity is selected by some entities clause in the profile
+        $passed = 0;
+        $to_pass = 0;
+        if ($seen !== false && array_key_exists('entities', $trustProfile)) {
+            $to_pass = count($trustProfile['entities']);
+            foreach ($trustProfile['entities'] as $e) {
+                if (!array_key_exists('match', $e) || !array_key_exists($e['match'], $entity)) {
+                    continue;
+                }
+                $include = isset($e['include']) ? boolval($e['include']) : true;
+                if (is_array($entity[$e['match']])) {
+                    if ($include && in_array($e['select'], $entity[$e['match']])) {
+                        $passed++;
+                    } elseif (!$include && !in_array($e['select'], $entity[$e['match']])) {
+                        $passed++;
+                    }
+                } else {
+                    if ($include && $entity[$e['match']] === $e['select']) {
+                        $passed++;
+                    } elseif (!$include && $$entity[$e['match']] !== $e['select']) {
+                        $passed++;
+                    }
+                }
+            }
+        }
+        $selected = $seen !== false && $passed === $to_pass;
+        if ($strictProfile) {
+            // if the profile is strict, return the entity if it was selected by the profile,
+            // and not found otherwise
+            if ($selected) {
+                return $entity;
+            } else {
+                return [];
+            }
+        } else {
+            // if the profile is not strict, set the hint if the entity was not selected by the profile,
+            // and return the entity.
+            if ($selected) {
+                $entity['hint'] = true;
+            }
+            return $entity;
+        }
+    }
+
+    /**
      * Search for entities in the metadata
      *
      * @param array $md The metadata to search in.
@@ -364,6 +489,129 @@ class MDQ
     }
 
     /**
+     * Extension to searchEntities() with trustinfo/entity selection handling
+     *
+     * @param array $md The metadata to search in.
+     * @param string $query The query to search for.
+     * @param string $entity_filter The entity filter to apply.
+     * @param string $entityID The entity to source the trust profile.
+     * @param string $trustProfileName The name of the trust profile
+     * @return array The entity data.
+     */
+    protected function searchEntitiesWithProfile(
+        array $md,
+        ?string $query,
+        ?string $entity_filter,
+        ?string $entityID,
+        string $trustProfileName,
+    ): array {
+        $trustEntity = $this->getEntity($md, $entityID);
+        $data = $this->searchEntities($md, $query, $entity_filter);
+        if (empty($trustEntity) || !isset($trustEntity['tinfo']['profiles'][$trustProfileName])) {
+            return $data;
+        }
+
+        $extraMetadata = $trustEntity['tinfo']['extra_md'] ?? [];
+        $trustProfile = $trustEntity['tinfo']['profiles'][$trustProfileName];
+        $strictProfile = boolval($trustProfile['strict']);
+        $returnEntities = [];
+        $skipEntities = [];
+
+        if (array_key_exists('entity', $trustProfile)) {
+            foreach ($trustProfile['entity'] as $e) {
+                if (array_key_exists($e['entity_id'], $extraMetadata)) {
+                    $entity = $extraMetadata[$e['entity_id']];
+                    $entity['id'] = '{SHA1}' . hash('sha1', $e['entity_id']);
+                    $entity['entity_id'] = $e['entity_id'];
+                    $found = null;
+                    if (!empty($query)) {
+                        // we still have to filter the entity from extra_md
+                        $found = false;
+                        foreach (
+                            [
+                                $entity['title'] ?? '',
+                                implode(',', $entity['title_langs'] ?? []),
+                                $entity['tags'] ?? '',
+                                $entity['keywords'] ?? '',
+                                $entity['scope'] ?? '',
+                            ] as $searchable
+                        ) {
+                            if (str_contains(strtolower($searchable), $query)) {
+                                $found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ($found !== false) {
+                        $data[] = $entity;
+                        $returnEntities[] = $e['entity_id'];
+                    }
+                } else {
+                    $include = isset($e['include']) ? boolval($e['include']) : true;
+                    if ($include) {
+                        $returnEntities[] = $e['entity_id'];
+                    } else {
+                        $skipEntities[] = $e['entity_id'];
+                    }
+                }
+            }
+        }
+
+        if (array_key_exists('entities', $trustProfile)) {
+            foreach ($data as $entity) {
+                if (in_array($entity['entity_id'], $skipEntities)) {
+                    continue;
+                }
+                $passed = 0;
+                $to_pass = count($trustProfile['entities']);
+                foreach ($trustProfile['entities'] as $e) {
+                    if (!array_key_exists('match', $e) || !array_key_exists($e['match'], $entity)) {
+                        continue;
+                    }
+                    $include = isset($e['include']) ? boolval($e['include']) : true;
+                    if (is_array($entity[$e['match']])) {
+                        if ($include && in_array($e['select'], $entity[$e['match']])) {
+                            $passed++;
+                        } elseif (!$include && !in_array($e['select'], $entity[$e['match']])) {
+                            $passed++;
+                        }
+                    } else {
+                        if ($include && $entity[$e['match']] === $e['select']) {
+                            $passed++;
+                        } elseif (!$include && $$entity[$e['match']] !== $e['select']) {
+                            $passed++;
+                        }
+                    }
+                }
+                if ($passed === $to_pass) {
+                    $returnEntities[] = $entity['entity_id'];
+                }
+            }
+        }
+
+        if ($strictProfile) {
+            return array_values(
+                array_filter(
+                    $data,
+                    fn($e) => in_array($e['entity_id'], $returnEntities),
+                ),
+            );
+        } else {
+            return array_map(
+                function ($e) use ($returnEntities) {
+                    if (in_array($e['entity_id'], $returnEntities)) {
+                        $e['hint'] = true;
+                    }
+                    return $e;
+                },
+                $data,
+            );
+        }
+
+        return $data;
+    }
+
+    /**
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.
      * @param string|null $identifier The entity hash to look for.
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -398,13 +646,19 @@ class MDQ
         } catch (Exception $exception) {
             throw new Error\Error(Error\ErrorCodes::METADATA, $exception);
         }
+        $entityID = $request->query->get('entityid', $request->query->get('entityID', null));
+        $trustProfileName = $request->query->get('trustprofile', $request->query->get('trustProfile', null));
 
         if ($identifier !== null) {
             /**
              * we have an identifier, so we want a specific entity
              */
             $identifier = preg_replace('/\.json$/', '', $identifier); /* remove .json suffix */
-            $data = $this->getEntity($md, $identifier);
+            if ($entityID === null || $trustProfileName === null) {
+                $data = $this->getEntity($md, $identifier);
+            } else {
+                $data = $this->getEntityWithProfile($md, $identifier, $entityID, $trustProfileName);
+            }
             Logger::debug(
                 sprintf(
                     'MDQ: lookup for entity with identifier %s returned %s',
@@ -427,7 +681,11 @@ class MDQ
                 strtolower($request->query->get('entity_filter', 'idp')),
             );
 
-            $data = $this->searchEntities($md, $query, $entity_filter);
+            if ($entityID === null || $trustProfileName === null) {
+                $data = $this->searchEntities($md, $query, $entity_filter);
+            } else {
+                $data = $this->searchEntitiesWithProfile($md, $query, $entity_filter, $entityID, $trustProfileName);
+            }
             Logger::debug(
                 sprintf(
                     'MDQ: searching for %s entities matching "%s" returned %s results',
@@ -442,6 +700,9 @@ class MDQ
         $response->setData($data);
         if (empty($data)) {
             $response->setStatusCode(Response::HTTP_NOT_FOUND);
+        }
+        if ($request->query->has('debug')) {
+            $response->setEncodingOptions(JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_PRETTY_PRINT);
         }
         return $response;
     }
