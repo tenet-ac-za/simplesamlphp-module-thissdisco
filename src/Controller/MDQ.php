@@ -184,6 +184,14 @@ class MDQ
         } else {
             $data['md_source'] = [$entity['metadata-set']];
         }
+        if (isset($entity['tags'])) {
+            // make discopower-style tags available as sources
+            foreach ($entity['tags'] as $tag) {
+                array_push($data['md_source'], 'ssp-tag-' . $tag);
+            }
+            // and also as a schema extension
+            $data['ssp_tags'] = $entity['tags'];
+        }
 
         if (isset($entity['DiscoveryResponse'])) {
             $data['discovery_response'] = $entity['DiscoveryResponse'];
