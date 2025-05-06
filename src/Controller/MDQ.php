@@ -706,9 +706,11 @@ class MDQ
 
         $response = new JsonResponse();
         $response->setData($data);
+        /* md.seamlessaccess.org returns 200 for an empty set
         if (empty($data)) {
             $response->setStatusCode(Response::HTTP_NOT_FOUND);
         }
+        */
         if ($request->query->has('debug')) {
             $response->setEncodingOptions(JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_PRETTY_PRINT);
         }
