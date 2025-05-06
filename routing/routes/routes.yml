@@ -5,10 +5,10 @@ thissdisco-main:
         _controller: SimpleSAML\Module\thissdisco\Controller\ThissDisco
     methods: [GET]
 
-thissdisco-discoconfjs:
-    path: /discoconf.js
+thissdisco-thissdiscojs:
+    path: /thissdisco.js
     defaults:
-        _controller: SimpleSAML\Module\thissdisco\Controller\ThissDisco::discoconfjs
+        _controller: SimpleSAML\Module\thissdisco\Controller\ThissDisco::thissdiscojs
     methods: [GET]
 
 # As somewhat of a hack, this route is called "remove_trailing_slash" to

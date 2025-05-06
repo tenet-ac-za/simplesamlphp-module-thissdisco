@@ -1,4 +1,5 @@
-
+{# templated here to allow for translations and local config #}
+{% autoescape 'js' %}
 /**
  * This Javascript is required to render the thiss-js web application.
  * It is derived from the thiss-js discovery service at
@@ -6,6 +7,17 @@
  */
 
 $(document).ready(function() {
+    /**
+     * Local configuration for thissio-js discovery widget
+     */
+    let entityID = '{{ spEntityId }}';
+    let mdq_url = '{{ mdq_url}}';
+    let search_url = '{{ search_url }}';
+    let persistence_url = '{{ persistence_url}}';
+    let persistence_context = '{{ persistence_context }}';
+    let trustProfile = {% if trustProfile %}'{{ trustProfile }}'{% else %}null{% endif %};
+    let ssp_language = '{{ currentLanguage }}';
+
     let timer = null;
 
     $('#learn-more-trigger, #learn-more-close').on('click', function() {
@@ -121,7 +133,11 @@ $(document).ready(function() {
                 if (!strict && !hint) {
                     html += '<div class="row list-item-legend">';
                     html += '<div class="col px-0 mt-3 institution-warning">';
-                    html += '<p class="px-2 py-2 mt-0 mb-0"><i class="fa fa-exclamation-triangle mr-1"></i> <span data-i18n="ds-search-may-not-provide">This institution may not provide access.</span> <!-- a href="https://seamlessaccess.org/" target="_blank" data-i18n="ds-search-learn-more">Learn more</a --></p>';
+                    html += '<p class="px-2 py-2 mt-0 mb-0"><i class="fa fa-exclamation-triangle mr-1"></i> <span data-i18n="ds-search-may-not-provide">';
+                    html += '{{ 'This institution may not provide access.' | trans }}';
+                    html += '</span> <!-- a href="https://seamlessaccess.org/" target="_blank" data-i18n="ds-search-learn-more">';
+                    html += '{{ 'Learn more' | trans }}';
+                    html += '</a --></p>';
                     html += '</div>';
                     html += '</div>'
                 }
@@ -192,7 +208,7 @@ $(document).ready(function() {
                 html += '<div class="col-9 pl-0">';
                 html += '<span class="top-right institution-remove remove d-none">';
                 html += '<div class="institution-remove-cross-wrapper" title="remove">';
-                html += '<svg class="svg-inline--fa fa-times fa-w-11" tabindex="0" aria-label="Remove Institute from remembered institutions" focusable="true" data-prefix="fa" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" data-fa-i2svg=""><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg>';
+                html += '<svg class="svg-inline--fa fa-times fa-w-11" tabindex="0" aria-label="{{ 'Remove Institute from remembered institutions' | trans }}" focusable="true" data-prefix="fa" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" data-fa-i2svg=""><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></svg>';
                 html += '</div>';
                 html += '</span>';
                 if (item.entity_icon) {
@@ -238,12 +254,12 @@ $(document).ready(function() {
                 html += '<div class="col-11">';
                 html += '<div class="row">';
                 html += '<div class="col">';
-                html += '<p class="primary"><strong>' + org +'</strong> indicated your chosen institution may not have access to this service.</p>';
+                html += '<p class="primary"><strong>' + org +'</strong> {{ 'indicated your chosen institution may not have access to this service.' | trans }}</p>';
                 html += '</div>';
                 html += '</div>';
                 html += '<!-- div class="row">';
                 html += '<div class="col">';
-                html += '<p>Choose an alternative institute or try <a href="#">other access options</a>.</p>';
+                html += '<p>{{ 'Choose an alternative institute or try' | trans }} <a href="#">{{ 'other access options' | trans }}</a>.</p>';
                 html += '</div>';
                 html += '</div -->';
                 html += '</div>';
@@ -284,8 +300,8 @@ $(document).ready(function() {
             }
             let html = '<li role="region" class="type-ahead-alert" aria-live="assertive">';
             html += '<div role="alert">'
-            html += '<p><span class="bold">' + count + ' <span data-i18n="ds-too-many-result-matches">Matches</span></span> <span data-i18n="ds-too-many-result-keep-typing">keep typing to refine your search</span></p>';
-            html += '<p><a id="showall" href="#" data-i18n="ds-too-many-result-show">Show me all matches anyway</a></p>';
+            html += '<p><span class="bold">' + count + ' <span data-i18n="ds-too-many-result-matches">{{ 'Matches' | trans }}</span></span> <span data-i18n="ds-too-many-result-keep-typing">{{ 'keep typing to refine your search' | trans }}</span></p>';
+            html += '<p><a id="showall" href="#" data-i18n="ds-too-many-result-show">{{ 'Show me all matches anyway' | trans }}</a></p>';
             html += '</div>';
             html += '</li>';
             $("#ds-search-list").append(html);
@@ -300,11 +316,11 @@ $(document).ready(function() {
 
             let html ='<li>';
             html += '<div class="no-results-alert" role="alert">';
-            html += '<h3 class="bold" data-i18n="ds-no-results-no-matching">No matching institutions found</h3>';
+            html += '<h3 class="bold" data-i18n="ds-no-results-no-matching">{{ 'No matching institutions found' | trans }}</h3>';
             html += '<ul>';
-            html += '<li data-i18n="ds-no-results-try-entering">Try entering an institution name, abbreviation or your institution email</li>';
-            html += '<li data-i18n="ds-no-results-try-accessing">Try accessing through your library website</li>';
-            html += '<li data-i18n="ds-no-results-contact-librarian">Contact your librarian</li>';
+            html += '<li data-i18n="ds-no-results-try-entering">{{ 'Try entering an institution name, abbreviation or your institution email' | trans }}</li>';
+            html += '<li data-i18n="ds-no-results-try-accessing">{{ 'Try accessing through your library website' | trans }}</li>';
+            html += '<li data-i18n="ds-no-results-contact-librarian">{{ 'Contact your librarian' | trans }}</li>';
             html += '</ul>';
             html += '</div>';
             html += '</li>';
@@ -377,3 +393,4 @@ $(document).ready(function() {
         }
     });
 });
+{% endautoescape %}

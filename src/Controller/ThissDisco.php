@@ -124,7 +124,7 @@ class ThissDisco
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.
      * @return \SimpleSAML\XHTML\Template
      */
-    public function discoconfjs(Request $request): Template
+    public function thissdiscojs(Request $request): Template
     {
         $session = Session::getSessionFromRequest();
         $requestParams = $session->getData(ThissIdPDisco::class, 'requestParms');
@@ -140,7 +140,7 @@ class ThissDisco
         $learn_more_url = $this->moduleConfig->getOptionalString('learn_more_url', null);
         $trustProfile = $this->moduleConfig->getOptionalString('trustProfile', null);
 
-        $t = new Template($this->config, 'thissdisco:discoconfjs.twig');
+        $t = new Template($this->config, 'thissdisco:thissdiscojs.twig');
         $t->headers->set('Content-Type', 'text/javascript');
         $t->headers->set('Vary', 'Accept-Encoding, Cookie');
 
