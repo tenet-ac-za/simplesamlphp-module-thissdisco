@@ -142,7 +142,8 @@ class ThissDisco
 
         $t = new Template($this->config, 'thissdisco:thissdiscojs.twig');
         $t->headers->set('Content-Type', 'text/javascript');
-        $t->headers->set('Vary', 'Accept-Encoding, Cookie');
+        $t->headers->set('Content-Language', $t->getTranslator()->getLanguage()->getLanguage());
+        $t->headers->set('Vary', 'Accept-Encoding, Cookie, Content-Language');
 
         $t->data['spEntityId'] = $requestParams['spEntityId'];
         $t->data['mdq_url'] = $mdq_url;
