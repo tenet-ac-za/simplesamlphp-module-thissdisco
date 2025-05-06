@@ -4,7 +4,8 @@
  */
 
 /**
- * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/main.scss
+ * @source https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/main.scss
+ * @copyright 2018-2019 SUNET. All rights reserved.
  */
 .d-flex {
   display: -ms-flexbox!important;
@@ -27,7 +28,8 @@
 }
 
 /**
- * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/ds.scss
+ * @source https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/ds.scss
+ * @copyright 2018-2019 SUNET. All rights reserved.
  */
 /* Base */
 html, body {

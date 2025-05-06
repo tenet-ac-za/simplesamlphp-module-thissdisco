@@ -10,6 +10,13 @@ use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * A subclass to extending the built-in SimpleSAML\XHTML\IdPDisco class.
+ *
+ * Provides additonal features needed by this module:
+ *  - It caches the requestParms in the session so that they can be rendered
+ *    in the thissdisco.js output (thus working around CSP restrictons).
+ *  - It changes the default template to a module-specific one.
+ *
  * @property \SimpleSAML\Configuration $config
  * @property \SimpleSAML\Session $session
  */

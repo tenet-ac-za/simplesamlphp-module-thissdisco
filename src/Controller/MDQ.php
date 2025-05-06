@@ -14,10 +14,13 @@ use SimpleSAML\Metadata\MetaDataStorageHandler;
 use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
 
 /**
+ * Metadata Query (MDQ) service Controller.
+ *
  * Implement a discojson style metadata query service that implements the
  * PyFF search extentions and the thiss-mdq trustinfo filtering.
  * Output is designed to be compatible with
  * https://github.com/TheIdentitySelector/thiss-mdq/tree/1.5.8
+ * with some localised extensions.
  *
  * @package SimpleSAMLphp
  */

@@ -13,6 +13,13 @@ use SimpleSAML\Module\thissdisco\ThissIdPDisco;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\{Request, Response, StreamedResponse};
 
+/**
+ * The ThissDisco Controller.
+ *
+ * This controller is responsible for rendering the user-facing portions of
+ * the Thiss discovery service. Its roughly analogous to thiss-js, although
+ * only the actual HTML/CSS/JS portions are derived from there.
+ */
 class ThissDisco
 {
     /** @var \SimpleSAML\Configuration The configuration for the module */

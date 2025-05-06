@@ -1,5 +1,6 @@
 /*
- * https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/ds-widget.js
+ * @source https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/ds-widget.js
+ * @copyright 2018-2019 SUNET. All rights reserved.
  */
 jQuery(function ($) {
     $.widget("thiss.discovery_client", {

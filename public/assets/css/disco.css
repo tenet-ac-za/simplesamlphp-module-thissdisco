@@ -1,5 +1,5 @@
 /**
- * SSP fixups to get things into alignment with the rest of the UI
+ * Fixups to get things into alignment with the rest of the SSP UI
  */
 #dsclient p, #dsclient a,
 #dsclient a:hover, #dsclient a:active, #dsclient a:focus {
@@ -21,11 +21,14 @@
 /**
  * The portions of this CSS that follow are derived from thiss-js,
  * but have been modified to anchor them to the thiss-js UI and allow
- * it to render correctly within a SimpleSAMLphp theme.
+ * it to render correctly within a SimpleSAMLphp theme. It is not a
+ * complete copy of the thiss-js CSS (only the bits for the discovery
+ * widget).
  */
 
 /**
- * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/main.scss
+ * @source https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/main.scss
+ * @copyright 2018-2019 SUNET. All rights reserved.
  */
 @font-face {
   font-family: 'Libre Franklin';
@@ -68,8 +71,9 @@
 }
 
 /**
- * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/nc.scss
- */
+ * @source https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/nc.scss
+ * @copyright 2018-2019 SUNET. All rights reserved.
+*/
 #dsclient label {
   font-size: 13px;
   font-weight: normal;
@@ -109,7 +113,8 @@
 }
 
 /**
- * @see https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/ds.scss
+ * @source https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/assets/ds.scss
+ * @copyright 2018-2019 SUNET. All rights reserved.
  */
 #dsclient *, #dsclient *::before, #dsclient *::after {
   box-sizing: border-box;

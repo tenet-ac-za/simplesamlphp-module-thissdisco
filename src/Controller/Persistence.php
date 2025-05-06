@@ -9,8 +9,9 @@ use SimpleSAML\Logger;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 /**
- * Placeholder controller for a non-existent persistence service
- * @package SimpleSAMLphp
+ * Placeholder controller for a non-existent persistence service.
+ *
+ * @deprecated Use the persistence services provided by SeamlessAccess/thiss.io
  */
 class Persistence
 {
