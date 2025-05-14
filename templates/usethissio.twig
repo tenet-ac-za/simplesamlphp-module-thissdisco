@@ -10,9 +10,6 @@ https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/index.ejs
      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
      <title class="sp_title">{{ pagetitle }}</title>
      {% block preload %}{% endblock %}
-     <link rel="stylesheet" media="screen" href="{{ asset('components/bootstrap/css/bootstrap-utilities.min.css', 'thissdisco') }}">
-     <link rel="stylesheet" media="screen" href="{{ asset('components/bootstrap/css/bootstrap-grid.min.css', 'thissdisco') }}">
-     <link rel="stylesheet" media="screen" href="{{ asset('components/bootstrap/css/bootstrap-reboot.min.css', 'thissdisco') }}">
      <link rel="stylesheet" media="screen" href="{{ asset('css/usethissio.css', 'thissdisco') }}">
   </head>
 
@@ -51,6 +48,6 @@ https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/index.ejs
   </footer>
 
 </body>
-<script src="{{ asset('components/bootstrap/js/bootstrap.min.js', 'thissdisco') }}"></script>
+<script src="{{ asset('npm-asset/bootstrap/dist/js/bootstrap.min.js', 'thissdisco') }}"></script>
 {% block postload %}{% endblock %}
 </html>

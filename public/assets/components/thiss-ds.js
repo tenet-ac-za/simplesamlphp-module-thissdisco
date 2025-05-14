@@ -1,1 +1,0 @@
-../../../vendor/npm-asset/theidentityselector--thiss-ds/dist/thiss-ds.js

@@ -2,15 +2,17 @@
 {% extends base_template %}{# config selects which base template #}
 
 {% block preload %}
-  <link rel="stylesheet" media="screen" href="{{ asset('components/bootstrap/css/bootstrap.min.css', 'thissdisco') }}">
-  <link rel="stylesheet" media="screen" href="{{ asset('components/fontawesome-free/css/all.min.css', 'thissdisco') }}">
+  <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/bootstrap/dist/css/bootstrap-utilities.min.css', 'thissdisco') }}">
+  <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/bootstrap/dist/css/bootstrap-grid.min.css', 'thissdisco') }}">
+  <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/bootstrap/dist/css/bootstrap-reboot.min.css', 'thissdisco') }}">
+  <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/fortawesome--fontawesome-free/css/all.min.css', 'thissdisco') }}">
   <link rel="stylesheet" media="screen" href="{{ asset('css/disco.css', 'thissdisco') }}">
 {% endblock %}
 
 {% block postload %}
   <script src="{{ asset('js/jquery.min.js', 'jquery') }}"></script>
   <script src="{{ asset('js/jquery-ui.min.js', 'jquery') }}"></script>
-  <script src="{{ asset('components/thiss-ds.js', 'thissdisco') }}"></script>
+  <script src="{{ asset('npm-asset/theidentityselector--thiss-ds/dist/thiss-ds.js', 'thissdisco') }}"></script>
   <!-- bits of the thiss-js page -->
   <script src="{{ asset('js/ds-widget.js', 'thissdisco') }}"></script>
   <script src="{{ asset('js/bootstrap-list-filter.js', 'thissdisco') }}"></script>
