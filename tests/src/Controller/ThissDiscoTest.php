@@ -142,6 +142,7 @@ final class ThissDiscoTest extends TestCase
         $this->assertArrayHasKey('persistence_url', $response->data);
         $this->assertEquals('https://use.thiss.io/ps/', $response->data['persistence_url']);
         $this->assertArrayHasKey('mdq_url', $response->data);
+        $this->assertIsString($response->data['mdq_url']);
         $this->assertStringContainsString('simplesaml/module.php/thissdisco/entities/', $response->data['mdq_url']);
         $this->assertArrayHasKey('spEntityId', $response->data);
         $this->assertEquals('https://myapp.example.org', $response->data['spEntityId']);

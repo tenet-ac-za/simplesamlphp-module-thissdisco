@@ -162,8 +162,11 @@ final class MDQTest extends TestCase
         $this->assertIsList($decoded);
         $this->assertArrayNotHasKey('entity_id', $decoded);
         $this->assertCount(2, $decoded);
+        $this->AssertIsArray($decoded[0]);
         $this->assertArrayHasKey('entity_id', $decoded[0]);
         $this->assertEquals('https://example.org/idp', $decoded[0]['entity_id']);
+        $this->AssertIsArray($decoded[1]);
+        $this->assertArrayHasKey('entity_id', $decoded[1]);
         $this->assertEquals('https://example.com/idp', $decoded[1]['entity_id']);
     }
 
@@ -181,8 +184,11 @@ final class MDQTest extends TestCase
         $this->assertIsList($decoded);
         $this->assertArrayNotHasKey('entity_id', $decoded);
         $this->assertCount(2, $decoded);
+        $this->AssertIsArray($decoded[0]);
         $this->assertArrayHasKey('entity_id', $decoded[0]);
         $this->assertEquals('https://myapp.example.org', $decoded[0]['entity_id']);
+        $this->AssertIsArray($decoded[1]);
+        $this->assertArrayHasKey('entity_id', $decoded[1]);
         $this->assertEquals('https://example.org/sp', $decoded[1]['entity_id']);
     }
 
@@ -203,6 +209,7 @@ final class MDQTest extends TestCase
         $this->assertIsList($decoded);
         $this->assertArrayNotHasKey('entity_id', $decoded);
         $this->assertCount(1, $decoded);
+        $this->AssertIsArray($decoded[0]);
         $this->assertArrayHasKey('entity_id', $decoded[0]);
         $this->assertEquals('https://example.com/idp', $decoded[0]['entity_id']);
     }
@@ -224,6 +231,7 @@ final class MDQTest extends TestCase
         $this->assertIsList($decoded);
         $this->assertArrayNotHasKey('entity_id', $decoded);
         $this->assertCount(3, $decoded);
+        $this->AssertIsArray($decoded[0]);
         $this->assertArrayHasKey('entity_id', $decoded[0]);
     }
 
@@ -285,6 +293,7 @@ final class MDQTest extends TestCase
 
         $this->assertIsArray($result);
         $this->assertArrayHasKey('profiles', $result);
+        $this->assertIsArray($result['profiles']);
         $this->assertArrayHasKey('sirtfi', $result['profiles']);
     }
 
