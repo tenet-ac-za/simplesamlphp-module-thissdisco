@@ -136,6 +136,10 @@ class ThissDisco
         $session = Session::getSessionFromRequest();
         $requestParams = $session->getData(ThissIdPDisco::class, 'requestParms');
 
+        if (!isset($requestParams)) {
+            throw new Error\Exception('Could not get request parameters from session');
+        }
+
         $mdq = $this->moduleConfig->getOptionalArray('mdq', []);
         $mdq_url = $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities/');
         $search_url = $mdq['search'] ?? $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities');
