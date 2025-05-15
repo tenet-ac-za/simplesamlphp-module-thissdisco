@@ -247,11 +247,15 @@ class MDQ
             $data['entity_icon_url']['url'] = $entity['icon'];
         }
 
-        if (array_key_exists('DiscoHints', $entity)) {
-            if (
-                array_key_exists('GeolocationHint', $entity['DiscoHints'])
-                && preg_match('/^geo:([^,]+),([^,;]+)(;|$)/i', $entity['DiscoHints']['GeolocationHint'][0], $matches)
-            ) {
+        if (
+            array_key_exists('DiscoHints', $entity)
+            && array_key_exists('GeolocationHint', $entity['DiscoHints'])
+        ) {
+            /** @var string */
+            $GeolocationHint = is_array($entity['DiscoHints']['GeolocationHint'])
+                ? $entity['DiscoHints']['GeolocationHint'][0]
+                : $entity['DiscoHints']['GeolocationHint'];
+            if (preg_match('/^geo:([^,]+),([^,;]+)(;|$)/i', $GeolocationHint ?? '', $matches)) {
                 $data['geo'] = [
                     'lat' => $matches[1],
                     'long' => $matches[2],
