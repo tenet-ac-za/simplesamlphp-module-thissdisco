@@ -457,6 +457,7 @@ class MDQ
             /* quickly get rid of entities that aren't the right type */
             if (
                 !empty($entity_filter) &&
+                isset($entity['metadata-set']) &&
                 !str_contains($entity['metadata-set'], '-' . $entity_filter . '-')
             ) {
                 continue;
@@ -644,6 +645,7 @@ class MDQ
             /** @var \SimpleSAML\Module\saml\Auth\Source\SP $source */
             foreach ($this->authSource::getSourcesOfType('saml:SP') as $source) {
                 $metadata = $source->getHostedMetadata();
+                $metadata['metadata-set'] ??= 'saml20-sp-remote';
                 $md[$metadata['entityid']] = $metadata;
             }
         } catch (Exception $exception) {
@@ -651,8 +653,16 @@ class MDQ
         }
 
         try {
-            foreach (['saml20-idp-remote', 'saml20-sp-remote'] as $metadataSets) {
-                $md = array_merge_recursive($md, $this->mdHandler->getList($metadataSets));
+            foreach (['saml20-idp-remote', 'saml20-sp-remote'] as $metadataSet) {
+                $setMd = array_map(
+                    function (array $x) use ($metadataSet) {
+                        /* we assume that metadata contains a metadata-set */
+                        $x['metadata-set'] ??= $metadataSet;
+                        return $x;
+                    },
+                    $this->mdHandler->getList($metadataSet),
+                );
+                $md = array_merge_recursive($md, $setMd);
             }
         } catch (Exception $exception) {
             throw new Error\Error(Error\ErrorCodes::METADATA, $exception);

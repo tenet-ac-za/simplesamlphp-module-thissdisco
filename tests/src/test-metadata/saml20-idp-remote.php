@@ -21,7 +21,6 @@ $metadata['https://example.ac.za/idp'] = [
             'givenName' => 'Support Contact',
         ],
     ],
-    'metadata-set' => 'saml20-idp-remote',
 ];
 
 $metadata['https://example.org/idp'] = [
@@ -34,7 +33,6 @@ $metadata['https://example.org/idp'] = [
             'givenName' => 'Support Contact',
         ],
     ],
-    'metadata-set' => 'saml20-idp-remote',
 ];
 
 $metadata['https://example.com/idp'] = [
@@ -77,5 +75,4 @@ $metadata['https://example.com/idp'] = [
     'metarefresh:src' => 'test-metadata',
     'tags' => ['southafrica',],
     'scope' => ['example.com',],
-    'metadata-set' => 'saml20-idp-remote',
 ];

@@ -6,5 +6,4 @@ $metadata['https://localhost/idp'] = [
     'entityid' => 'https://localhost/idp',
     'name' => [ 'en' => 'Hub IdP', ],
     'auth' => 'example-saml',
-    'metadata-set' => 'saml20-idp-hosted',
 ];
