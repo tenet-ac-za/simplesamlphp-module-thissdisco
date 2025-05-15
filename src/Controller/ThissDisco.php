@@ -55,14 +55,14 @@ class ThissDisco
             );
         } catch (Exception $exception) {
             // An error here should be caused by invalid query parameters
-            throw new Error\Error('DISCOPARAMS', $exception);
+            throw new Error\Error(Error\ErrorCodes::DISCOPARAMS, $exception);
         }
 
         try {
             $response = new StreamedResponse([$discoHandler, 'handleRequest']);
         } catch (Exception $exception) {
             // An error here should be caused by metadata
-            throw new Error\Error('METADATA', $exception);
+            throw new Error\Error(Error\ErrorCodes::METADATA, $exception);
         }
 
         /*

@@ -26,7 +26,7 @@ class ThissIdPDisco extends IdPDisco
     private Configuration $moduleConfig;
 
     /** @var \Symfony\Component\HttpFoundation\Request The current request */
-    private Request $request;
+    protected Request $request;
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.
