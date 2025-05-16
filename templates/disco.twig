@@ -2,9 +2,9 @@
 {% extends base_template %}{# config selects which base template #}
 
 {% block preload %}
+  <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/bootstrap/dist/css/bootstrap-reboot.min.css', 'thissdisco') }}">
   <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/bootstrap/dist/css/bootstrap-utilities.min.css', 'thissdisco') }}">
   <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/bootstrap/dist/css/bootstrap-grid.min.css', 'thissdisco') }}">
-  <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/bootstrap/dist/css/bootstrap-reboot.min.css', 'thissdisco') }}">
   <link rel="stylesheet" media="screen" href="{{ asset('npm-asset/fortawesome--fontawesome-free/css/all.min.css', 'thissdisco') }}">
   <link rel="stylesheet" media="screen" href="{{ asset('css/disco.css', 'thissdisco') }}">
 {% endblock %}
@@ -26,7 +26,7 @@
 #}
 {% block content %}
   {% if base_template == 'base.twig' %}
-  <header class="horizontal-header" id="dsclient-header">
+  <header class="horizontal-header thissdisco-dsclient-header" id="thissdisco-dsclient-header">
     <div class="accessHeader account horizontal-header-item">
       <span class="light" data-i18n="ds-header">{{ 'Access to' | trans }}</span>
       <span class="sp_title account-pill"></span>
@@ -39,7 +39,7 @@
     </div>
   </header>
   {% endif %}
-  <main class="content">
+  <main class="content thissdisco-dsclient" id="thissdisco-dsclient">
     <!--
       The Identity Selector discovery widget, see https://use.thiss.io/
     -->
