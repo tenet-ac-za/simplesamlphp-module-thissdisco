@@ -11,6 +11,7 @@ use SimpleSAML\Error;
 use SimpleSAML\Locale\Language;
 use SimpleSAML\Logger;
 use SimpleSAML\Metadata\MetaDataStorageHandler;
+use SimpleSAML\Module\thissdisco\MDQCache;
 use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
 
 /**
@@ -38,6 +39,18 @@ class MDQ
     /** @var \SimpleSAML\Configuration The configuration for the module */
     private Configuration $moduleConfig;
 
+    /** @var \SimpleSAML\Module\thissdisco\MDQCache hash -> entityID cache */
+    private MDQCache $cache;
+
+    /** @var int Negative cache time (entities not found) */
+    private int $negativecachelength;
+
+    /** @var int Maximum number of search results to return */
+    private int $searchmax;
+
+    /** @var array<string> the metadata sets we should concern ourselves with */
+    private array $metadataSets = ['saml20-idp-remote', 'saml20-idp-hosted', 'saml20-sp-remote'];
+
     /**
      * Controller constructor.
      *
@@ -54,11 +67,85 @@ class MDQ
         $this->language = new Language($this->config);
         $this->mdHandler = MetaDataStorageHandler::getMetadataHandler();
         $this->moduleConfig = Configuration::getConfig('module_thissdisco.php');
+        $this->cache = new MDQCache($this->config, $this->moduleConfig);
+        $this->negativecachelength = $this->moduleConfig->getOptionalInteger('cachelength.negative', 3600);
+        $this->searchmax = $this->moduleConfig->getOptionalInteger('search.maxresults', 0);
     }
 
     public function __invoke(Request $request, ?string $identifier): Response
     {
         return $this->mdq($request, $identifier);
+    }
+
+    /**
+     * Generate a transformed identifier from an entityID
+     *
+     * @param string $entityId
+     * @param string $hashAlgorithm (defaults to sha1)
+     * @return string the corresponding transformed identifier
+     */
+    protected function getTransformedFromEntityId(string $entityId, string $hashAlgorithm = 'sha1'): string
+    {
+        /**
+         * The blocks marked with cache-hash are the code required t store the
+         * hash in the cache. However, we primarily use sha1 and it is probably
+         * cheaper to recompute that than to store and retrieve it from a cache.
+         * However, the inverse lookup (hash -> entityID) is VERY expensive, so
+         * caching it when we do the forward calculation is a good idea.
+         */
+        /* // cache-hash
+        $cacheEntity = $this->cache->get($entityId, []);
+        if (isset($cacheEntity[$hashAlgorithm])) {
+            return $cacheEntity[$hashAlgorithm];
+        }
+        */
+        try {
+            $hashedEntityId = hash($hashAlgorithm, $entityId);
+        } catch (\ValueError $e) {
+            throw new Error\BadRequest(
+                'Invalid hash algorithm: {' . $hashAlgorithm . '}',
+            );
+        }
+        $entityHash = sprintf('{%s}%s', strtoupper($hashAlgorithm), $hashedEntityId);
+        /* // cache-hash
+        $cacheEntity[$hashAlgorithm] = $entityHash;
+        $this->cache->set($entityId, $cacheEntity);
+        */
+        /* save the inverse version for getEntityIdFromTransformed() */
+        $this->cache->set($entityHash, $entityId);
+        return $entityHash;
+    }
+
+    /**
+     * Get an entityID from a cached transformed identifier
+     *
+     * @param string $identifer the transformed identifier
+     * @return string|null the corresponding entityID (or null if not found)
+     */
+    protected function getEntityIdFromTransformed(string $identifer): ?string
+    {
+        if (preg_match('/^\{([^}]+)\}(\w+)$/', $identifer, $matches)) {
+            /* if we're using a transformed identifier, normalise it */
+            $identifer = sprintf('{%s}%s', strtoupper($matches[1]), $matches[2]);
+            $hashAlgorithm = strtolower($matches[1]);
+
+            if ($this->cache->has($identifer)) {
+                return $this->cache->get($identifer);
+            } else {
+                /* we have to do an expensive search */
+                foreach ($this->getMetadataList() as $entity) {
+                    $entityId = $entity['entityid'];
+                    $hashedEntityId = $this->getTransformedFromEntityId($entityId, $hashAlgorithm);
+                    if ($hashedEntityId === $identifer) {
+                        return $entity['entityid'];
+                    }
+                }
+                /* save us from searching again for a hash that doesn't exist */
+                $this->cache->set($identifer, null, $this->negativecachelength);
+                return null;
+            }
+        }
+        return $identifer;
     }
 
     /**
@@ -131,6 +218,9 @@ class MDQ
     /**
      * Converts the entity to a discojson data array.
      *
+     * The schema for this is unclear, but probably goes back to discoJuice.
+     * What's here is based on what PyFF and thiss-mdq output
+     *
      * @param array $entity The entity to convert.
      * @return array The JSON data array.
      */
@@ -146,7 +236,7 @@ class MDQ
         $data['descr'] = $this->filterLangs($descr);
         $data['title_langs'] = $title;
         $data['descr_langs'] = $descr;
-        if (in_array($entity['metadata-set'], ['saml20-sp-remote', 'saml20-idp-remote'])) {
+        if (str_contains($entity['metadata-set'], 'saml20')) {
             $data['auth'] = 'saml';
         } else {
             $data['auth'] = 'unknown';
@@ -251,7 +341,7 @@ class MDQ
             array_key_exists('DiscoHints', $entity)
             && array_key_exists('GeolocationHint', $entity['DiscoHints'])
         ) {
-            /** @var string */
+            /** @var ?string */
             $GeolocationHint = is_array($entity['DiscoHints']['GeolocationHint'])
                 ? $entity['DiscoHints']['GeolocationHint'][0]
                 : $entity['DiscoHints']['GeolocationHint'];
@@ -266,7 +356,7 @@ class MDQ
         if (isset($entity['id'])) {
             $data['id'] = $entity['id'];
         } else {
-            $data['id'] = '{SHA1}' . hash('sha1', $entity['entityid']);
+            $data['id'] = $this->getTransformedFromEntityId($entity['entityid']);
         }
 
         if ($data['type'] === 'sp') {
@@ -280,45 +370,39 @@ class MDQ
     }
 
     /**
-     * Retrieve a specific entity
+     * Retrieve a specific entity as discoJSON
      *
-     * @param array $md The metadata to search in.
      * @param string $identifier The entity hash to look for.
      * @return array The entity data.
      */
-    protected function getEntity(array $md, string $identifier): array
+    protected function getEntity(string $identifier): array
     {
-        if (preg_match('/^\{([^}]+)\}(\w+)$/', $identifier, $matches)) {
-            /* we're using a transformed identifier */
-            $hashAlgorithm = strtolower($matches[1]);
-            $entityHash = $matches[2];
+        /* see if we're using a transformed identifier */
+        $identifier = $this->getEntityIdFromTransformed($identifier);
+        if ($identifier === null) {
+            return [];
+        }
 
-            if (!in_array($hashAlgorithm, hash_algos(), true)) {
-                throw new Error\BadRequest(
-                    'Invalid hash algorithm: {' . $hashAlgorithm . '}',
-                );
-            }
+        /* fixup any lost slash in the protocol due to Apache folding 'directories' */
+        $identifier = preg_replace(
+            '/^(https?):\/(?=[^\/])/',
+            '\1://',
+            $identifier,
+        );
 
-            foreach ($md as $entity) {
-                $entityId = $entity['entityid'];
-                $hashedEntityId = hash($hashAlgorithm, $entityId);
-                if ($hashedEntityId === $entityHash) {
-                    $entity['id'] = sprintf('{%s}%s', strtoupper($hashAlgorithm), $entityHash);
-                    return $this->entityAsDiscoJSON($entity);
-                }
+        /* this might be cheaper than searching, so do it early */
+        $spMetadata = $this->getMetadataSP();
+        if (isset($spMetadata[$identifier])) {
+            return $this->entityAsDiscoJSON($spMetadata[$identifier]);
+        }
+
+        foreach ($this->metadataSets as $metadataSet) {
+            try {
+                $entity = $this->mdHandler->getMetaData($identifier, $metadataSet);
+            } catch (Error\MetadataNotFound $e) {
+                continue;
             }
-        } else {
-            /* we're using the entityID */
-            $identifier = preg_replace(
-                '/^(https?):\/(?=[^\/])/', /* fixup any lost slash in the protocol */
-                '\1://',
-                $identifier,
-            );
-            foreach ($md as $entity) {
-                if ($entity['entityid'] === $identifier) {
-                    return $this->entityAsDiscoJSON($entity);
-                }
-            }
+            return $this->entityAsDiscoJSON($entity);
         }
         return [];
     }
@@ -326,20 +410,18 @@ class MDQ
     /**
      * Extension to getEntity() with trustinfo/entity selection handling
      *
-     * @param array $md The metadata to search in.
      * @param string $identifier The entity hash to look for.
      * @param string $entityID The entity to source the trust profile.
      * @param string $trustProfileName The name of the trust profile
      * @return array The entity data.
      */
     protected function getEntityWithProfile(
-        array $md,
         string $identifier,
         string $entityID,
         string $trustProfileName,
     ): array {
-        $trustEntity = $this->getEntity($md, $entityID);
-        $entity = $this->getEntity($md, $identifier);
+        $trustEntity = $this->getEntity($entityID);
+        $entity = $this->getEntity($identifier);
         if (empty($trustEntity) || !isset($trustEntity['tinfo']['profiles'][$trustProfileName])) {
             return $entity;
         }
@@ -449,15 +531,15 @@ class MDQ
     /**
      * Search for entities in the metadata
      *
-     * @param array $md The metadata to search in.
      * @param string $query The query to search for.
      * @param string $entity_filter The entity filter to apply.
      * @return array The list of entities matching the query.
      */
-    protected function searchEntities(array $md, ?string $query, ?string $entity_filter): array
+    protected function searchEntities(?string $query, ?string $entity_filter): array
     {
         $data = [];
-        foreach ($md as $entity) {
+        $count = 0;
+        foreach ($this->getMetadataList() as $entity) {
             /* quickly get rid of entities that aren't the right type */
             if (
                 !empty($entity_filter) &&
@@ -500,6 +582,11 @@ class MDQ
                 $data,
                 $this->entityAsDiscoJSON($entity),
             );
+
+            /* maximum number of search results */
+            if ($this->searchmax != 0 && $count++ > $this->searchmax) {
+                break;
+            }
         }
         return $data;
     }
@@ -507,7 +594,6 @@ class MDQ
     /**
      * Extension to searchEntities() with trustinfo/entity selection handling
      *
-     * @param array $md The metadata to search in.
      * @param string $query The query to search for.
      * @param string $entity_filter The entity filter to apply.
      * @param string $entityID The entity to source the trust profile.
@@ -515,14 +601,13 @@ class MDQ
      * @return array The entity data.
      */
     protected function searchEntitiesWithProfile(
-        array $md,
         ?string $query,
         ?string $entity_filter,
         ?string $entityID,
         string $trustProfileName,
     ): array {
-        $trustEntity = $this->getEntity($md, $entityID);
-        $data = $this->searchEntities($md, $query, $entity_filter);
+        $trustEntity = $this->getEntity($entityID);
+        $data = $this->searchEntities($query, $entity_filter);
         if (empty($trustEntity) || !isset($trustEntity['tinfo']['profiles'][$trustProfileName])) {
             return $data;
         }
@@ -537,7 +622,7 @@ class MDQ
             foreach ($trustProfile['entity'] as $e) {
                 if (array_key_exists($e['entity_id'], $extraMetadata)) {
                     $entity = $extraMetadata[$e['entity_id']];
-                    $entity['id'] = '{SHA1}' . hash('sha1', $e['entity_id']);
+                    $entity['id'] = $this->getTransformedFromEntityId($e['entity_id']);
                     $entity['entity_id'] = $e['entity_id'];
                     $found = null;
                     if (!empty($query)) {
@@ -627,6 +712,58 @@ class MDQ
         return $data;
     }
 
+
+    /**
+     * Get hosted SP metadata
+     *
+     * @return array The metadata
+     */
+    protected function getMetadataSP(): array
+    {
+        $md = [];
+        try {
+            /** @var \SimpleSAML\Module\saml\Auth\Source\SP $source */
+            foreach ($this->authSource::getSourcesOfType('saml:SP') as $source) {
+                $metadata = $source->getHostedMetadata();
+                $metadata['metadata-set'] ??= 'saml20-sp-remote';
+                $metadata['metadata-index'] ??= $metadata['entityid'];
+                $md[$metadata['entityid']] = $metadata;
+            }
+        } catch (Exception $exception) {
+            throw new Error\Error(Error\ErrorCodes::METADATA, $exception);
+        }
+        return $md;
+    }
+
+    /**
+     * Get a list of all possible metadata
+     *
+     * This is very expensive!
+     *
+     * @return array The metadata
+     */
+    protected function getMetadataList(): array
+    {
+        $md = $this->getMetadataSP();
+        try {
+            foreach ($this->metadataSets as $metadataSet) {
+                $setMd = array_map(
+                    function (array $x) use ($metadataSet) {
+                        /* we assume that metadata contains a metadata-set,
+                         * which is added by getMetadata() but not getList() */
+                        $x['metadata-set'] ??= $metadataSet;
+                        return $x;
+                    },
+                    $this->mdHandler->getList($metadataSet),
+                );
+                $md = array_merge($md, $setMd);
+            }
+        } catch (Exception $exception) {
+            throw new Error\Error(Error\ErrorCodes::METADATA, $exception);
+        }
+        return $md;
+    }
+
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.
      * @param string|null $identifier The entity hash to look for.
@@ -644,35 +781,10 @@ class MDQ
         }
 
         $data = [];
-        $md = [];
-        try {
-            /** @var \SimpleSAML\Module\saml\Auth\Source\SP $source */
-            foreach ($this->authSource::getSourcesOfType('saml:SP') as $source) {
-                $metadata = $source->getHostedMetadata();
-                $metadata['metadata-set'] ??= 'saml20-sp-remote';
-                $md[$metadata['entityid']] = $metadata;
-            }
-        } catch (Exception $exception) {
-            throw new Error\Error(Error\ErrorCodes::METADATA, $exception);
-        }
-
-        try {
-            foreach (['saml20-idp-remote', 'saml20-sp-remote'] as $metadataSet) {
-                $setMd = array_map(
-                    function (array $x) use ($metadataSet) {
-                        /* we assume that metadata contains a metadata-set */
-                        $x['metadata-set'] ??= $metadataSet;
-                        return $x;
-                    },
-                    $this->mdHandler->getList($metadataSet),
-                );
-                $md = array_merge_recursive($md, $setMd);
-            }
-        } catch (Exception $exception) {
-            throw new Error\Error(Error\ErrorCodes::METADATA, $exception);
-        }
         $entityID = $request->query->get('entityid', $request->query->get('entityID', null));
         $trustProfileName = $request->query->get('trustprofile', $request->query->get('trustProfile', null));
+
+        $response = new JsonResponse();
 
         if ($identifier !== null) {
             /**
@@ -680,9 +792,10 @@ class MDQ
              */
             $identifier = preg_replace('/\.json$/', '', $identifier); /* remove .json suffix */
             if ($entityID === null || $trustProfileName === null) {
-                $data = $this->getEntity($md, $identifier);
+                $data = $this->getEntity($identifier);
             } else {
-                $data = $this->getEntityWithProfile($md, $identifier, $entityID, $trustProfileName);
+                $data = $this->getEntityWithProfile($identifier, $entityID, $trustProfileName);
+                $response->setPrivate();
             }
             Logger::debug(
                 sprintf(
@@ -691,6 +804,9 @@ class MDQ
                     $data['entityID'] ?? '[NONE]',
                 ),
             );
+            if (empty($data)) {
+                $response->setStatusCode(Response::HTTP_NOT_FOUND);
+            }
         } else {
             /**
              * no identifier, so we want (a subset of) all entities
@@ -707,9 +823,10 @@ class MDQ
             );
 
             if ($entityID === null || $trustProfileName === null) {
-                $data = $this->searchEntities($md, $query, $entity_filter);
+                $data = $this->searchEntities($query, $entity_filter);
             } else {
-                $data = $this->searchEntitiesWithProfile($md, $query, $entity_filter, $entityID, $trustProfileName);
+                $data = $this->searchEntitiesWithProfile($query, $entity_filter, $entityID, $trustProfileName);
+                $response->setPrivate();
             }
             Logger::debug(
                 sprintf(
@@ -721,13 +838,14 @@ class MDQ
             );
         }
 
-        $response = new JsonResponse();
         $response->setData($data);
-        /* md.seamlessaccess.org returns 200 for an empty set
         if (empty($data)) {
-            $response->setStatusCode(Response::HTTP_NOT_FOUND);
+            $response->setPrivate();
+            $response->headers->addCacheControlDirective('no-store');
+        } else {
+            $response->setMaxAge($this->negativecachelength);
+            $response->setSharedMaxAge($this->negativecachelength);
         }
-        */
         if ($request->query->has('debug')) {
             $response->setEncodingOptions(JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_PRETTY_PRINT);
         }

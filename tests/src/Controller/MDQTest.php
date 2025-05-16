@@ -7,9 +7,10 @@ namespace SimpleSAML\Test\Module\thissdisco\Controller;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use SimpleSAML\Configuration;
+use SimpleSAML\Error;
 use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\Controller;
-use Symfony\Component\HttpFoundation\{JsonResponse, Request, Response};
+use Symfony\Component\HttpFoundation\{JsonResponse, Request};
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ
@@ -34,7 +35,7 @@ final class MDQTest extends TestCase
         Configuration::clearInternalState();
 
         $this->moduleConfig = Configuration::loadFromArray(
-            [],
+            ['cachetype' => 'array', 'cachedir' => 'phpunit'],
             '[ARRAY]',
             'simplesaml',
         );
@@ -100,7 +101,7 @@ final class MDQTest extends TestCase
         $decoded = @json_decode($response->getContent(), true);
         $this->assertIsArray($decoded);
         $this->assertIsList($decoded);
-        $this->assertCount(3, $decoded);
+        $this->assertCount(4, $decoded);
     }
 
     public function testEntitityId(): void
@@ -139,7 +140,7 @@ final class MDQTest extends TestCase
 
         $response = $this->controller->mdq($request, 'nonexistent');
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
         $decoded = @json_decode($response->getContent(), true);
@@ -230,7 +231,7 @@ final class MDQTest extends TestCase
         $this->assertIsArray($decoded);
         $this->assertIsList($decoded);
         $this->assertArrayNotHasKey('entity_id', $decoded);
-        $this->assertCount(3, $decoded);
+        $this->assertCount(4, $decoded);
         $this->AssertIsArray($decoded[0]);
         $this->assertArrayHasKey('entity_id', $decoded[0]);
     }
@@ -261,7 +262,7 @@ final class MDQTest extends TestCase
 
         $response = $this->controller->mdq($request, 'https://example.org/idp');
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
         $decoded = @json_decode($response->getContent(), true);
@@ -375,5 +376,69 @@ final class MDQTest extends TestCase
         $this->assertEquals('Example IdP', $result['descr']);
         $this->assertArrayHasKey('hidden', $result);
         $this->assertEquals('true', $result['hidden']);
+    }
+
+    /**
+     * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::getTransformedFromEntityId
+     */
+    public function testgetTransformedFromEntityId(): void
+    {
+        $m = new ReflectionMethod(Controller\MDQ::class, 'getTransformedFromEntityId');
+        $m->setAccessible(true);
+
+        /* something in metadata */
+        $result = $m->invoke($this->controller, 'https://example.org/idp', 'sha1');
+        $this->assertEquals('{SHA1}a6697b13dcebd5398d2d2d21465ca5a518ba2853', $result);
+        /* something not in metadata cached for testgetEntityIdFromTransformed() */
+        $result = $m->invoke($this->controller, 'https://example.com/sha1');
+        $this->assertEquals('{SHA1}3313d728609120d53ffce1f56b62965015351b86', $result);
+        /* different algorithm */
+        $result = $m->invoke($this->controller, 'https://example.com/sha256', 'sha256');
+        $this->assertEquals('{SHA256}a10c7261a94cbf6c81720a9ab7c95381f2c4d60d1962a00c0a7d78b662d1635a', $result);
+    }
+
+    public function testgetTransformedFromEntityIdInvalidHash(): void
+    {
+        $m = new ReflectionMethod(Controller\MDQ::class, 'getTransformedFromEntityId');
+        $m->setAccessible(true);
+
+        $this->expectException(Error\BadRequest::class);
+        $this->expectExceptionMessage('Invalid hash algorithm: {invalid}');
+        $result = $m->invoke($this->controller, 'https://example.com/invalid', 'invalid');
+    }
+
+    /**
+     * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::getEntityIdFromTransformed
+     */
+    public function testgetEntityIdFromTransformed(): void
+    {
+        $m = new ReflectionMethod(Controller\MDQ::class, 'getEntityIdFromTransformed');
+        $m->setAccessible(true);
+
+        /* something cached and in metadata */
+        $result = $m->invoke($this->controller, '{SHA1}a6697b13dcebd5398d2d2d21465ca5a518ba2853');
+        $this->assertEquals('https://example.org/idp', $result);
+        /* something we've not cached but exists in metadata */
+        $result = $m->invoke($this->controller, '{SHA1}742b8fe0b74155f31b3c1eda9af1fcebb332f2ee');
+        $this->assertEquals('https://example.ac.za/idp', $result);
+        /* something we've not cached but does not exist in metadata */
+        $result = $m->invoke($this->controller, '{SHA1}c0db10cc2ba093017eb91a54949dc0df9006a643');
+        $this->assertEquals(null, $result);
+        /* robustness, check normalisation */
+        $result = $m->invoke($this->controller, '{sha1}a6697b13dcebd5398d2d2d21465ca5a518ba2853');
+        $this->assertEquals('https://example.org/idp', $result);
+    }
+
+    /**
+     * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::getEntityIdFromTransformed
+     */
+    public function testgetTransformedFromEntityIdNotTransformed(): void
+    {
+        $m = new ReflectionMethod(Controller\MDQ::class, 'getEntityIdFromTransformed');
+        $m->setAccessible(true);
+
+        /* a non-transformed version */
+        $result = $m->invoke($this->controller, 'https://example.com/sha256');
+        $this->assertEquals('https://example.com/sha256', $result);
     }
 }
