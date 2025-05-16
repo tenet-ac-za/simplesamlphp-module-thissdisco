@@ -9,7 +9,6 @@ use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\MDQCache;
-use Symfony\Component\Cache\Exception\CacheException;
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\MDQCache
@@ -158,7 +157,9 @@ final class MDQCacheTest extends TestCase
             'simplesaml',
         );
         Configuration::setPreLoadedConfig($moduleConfig, 'module_thissdisco.php');
-        $this->expectException(CacheException::class);
+        $this->expectExceptionMessageMatches(
+            '/Redis connection failed|Cannot find the "redis" extension|predis\/predis/',
+        );
         $cache = new MDQCache($this->config, $moduleConfig);
     }
 }
