@@ -2,11 +2,14 @@
  * Fixups to get things into alignment with the rest of the SSP UI
  */
 #dsclient p, #dsclient a,
-#dsclient a:hover, #dsclient a:active, #dsclient a:focus {
+#dsclient-header p, #dsclient-header a,
+#dsclient a:hover, #dsclient a:active, #dsclient a:focus,
+#dsclient-header a:hover, #dsclient-header a:active, #dsclient-header a:focus {
   background-color: inherit;
   padding: 0;
 }
 
+#dsclient-header h2,
 #dsclient h2 {
   border-bottom: none;
 }
@@ -50,7 +53,7 @@
   url('../fonts/LibreFranklin-Bold.ttf') format('truetype');
 }
 
- #dsclient .d-flex {
+#dsclient .d-flex {
   display: -ms-flexbox!important;
   display: flex!important;
 }
@@ -613,6 +616,7 @@
 #dsclient .display-block {
   display: block;
 }
+#dsclient-header .warning-fa-item,
 #dsclient .warning-fa-item {
   color: rgb(133, 99, 29);
   margin-right: 0.6rem;
@@ -626,4 +630,71 @@
 #dsclient .institution-remove .institution-remove-cross-wrapper {
   height: 60px;
   width: 40px;
+}
+
+#dsclient-header.horizontal-header {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+#dsclient-header.horizontal-header .horizontal-header-item {
+  flex: none;
+}
+
+#dsclient-header .account {
+  font-size: 13px;
+  padding: 0px 0px 2rem 0px;
+}
+
+/* The bits required to make the access-to header work in base.twig */
+
+#dsclient-header .account-pill {
+  padding: 5px;
+  border-radius: 3px;
+  border: solid 1px rgba(68, 68, 68, 0.5);
+  font-weight: 700;
+  margin-left: 3px;
+}
+
+#dsclient-header .warning-header {
+  padding: 4px;
+  border-radius: 3px;
+  margin-left: 2rem;
+  border: 1px solid rgb(133, 99, 29);
+  background: #fff2d5;
+}
+
+#dsclient-header .warning-header a#discovery-response-warning-header-link {
+  font-size: 13px;
+  color: var(--text-grey);
+  text-decoration: underline;
+  margin-right: 10px;
+}
+
+#dsclient-header .warning-fa-item {
+  color: rgb(133, 99, 29);
+  margin-right: 0.6rem;
+  margin-left: 0.3rem;
+}
+
+#discovery-response-warning {
+  border-radius: 3px;
+  border: 1px solid rgb(133, 99, 29);
+  background: #fff2d5;
+  min-height: auto !important;
+}
+#discovery-response-warning #discovery-response-warning-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+#discovery-response-warning #discovery-response-warning-body .discovery-response-warning-item {
+  flex: none;
+}
+#discovery-response-warning #discovery-response-warning-body .discovery-response-warning-item .discovery-response-warning-title {
+  font-weight: 700;
+  margin-left: 1rem;
+}
+#discovery-response-warning #discovery-response-warning-body .discovery-response-warning-text {
+  margin-left: 2rem;
 }
