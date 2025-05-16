@@ -1,14 +1,6 @@
 {
   "symbol-whitelist": [
-    "SimpleSAML\\Configuration",
-    "SimpleSAML\\Error\\BadRequest",
-    "SimpleSAML\\Error\\Error",
-    "SimpleSAML\\Error\\Exception",
-    "SimpleSAML\\Error\\MetadataNotFound",
-    "SimpleSAML\\Session",
-    "SimpleSAML\\XHTML\\Template",
-    "SimpleSAML\\XHTML\\TemplateControllerInterface",
-    "SimpleSAML\\XHTML\\TemplateLoader",
+    "opcache_get_status",
     "Symfony\\Component\\HttpFoundation\\JsonResponse",
     "Symfony\\Component\\HttpFoundation\\Request",
     "Symfony\\Component\\HttpFoundation\\Response",
