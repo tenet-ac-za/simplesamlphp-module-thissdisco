@@ -16,6 +16,7 @@ $(document).ready(function() {
     let persistence_url = '{{ persistence_url}}';
     let persistence_context = '{{ persistence_context }}';
     let trustProfile = {% if trustProfile %}'{{ trustProfile }}'{% else %}null{% endif %};
+    let ignore_discovery_response_warning = {{ ignore_discovery_response_warning | default('false') }};
     let ssp_language = '{{ currentLanguage }}';
 
     let timer = null;
@@ -362,7 +363,7 @@ $(document).ready(function() {
         $(".sp_title").text(entity.title);
         $("#discovery-response-warning-site").text(entity.title);
 
-        let goodReturn = true;  //TODO: change to false to reactivate the warning
+        let goodReturn = {{ ignore_discovery_response_warning }};
 
         if (entity.discovery_responses) {
             const queryString = window.location.search;
@@ -371,7 +372,7 @@ $(document).ready(function() {
             if (urlParams.has('return'))
                 returnUrl = urlParams.get('return')
 
-            entity.discovery_responses.forEach(dr => {
+            entity.discovery_responses.forEach((dr) => {
                 if (returnUrl !== null && returnUrl.startsWith(dr)) {
                     goodReturn = true;
                 }

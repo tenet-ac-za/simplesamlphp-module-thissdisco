@@ -41,6 +41,11 @@ $config = [
     ],
 
     /*
+     * Display a warning when the return parameter is not a known discovery response URL
+     */
+    'discovery_response_warning' => true,
+
+    /*
      * Optional URL to a page with further information
      */
     'learn_more_url' => 'https://example.org/learn-more',

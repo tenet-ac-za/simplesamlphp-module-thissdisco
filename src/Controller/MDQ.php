@@ -287,7 +287,7 @@ class MDQ
         }
 
         if (isset($entity['DiscoveryResponse'])) {
-            $data['discovery_response'] = $entity['DiscoveryResponse'];
+            $data['discovery_responses'] = array_map(fn($x) => $x['Location'], $entity['DiscoveryResponse']);
         }
 
         if (str_contains($entity['metadata-set'], '-idp-')) {
@@ -846,8 +846,11 @@ class MDQ
             $response->setMaxAge($this->negativecachelength);
             $response->setSharedMaxAge($this->negativecachelength);
         }
+        $response->setEncodingOptions(
+            JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+        );
         if ($request->query->has('debug')) {
-            $response->setEncodingOptions(JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_PRETTY_PRINT);
+            $response->setEncodingOptions($response->getEncodingOptions() | JSON_PRETTY_PRINT);
         }
         return $response;
     }
