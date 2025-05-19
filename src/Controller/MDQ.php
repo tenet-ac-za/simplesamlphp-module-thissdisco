@@ -84,7 +84,7 @@ class MDQ
      * @param string $hashAlgorithm (defaults to sha1)
      * @return string the corresponding transformed identifier
      */
-    protected function getTransformedFromEntityId(string $entityId, string $hashAlgorithm = 'sha1'): string
+    public function getTransformedFromEntityId(string $entityId, string $hashAlgorithm = 'sha1'): string
     {
         /**
          * The blocks marked with cache-hash are the code required t store the
@@ -122,7 +122,7 @@ class MDQ
      * @param string $identifer the transformed identifier
      * @return string|null the corresponding entityID (or null if not found)
      */
-    protected function getEntityIdFromTransformed(string $identifer): ?string
+    public function getEntityIdFromTransformed(string $identifer): ?string
     {
         if (preg_match('/^\{([^}]+)\}(\w+)$/', $identifer, $matches)) {
             /* if we're using a transformed identifier, normalise it */
@@ -853,5 +853,33 @@ class MDQ
             $response->setEncodingOptions($response->getEncodingOptions() | JSON_PRETTY_PRINT);
         }
         return $response;
+    }
+
+
+    /**
+     * warm up (pre-populate) the MDQ cache
+     *
+     * @return int
+     */
+    public function cacheWarmup(): int
+    {
+        $count = 0;
+        $md = $this->getMetadataList();
+        foreach ($md as $id => $entity) {
+            $this->getTransformedFromEntityId($entity['entityid'] ?? $id);
+            $count++;
+        }
+        Logger::info(
+            sprintf(
+                '[thissdisco]: warmed up the MDQ cache with %d transformed identifiers',
+                $count,
+            ),
+        );
+
+        if ($this->cache->prune()) {
+            Logger::info('[thissdisco]: successfully pruned the MDQ cache');
+        }
+
+        return $count;
     }
 }

@@ -272,6 +272,16 @@ final class MDQTest extends TestCase
         $this->assertCount(0, $decoded);
     }
 
+    /* cron methods */
+
+    /** @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::cacheWarmup */
+    public function testCacheWarmup(): void
+    {
+        $result = $this->controller->cacheWarmup();
+        $this->assertIsInt($result);
+        $this->assertEquals(6, $result);
+    }
+
     /* non public methods */
 
     /** @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::getSelectionProfiles */

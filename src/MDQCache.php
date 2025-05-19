@@ -19,7 +19,7 @@ use Symfony\Component\Cache\Adapter\{NullAdapter,PdoAdapter,PhpFilesAdapter,Redi
  */
 class MDQCache
 {
-    /** @var \Symfony\Component\Cache\Adapter\AdapterInterface */
+    /** @var \Symfony\Component\Cache\PruneableInterface|\Symfony\Component\Cache\Adapter\AdapterInterface */
     private $cache;
 
     public function __construct(
@@ -68,10 +68,15 @@ class MDQCache
                 break;
 
             case 'phpfiles':
-                Assert\Assert::string($cachedir, 'cachedir must be a directory', Error\ConfigurationError::class);
-                Assert\Assert::directory(
+                Assert\Assert::nullOrstring($cachedir, 'cachedir must be a directory', Error\ConfigurationError::class);
+                Assert\Assert::nullOrdirectory(
                     $cachedir,
                     'cachedir directory does not exist',
+                    Error\ConfigurationError::class,
+                );
+                Assert\Assert::nullOrwritable(
+                    $cachedir,
+                    'cachedir ' . $cachedir . ' is not writable',
                     Error\ConfigurationError::class,
                 );
                 $opcache = false;
@@ -86,10 +91,15 @@ class MDQCache
                 // fall through to filesystem
 
             case 'filesystem':
-                Assert\Assert::string($cachedir, 'cachedir must be a directory', Error\ConfigurationError::class);
-                Assert\Assert::directory(
+                Assert\Assert::nullOrstring($cachedir, 'cachedir must be a directory', Error\ConfigurationError::class);
+                Assert\Assert::nullOrdirectory(
                     $cachedir,
                     'cachedir directory does not exist',
+                    Error\ConfigurationError::class,
+                );
+                Assert\Assert::nullOrwritable(
+                    $cachedir,
+                    'cachedir ' . $cachedir . ' is not writable',
                     Error\ConfigurationError::class,
                 );
                 $this->cache = new FilesystemAdapter($namespace, $cachelength, $cachedir);
@@ -188,5 +198,18 @@ class MDQCache
     public function clear(): bool
     {
         return $this->cache->clear();
+    }
+
+    /**
+     * prune the cache
+     *
+     * @return bool
+     */
+    public function prune(): bool
+    {
+        if (method_exists($this->cache, 'prune')) {
+            return $this->cache->prune();
+        }
+        return true;
     }
 }

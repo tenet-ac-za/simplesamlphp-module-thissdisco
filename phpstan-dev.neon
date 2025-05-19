@@ -2,5 +2,7 @@ parameters:
   level: 9
   paths:
     - tests
+  scanDirectories:
+    - hooks
 includes:
   - phpstan-baseline-dev.neon

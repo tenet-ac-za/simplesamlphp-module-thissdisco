@@ -82,32 +82,35 @@ final class MDQCacheTest extends TestCase
         $cache = new MDQCache($this->config, $moduleConfig);
 
         $result = $cache->set('a', 'value');
-        $this->assertTrue($result);
+        $this->assertTrue($result, 'set(a)');
         $result = $cache->has('a');
-        $this->assertTrue($result);
+        $this->assertTrue($result, 'has(a)');
         $result = $cache->get('a');
-        $this->assertIsString($result);
-        $this->assertEquals('value', $result);
+        $this->assertIsString($result, 'get(a).type');
+        $this->assertEquals('value', $result, 'get(a).value');
 
         $result = $cache->has('b');
-        $this->assertFalse($result);
+        $this->assertFalse($result, 'has(b) [nonexistant]');
         $result = $cache->get('b');
-        $this->assertEquals(null, $result);
+        $this->assertEquals(null, $result, 'get(b) [nonexistant]');
         $result = $cache->get('b', 'default');
-        $this->assertIsString($result);
-        $this->assertEquals('default', $result);
+        $this->assertIsString($result, 'get(b).type [default]');
+        $this->assertEquals('default', $result, 'get(b).value [default]');
         $result = $cache->has('b');
-        $this->assertFalse($result);
+        $this->assertFalse($result, 'has(b) [nonexistant, post-get]');
 
         $result = $cache->delete('a');
-        $this->assertTrue($result);
+        $this->assertTrue($result, 'delete(a)');
         $result = $cache->has('a');
-        $this->assertFalse($result);
+        $this->assertFalse($result, 'has(a) [post-delete]');
         $result = $cache->get('a');
-        $this->assertEquals(null, $result);
+        $this->assertEquals(null, $result, 'get(a) [post-delete]');
 
         $result = $cache->delete('b');
-        $this->assertTrue($result);
+        $this->assertTrue($result, 'delete(b) [nonexistent]');
+
+        $result = $cache->prune();
+        $this->assertTrue($result, 'prune()');
     }
 
     public function testConstructFilesPathNotSet(): void
@@ -118,9 +121,8 @@ final class MDQCacheTest extends TestCase
             'simplesaml',
         );
         Configuration::setPreLoadedConfig($moduleConfig, 'module_thissdisco.php');
-        $this->expectException(Error\ConfigurationError::class);
-        $this->expectExceptionMessageMatches('/cachedir must be a directory/');
         $cache = new MDQCache($this->config, $moduleConfig);
+        $this->assertInstanceOf(MDQCache::class, $cache, 'prune()');
     }
 
     public function testConstructFilesInvalidPath(): void

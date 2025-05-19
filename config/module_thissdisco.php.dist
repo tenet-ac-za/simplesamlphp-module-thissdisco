@@ -79,12 +79,16 @@ $config = [
      *             avoids searching metadata again for an entity that will never
      *             be found, but means changes aren't picked up.
      *             Defaults to 3600 seconds which is a good compromise.
+     *
+     * 'crontags'  a list of cron tags when we should try to warm up the
+     *             transformed identifier cache.
      */
     'cachetype' => 'phpfiles',
     //'cachedir' => '/path/to/cache/dir',
     //'cachedir' => 'redis://localhost',
     'cachelength' => 0, // forever
     'cachelength.negative' => 3600,
+    'crontags' => ['daily'],
 
     /*
      * The name of an entity selection profile ("trust profile") to use.
