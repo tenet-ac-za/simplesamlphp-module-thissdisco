@@ -41,7 +41,8 @@ $config = [
     ],
 
     /*
-     * Display a warning when the return parameter is not a known discovery response URL
+     * Display a warning when the return parameter is not a known discovery response URL.
+     * Should be false (no warning), true (default SA warning), or a URL to direct people to.
      */
     'discovery_response_warning' => true,
 

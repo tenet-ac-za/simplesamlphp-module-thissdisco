@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\thissdisco;
 
+use SimpleSAML\Assert;
 use SimpleSAML\Configuration;
+use SimpleSAML\Error;
 use SimpleSAML\XHTML\IdPDisco;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,6 +71,23 @@ class ThissIdPDisco extends IdPDisco
         } else {
             $t->data['base_template'] = '@thissdisco/usethissio.twig';
         }
+
+        $discovery_response_warning = $this->moduleConfig->getOptionalValue('discovery_response_warning', false);
+        if (!is_bool($discovery_response_warning)) {
+            Assert\Assert::validURL(
+                $discovery_response_warning,
+                'discovery_response_warning should be true/false or a URL',
+                Error\ConfigurationError::class,
+            );
+            $discovery_response_warning_url = $discovery_response_warning;
+            $discovery_response_warning = true;
+        } else {
+            // use.thiss.io / seamlessaccess default URL
+            $discovery_response_warning_url = 'https://seamlessaccess.atlassian.net/wiki/x/B4C_Vw';
+        }
+        $t->data['discovery_response_warning'] = $discovery_response_warning;
+        $t->data['discovery_response_warning_url'] = $discovery_response_warning_url;
+
         $t->send();
     }
 }

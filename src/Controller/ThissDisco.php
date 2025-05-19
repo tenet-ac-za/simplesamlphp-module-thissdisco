@@ -149,7 +149,10 @@ class ThissDisco
         $persistence_context = $persistence['context'] ?? self::class;
 
         $learn_more_url = $this->moduleConfig->getOptionalString('learn_more_url', null);
-        $discovery_response_warning = $this->moduleConfig->getOptionalBoolean('discovery_response_warning', false);
+        $discovery_response_warning = $this->moduleConfig->getOptionalValue('discovery_response_warning', false);
+        if (!is_bool($discovery_response_warning)) {
+            $discovery_response_warning = true;
+        }
         $trustProfile = $this->moduleConfig->getOptionalString('trustProfile', null);
 
         $t = new Template($this->config, 'thissdisco:thissdiscojs.twig');
