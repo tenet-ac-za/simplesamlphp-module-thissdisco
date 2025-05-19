@@ -205,7 +205,7 @@ class MDQ
         if (array_key_exists('profiles', $selectionProfiles) || !empty($globalSelectionProfiles)) {
             $selectionProfiles['profiles'] = array_merge(
                 $globalSelectionProfiles,
-                $selectionProfiles['profiles'],
+                $selectionProfiles['profiles'] ?? [],
             );
         }
         if (! empty($selectionProfiles)) {
