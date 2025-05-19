@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
+use SimpleSAML\Error;
 use SimpleSAML\Logger;
 use SimpleSAML\Module\thissdisco\Controller\MDQ;
 
@@ -16,6 +17,12 @@ function thissdisco_hook_cron(array &$croninfo): void
 {
     Assert::keyExists($croninfo, 'summary');
     Assert::keyExists($croninfo, 'tag');
+
+    try {
+        $cronconfig = Configuration::getConfig('module_cron.php');
+    } catch(Error\ConfigurationError $e) {
+        return;
+    }
 
     $moduleConfig = Configuration::getConfig('module_thissdisco.php');
     $crontags = $moduleConfig->getOptionalArrayizeString('crontags', []);
@@ -36,6 +43,12 @@ function thissdisco_hook_cron(array &$croninfo): void
         $result = $mdq->cacheWarmup();
         if ($result < 1) {
             throw new \Exception('no metadata found to cache');
+        }
+        if ($croninfo['tag'] === 'phpunit' || $cronconfig->getOptionalBoolean('debug_message', true)) {
+            $croninfo['summary'][] = sprintf(
+                '[thissdisco]: warmed up the MDQ cache with %d transformed identifiers',
+                $result,
+            );
         }
     } catch (\Exception $e) {
         $croninfo['summary'][] = 'Error during thissdisco MDQ cache warmup: ' . $e->getMessage();

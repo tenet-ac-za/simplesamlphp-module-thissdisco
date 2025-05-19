@@ -20,13 +20,14 @@ final class HookCronTest extends TestCase
     /** @var \SimpleSAML\Configuration */
     protected Configuration $moduleConfig;
 
-    /** @var \SimpleSAML\Configuration */
-    protected Configuration $asConfig;
-
     protected function setUp(): void
     {
         MetaDataStorageHandler::clearInternalState();
         Configuration::clearInternalState();
+
+        $empty = Configuration::loadFromArray([], '[ARRAY]', 'simplesaml',);
+        Configuration::setPreLoadedConfig($empty, 'module_cron.php');
+        Configuration::setPreLoadedConfig($empty, 'authsources.php');
 
         $this->moduleConfig = Configuration::loadFromArray(
             ['cachetype' => 'array', 'cachedir' => 'phpunit', 'crontags' => 'phpunit'],
@@ -35,19 +36,12 @@ final class HookCronTest extends TestCase
         );
         Configuration::setPreLoadedConfig($this->moduleConfig, 'module_thissdisco.php');
 
-        $this->asConfig = Configuration::loadFromArray(
-            [],
-            '[ARRAY]',
-            'simplesaml',
-        );
-        Configuration::setPreLoadedConfig($this->asConfig, 'authsources.php');
-
         $this->config = Configuration::loadFromArray(
             [
-                'module.enable' => ['thissdisco' => true, 'saml' => true,],
+                'module.enable' => ['thissdisco' => true, 'saml' => true, 'cron' => 'true'],
                 'language.default' => 'af',
                 'metadata.sources' => [
-                    ['type' => 'flatfile', 'directory' => dirname(__FILE__, 2) . '/test-metadata'],
+                    ['type' => 'flatfile', 'directory' => dirname(__FILE__, 1) . '/test-metadata'],
                 ],
             ],
             '[ARRAY]',
@@ -70,5 +64,9 @@ final class HookCronTest extends TestCase
         $this->assertIsList($croninfo['summary']);
         $this->assertCount(1, $croninfo['summary']);
         $this->assertIsString($croninfo['summary'][0]);
+        $this->assertMatchesRegularExpression(
+            '/warmed up the MDQ cache with|no metadata found to cache/',
+            $croninfo['summary'][0],
+        );
     }
 }
