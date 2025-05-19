@@ -1,6 +1,7 @@
 {
   "symbol-whitelist": [
     "opcache_get_status",
+    "Predis\\Client",
     "Symfony\\Component\\HttpFoundation\\JsonResponse",
     "Symfony\\Component\\HttpFoundation\\Request",
     "Symfony\\Component\\HttpFoundation\\Response",
