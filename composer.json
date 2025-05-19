@@ -40,6 +40,11 @@
         "npm-asset/bootstrap": "^5.3.3",
         "npm-asset/fortawesome--fontawesome-free": "^6.6.0"
     },
+    "suggest": {
+        "predis/predis": "Needed if a Redis server is used to store MDQ hash cache",
+        "ext-memcache": "Needed if a Memcache server is used to store MDQ hash cache",
+        "ext-pdo": "Needed if a database backend is used to store MDQ hash cache"
+    },
     "repositories": [
         {
             "type": "composer",

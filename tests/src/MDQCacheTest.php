@@ -147,7 +147,9 @@ final class MDQCacheTest extends TestCase
         );
         Configuration::setPreLoadedConfig($moduleConfig, 'module_thissdisco.php');
         $this->expectException(Error\ConfigurationError::class);
-        $this->expectExceptionMessageMatches('/Redis DSNs start redis/');
+        $this->expectExceptionMessageMatches(
+            '/Redis DSNs start redis|The configuration is invalid: Redis extension/',
+        );
         $cache = new MDQCache($this->config, $moduleConfig);
     }
 

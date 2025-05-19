@@ -37,24 +37,28 @@ class MDQCache
         switch ($cachetype) {
             case 'array':
                 if ($cachedir !== 'phpunit') {
-                    Logger::warning('cachetype array is really only for testing');
+                    Logger::warning('thissdisco cachetype array is really only for testing');
                 }
                 $max = $cachelength > 0 ? $cachelength : 3600;
                 $this->cache = new ArrayAdapter($max, false, $max);
                 break;
 
             case 'memcache':
-                Assert\Assert::isAnyOf(
-                    $cachedir,
-                    ['string', 'array'],
-                    'cachedir should be a memcache DSN or array of DSNs',
-                    Error\ConfigurationError::class,
+                Assert\Assert::classExists(
+                    'Memcached',
+                    'Memcached PECL extension required to use memcached as a cachetype for thissdisco',
                 );
-                $dsntest = $cachedir[0] ?? $cachedir;
+                if (!in_array(gettype($cachedir), ['string', 'array'])) {
+                    throw new Error\ConfigurationError(
+                        'thissdisco cachedir should be a single memcache DSN or array of DSNs',
+                    );
+                }
+                $dsntest = is_array($cachedir) ? $cachedir[0] : $cachedir;
                 Assert\Assert::startsWith(
                     $dsntest,
                     'memcached://',
-                    'Memcached DSNs start memcached://',
+                    'Error in thissdisco cachedir for cachetype memcache: '
+                    . 'Memcached DSNs start memcached://. Got: ' . $dsntest,
                     Error\ConfigurationError::class,
                 );
                 $prefix = $this->config->getOptionalString('memcache_store.prefix', 'simpleSAMLphp');
@@ -63,20 +67,33 @@ class MDQCache
                 break;
 
             case 'pdo':
-                Assert\Assert::string($cachedir, 'cachedir must be a PDO DSN', Error\ConfigurationError::class);
+                Assert\Assert::classExists(
+                    'PDO',
+                    'PDO extension required to use pdo as a cachetype for thissdisco',
+                );
+                Assert\Assert::string(
+                    $cachedir,
+                    'thissdisco cachedir must be a PDO DSN',
+                    Error\ConfigurationError::class,
+                );
+                // too many DSN prefixes to test
                 $this->cache = new PdoAdapter($cachedir, $namespace, $cachelength);
                 break;
 
             case 'phpfiles':
-                Assert\Assert::nullOrstring($cachedir, 'cachedir must be a directory', Error\ConfigurationError::class);
+                Assert\Assert::nullOrstring(
+                    $cachedir,
+                    'thissdisco cachedir must be a directory',
+                    Error\ConfigurationError::class,
+                );
                 Assert\Assert::nullOrdirectory(
                     $cachedir,
-                    'cachedir directory does not exist',
+                    'thissdisco cachedir directory does not exist',
                     Error\ConfigurationError::class,
                 );
                 Assert\Assert::nullOrwritable(
                     $cachedir,
-                    'cachedir ' . $cachedir . ' is not writable',
+                    'thissdisco cachedir ' . $cachedir . ' is not writable',
                     Error\ConfigurationError::class,
                 );
                 $opcache = false;
@@ -91,26 +108,41 @@ class MDQCache
                 // fall through to filesystem
 
             case 'filesystem':
-                Assert\Assert::nullOrstring($cachedir, 'cachedir must be a directory', Error\ConfigurationError::class);
+                Assert\Assert::nullOrstring(
+                    $cachedir,
+                    'thissdisco cachedir must be a directory',
+                    Error\ConfigurationError::class,
+                );
                 Assert\Assert::nullOrdirectory(
                     $cachedir,
-                    'cachedir directory does not exist',
+                    'thissdisco cachedir directory does not exist',
                     Error\ConfigurationError::class,
                 );
                 Assert\Assert::nullOrwritable(
                     $cachedir,
-                    'cachedir ' . $cachedir . ' is not writable',
+                    'thissdisco cachedir ' . $cachedir . ' is not writable',
                     Error\ConfigurationError::class,
                 );
                 $this->cache = new FilesystemAdapter($namespace, $cachelength, $cachedir);
                 break;
 
             case 'redis':
-                Assert\Assert::string($cachedir, 'cachedir must be a redis DSN', Error\ConfigurationError::class);
+                // no Assert::classExists for multiple classes
+                if (!\extension_loaded('redis') && !class_exists(\Predis\Client::class)) {
+                    throw new Error\ConfigurationError(
+                        'Redis extension or predis/predis is required to use redis as a cachetype for thissdisco',
+                    );
+                }
+                Assert\Assert::string(
+                    $cachedir,
+                    'thissdisco cachedir must be a redis DSN',
+                    Error\ConfigurationError::class,
+                );
                 Assert\Assert::startsWith(
                     $cachedir,
                     'redis',
-                    'Redis DSNs start redis:// or rediss://',
+                    'Error in thissdisco cachedir for cachetype redis: '
+                    . 'Redis DSNs start redis:// or rediss://. Got:' . $cachedir,
                     Error\ConfigurationError::class,
                 );
                 $prefix = $this->config->getOptionalString('store.redis.prefix', 'simpleSAMLphp');
@@ -124,7 +156,8 @@ class MDQCache
 
             default:
                 throw new Error\ConfigurationError(
-                    'cachetype must be one of {none,array,filesystem,phpfiles,redis,memcache,pdo}',
+                    'thisdisco cachetype must be one of '
+                    . '{none,array,filesystem,phpfiles,redis,memcache,pdo}',
                     'module_thissdisco.php',
                     ['cachedir' => $cachedir],
                 );
