@@ -541,12 +541,21 @@ class MDQ
         $count = 0;
         foreach ($this->getMetadataList() as $entity) {
             /* quickly get rid of entities that aren't the right type */
-            if (
-                !empty($entity_filter) &&
-                isset($entity['metadata-set']) &&
-                !str_contains($entity['metadata-set'], '-' . $entity_filter . '-')
-            ) {
-                continue;
+            if (!empty($entity_filter)) {
+                if (!str_starts_with($entity_filter, 'tag:')) {
+                    if (
+                        isset($entity['metadata-set']) &&
+                        !str_contains($entity['metadata-set'], '-' . $entity_filter . '-')
+                    ) {
+                        continue;
+                    }
+                } elseif (
+                    // extension to PyFF functionality allow us to search by tags
+                    !isset($entity['tags']) ||
+                    !in_array(substr($entity_filter, 4), $entity['tags'])
+                ) {
+                    continue;
+                }
             }
 
             if (!empty($query)) {

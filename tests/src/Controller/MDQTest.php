@@ -193,6 +193,25 @@ final class MDQTest extends TestCase
         $this->assertEquals('https://example.org/sp', $decoded[1]['entity_id']);
     }
 
+    public function testEntitiesFilterTags(): void
+    {
+        $request = $this->createRequest(['entity_filter' => 'tag:southafrica']);
+
+        $response = $this->controller->mdq($request, null);
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertTrue($response->isSuccessful());
+        $this->assertIsString($response->getContent());
+        $this->assertJson($response->getContent());
+        $decoded = @json_decode($response->getContent(), true);
+        $this->assertIsArray($decoded);
+        $this->assertIsList($decoded);
+        $this->assertArrayNotHasKey('entity_id', $decoded);
+        $this->assertCount(1, $decoded);
+        $this->AssertIsArray($decoded[0]);
+        $this->assertArrayHasKey('entity_id', $decoded[0]);
+        $this->assertEquals('https://example.com/idp', $decoded[0]['entity_id']);
+    }
+
     public function testEntitiesTrustProfile(): void
     {
         $request = $this->createRequest([
