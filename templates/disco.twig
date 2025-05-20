@@ -43,6 +43,7 @@
     <!--
       The Identity Selector discovery widget, see https://use.thiss.io/
     -->
+    {% block thissdisco_add_before %}{% endblock %}
     <div class="container" id="dsclient">
       <!-- choose -->
       <div class="d-none" id="choose">
@@ -69,6 +70,7 @@
              aria-expanded="false"><i class="fa fa-pen"></i> <span data-i18n="ds-choose-edit">{{ 'Edit' | trans }}</span></a>
         </div>
         <a id="done_button" role="button" class="d-none center btn btn-block btn-blue" href="#" data-i18n="ds-choose-done">{{ 'Done' | trans }}</a>
+        {% block choose_add_after %}{% endblock %}
       </div>
 
       <!-- search -->
@@ -130,10 +132,13 @@
             </div>
           </div>
         </form>
+        {% block search_add_before_results %}{% endblock %}
         <div class="results search-list" id="resultwidget">
           <ul id="ds-search-list"></ul>
         </div>
+        {% block search_add_after_results %}{% endblock %}
       </div>
+      {% block dsclient_add_after %}{% endblock %}
     </div>
 
     <!-- discovery response warning -->
@@ -161,5 +166,6 @@
         </div>
       </div>
     </div>
+    {% block thissdisco_add_after %}{% endblock %}
   </main>
 {% endblock %}
