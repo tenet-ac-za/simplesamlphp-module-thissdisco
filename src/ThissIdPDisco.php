@@ -7,6 +7,7 @@ namespace SimpleSAML\Module\thissdisco;
 use SimpleSAML\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
+use SimpleSAML\Utils;
 use SimpleSAML\XHTML\IdPDisco;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,6 +88,13 @@ class ThissIdPDisco extends IdPDisco
         }
         $t->data['discovery_response_warning'] = $discovery_response_warning;
         $t->data['discovery_response_warning_url'] = $discovery_response_warning_url;
+
+        /* add the basic disco params */
+        $t->data['return'] = $this->returnURL;
+        $t->data['returnIDParam'] = $this->returnIdParam;
+        $t->data['entityID'] = $this->spEntityId;
+        $httpUtils = new Utils\HTTP();
+        $t->data['urlpattern'] = $httpUtils->getSelfURLNoQuery();
 
         $t->send();
     }
