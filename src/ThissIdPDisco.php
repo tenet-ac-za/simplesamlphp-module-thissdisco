@@ -81,6 +81,8 @@ class ThissIdPDisco extends IdPDisco
     public function handleRequest(): void
     {
         $this->start();
+
+        $trustProfile = $this->getTrustProfile();
         $this->session->setData(
             self::class,
             'requestParms',
@@ -91,7 +93,7 @@ class ThissIdPDisco extends IdPDisco
                 'isPassive ' => $this->isPassive,
                 'setIdPentityID' => $this->setIdPentityID,
                 'scopedIDPList' => $this->scopedIDPList,
-                'trustProfile' => $this->getTrustProfile(),
+                'trustProfile' => $trustProfile,
             ],
         );
 
@@ -122,6 +124,7 @@ class ThissIdPDisco extends IdPDisco
         }
         $t->data['discovery_response_warning'] = $discovery_response_warning;
         $t->data['discovery_response_warning_url'] = $discovery_response_warning_url;
+        $t->data['trustProfile'] = $trustProfile;
 
         /* add the basic disco params */
         $t->data['return'] = $this->returnURL;
