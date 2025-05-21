@@ -243,7 +243,7 @@
   margin-bottom: 5px;
 }
 /* Structure */
-.thissdisco-dsclient #dsclient {
+.thissdisco-dsclient .container {
   display: flex;
   -moz-display: box;
   -ms-display: flexbox;
