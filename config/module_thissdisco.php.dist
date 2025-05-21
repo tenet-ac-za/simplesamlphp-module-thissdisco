@@ -27,6 +27,9 @@ $config = [
 
     /*
      * Configuration for the persistence service
+     * Note that if you want to use the service.seamlessaccess.org (recommended),
+     * then you need to register as an advanced integration for API access. See
+     * https://seamlessaccess.atlassian.net/wiki/spaces/DOCUMENTAT/pages/38240282/Advanced+Integration
      */
     'persistence' => [
         'url' => 'https://use.thiss.io/ps/',
