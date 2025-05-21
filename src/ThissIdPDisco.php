@@ -7,6 +7,7 @@ namespace SimpleSAML\Module\thissdisco;
 use SimpleSAML\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
+use SimpleSAML\Logger;
 use SimpleSAML\Utils;
 use SimpleSAML\XHTML\IdPDisco;
 use SimpleSAML\XHTML\Template;
@@ -43,10 +44,43 @@ class ThissIdPDisco extends IdPDisco
         parent::__construct($metadataSets, $instance);
     }
 
+    /**
+     * Get an appropriate trust profile
+     *
+     * Order of precedence is:
+     *  - profile name given in the query params to the discovery service
+     *  - profile name from the appropriate SP's metadata
+     *  - any global profile from module_thissdisco.php
+     *  - no profile (null)
+     *
+     * @return ?string trust profile name
+     */
+    private function getTrustProfile(): ?string
+    {
+        $trustProfile = $this->request->get('trustProfile', null);
+        if ($trustProfile === null) {
+            $trustProfile = $this->moduleConfig->getOptionalString('trustProfile', null);
+            try {
+                $spmd = $this->metadata->getMetaData($this->spEntityId, 'saml20-sp-remote');
+                if ($spmd && array_key_exists('thissdisco.trustProfile', $spmd)) {
+                    $trustProfile = $spmd['thissdisco.trustProfile'];
+                }
+            } catch (Error\MetadataNotFound) {
+                // ignore the error
+            }
+        }
+        Logger::debug(sprintf(
+            'idpDisco.%s: trust profile for %s is %s',
+            $this->instance,
+            $this->spEntityId,
+            $trustProfile ?? '[none]',
+        ));
+        return $trustProfile;
+    }
+
     public function handleRequest(): void
     {
         $this->start();
-
         $this->session->setData(
             self::class,
             'requestParms',
@@ -57,7 +91,7 @@ class ThissIdPDisco extends IdPDisco
                 'isPassive ' => $this->isPassive,
                 'setIdPentityID' => $this->setIdPentityID,
                 'scopedIDPList' => $this->scopedIDPList,
-                'trustProfile' => $this->request->get('trustProfile'),
+                'trustProfile' => $this->getTrustProfile(),
             ],
         );
 

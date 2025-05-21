@@ -93,8 +93,9 @@ $config = [
 
     /*
      * The name of an entity selection profile ("trust profile") to use.
-     * Setting this overrides any profile set on the disco URL. Note that
-     * the profile itself needs to be defined in the SP metadata.
+     * Setting this overrides any profile set on the disco URL, and can
+     * itself be overridden in SP metadata. Note that the profile itself
+     * needs to be defined below or in the SP metadata.
      */
     //'trustProfile' => 'sirtfi',
 

@@ -153,7 +153,6 @@ class ThissDisco
         if (!is_bool($discovery_response_warning)) {
             $discovery_response_warning = true;
         }
-        $trustProfile = $this->moduleConfig->getOptionalString('trustProfile', null);
 
         $t = new Template($this->config, 'thissdisco:thissdiscojs.twig');
         $t->headers->set('Content-Type', 'text/javascript');
@@ -167,8 +166,7 @@ class ThissDisco
         $t->data['persistence_context'] = $persistence_context;
         $t->data['learn_more_url'] = $learn_more_url;
         $t->data['ignore_discovery_response_warning'] = $discovery_response_warning ? 'false' : 'true';
-        $t->data['trustProfile'] = $trustProfile
-            ?? $requestParams['trustProfile']
+        $t->data['trustProfile'] = $requestParams['trustProfile']
             ?? $request->query->get('trustProfile')
             ?? null;
         return $t;

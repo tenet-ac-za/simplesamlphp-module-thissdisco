@@ -6,6 +6,7 @@ namespace SimpleSAML\Test\Module\thissdisco;
 
 use PHPUnit\Framework\TestCase;
 use Exception;
+use ReflectionMethod;
 use SimpleSAML\Configuration;
 use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\ThissIdPDisco;
@@ -111,5 +112,66 @@ final class ThissIdPDiscoTest extends TestCase
 
         $this->expectOutputRegex('/Find Your Institution/');
         $thissidpdisco->handleRequest();
+    }
+
+    public function testTrustProfile(): void
+    {
+        $request = Request::create(
+            '/thissdisco/disco',
+            'GET',
+            [
+                'entityID' => 'https://myapp.example.org',
+                'return' => 'https://example.com/return',
+            ],
+        );
+        $request->overrideGlobals();
+        $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
+
+        $rm = new ReflectionMethod(ThissIdPDisco::class, 'getTrustProfile');
+        $rm->setAccessible(true);
+
+        $result = $rm->invoke($thissidpdisco);
+        $this->assertEquals(null, $result);
+    }
+
+    public function testTrustProfileFromMd(): void
+    {
+        $request = Request::create(
+            '/thissdisco/disco',
+            'GET',
+            [
+                'entityID' => 'https://example.org/sp',
+                'return' => 'https://example.com/return',
+            ],
+        );
+        $request->overrideGlobals();
+        $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
+
+        $rm = new ReflectionMethod(ThissIdPDisco::class, 'getTrustProfile');
+        $rm->setAccessible(true);
+
+        $result = $rm->invoke($thissidpdisco);
+        $this->assertEquals('dontTrustMe', $result);
+    }
+
+    public function testTrustProfileOverride(): void
+    {
+        $request = Request::create(
+            '/thissdisco/disco',
+            'GET',
+            [
+                'entityID' => 'https://example.org/sp',
+                'return' => 'https://example.com/return',
+                'trustProfile' => 'queryParam',
+            ],
+        );
+        $request->overrideGlobals();
+        $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
+
+        $rm = new ReflectionMethod(ThissIdPDisco::class, 'getTrustProfile');
+        $rm->setAccessible(true);
+
+        $result = $rm->invoke($thissidpdisco);
+        $this->assertEquals('queryParam', $result);
     }
 }
