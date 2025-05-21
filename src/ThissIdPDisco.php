@@ -8,6 +8,7 @@ use SimpleSAML\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Logger;
+use SimpleSAML\Module;
 use SimpleSAML\Utils;
 use SimpleSAML\XHTML\IdPDisco;
 use SimpleSAML\XHTML\Template;
@@ -81,8 +82,6 @@ class ThissIdPDisco extends IdPDisco
     public function handleRequest(): void
     {
         $this->start();
-
-        $trustProfile = $this->getTrustProfile();
         $this->session->setData(
             self::class,
             'requestParms',
@@ -93,7 +92,7 @@ class ThissIdPDisco extends IdPDisco
                 'isPassive ' => $this->isPassive,
                 'setIdPentityID' => $this->setIdPentityID,
                 'scopedIDPList' => $this->scopedIDPList,
-                'trustProfile' => $trustProfile,
+                'trustProfile' => $this->request->get('trustProfile'),
             ],
         );
 
@@ -109,6 +108,18 @@ class ThissIdPDisco extends IdPDisco
             $t->data['base_template'] = '@thissdisco/usethissio.twig';
         }
 
+        /* get information about the thiss config */
+        $mdq = $this->moduleConfig->getOptionalArray('mdq', []);
+        $mdq_url = $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities/');
+        $search_url = $mdq['search'] ?? $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities');
+
+        $persistence = $this->moduleConfig->getOptionalArray('persistence', []);
+        $persistence_url = $persistence['url'] ?? Module::getModuleURL('thissdisco/persistence');
+        $persistence_context = $persistence['context'] ?? self::class;
+
+        $learn_more_url = $this->moduleConfig->getOptionalString('learn_more_url', null);
+        $trustProfile = $this->getTrustProfile();
+
         $discovery_response_warning = $this->moduleConfig->getOptionalValue('discovery_response_warning', false);
         if (!is_bool($discovery_response_warning)) {
             Assert\Assert::validURL(
@@ -122,9 +133,32 @@ class ThissIdPDisco extends IdPDisco
             // use.thiss.io / seamlessaccess default URL
             $discovery_response_warning_url = 'https://seamlessaccess.atlassian.net/wiki/x/B4C_Vw';
         }
-        $t->data['discovery_response_warning'] = $discovery_response_warning;
-        $t->data['discovery_response_warning_url'] = $discovery_response_warning_url;
+
+        /* save them for thissdisco.js */
+        $this->session->setData(
+            self::class,
+            'thissParms',
+            [
+                'mdq_url' => $mdq_url,
+                'search_url' => $search_url,
+                'persistence_url' => $persistence_url,
+                'persistence_context ' => $persistence_context,
+                'learn_more_url' => $learn_more_url,
+                'trustProfile' => $trustProfile,
+                'discovery_response_warning' => $discovery_response_warning,
+                'discovery_response_warning_url' => $discovery_response_warning_url,
+            ],
+        );
+
+        /* and then make them available here too */
+        $t->data['mdq_url'] = $mdq_url;
+        $t->data['search_url'] = $search_url;
+        $t->data['persistence_url'] = $persistence_url;
+        $t->data['persistence_context'] = $persistence_context;
+        $t->data['learn_more_url'] = $learn_more_url;
         $t->data['trustProfile'] = $trustProfile;
+        $t->data['discovery_response_warning'] = $discovery_response_warning ? 'true' : 'false';
+        $t->data['discovery_response_warning_url'] = $discovery_response_warning_url;
 
         /* add the basic disco params */
         $t->data['return'] = $this->returnURL;

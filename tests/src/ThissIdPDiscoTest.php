@@ -7,9 +7,11 @@ namespace SimpleSAML\Test\Module\thissdisco;
 use PHPUnit\Framework\TestCase;
 use Exception;
 use ReflectionMethod;
+use ReflectionProperty;
 use SimpleSAML\Configuration;
 use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\ThissIdPDisco;
+use SimpleSAML\Session;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 /**
@@ -30,6 +32,7 @@ final class ThissIdPDiscoTest extends TestCase
     {
         MetaDataStorageHandler::clearInternalState();
         Configuration::clearInternalState();
+        Session::clearInternalState();
 
         $this->moduleConfig = Configuration::loadFromArray(
             [
@@ -105,13 +108,47 @@ final class ThissIdPDiscoTest extends TestCase
             [
                 'entityID' => 'https://myapp.example.org',
                 'return' => 'https://example.com/return',
+                'trustProfile' => 'query',
             ],
         );
         $request->overrideGlobals();
         $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
 
+        /* get the session */
+        $rp = new ReflectionProperty(ThissIdPDisco::class, 'session');
+        $rp->setAccessible(true);
+        $session = $rp->getValue($thissidpdisco);
+        $this->assertInstanceOf(Session::class, $session);
+        /* should not be set before handleRequest */
+        $requestParms = $session->getData(ThissIdPDisco::class, 'requestParms');
+        $this->assertEquals(null, $requestParms);
+        $thissParms = $session->getData(ThissIdPDisco::class, 'thissParms');
+        $this->assertEquals(null, $thissParms);
+
+        /* confirm a page is rendered */
         $this->expectOutputRegex('/Find Your Institution/');
         $thissidpdisco->handleRequest();
+
+        /* get the session after handleRequest */
+        $session = $rp->getValue($thissidpdisco);
+        $this->assertInstanceOf(Session::class, $session);
+        /* should be set after handleRequest */
+        $requestParms = $session->getData(ThissIdPDisco::class, 'requestParms');
+        $this->assertIsArray($requestParms);
+        $this->assertArrayHasKey('spEntityId', $requestParms);
+        $this->assertEquals('https://myapp.example.org', $requestParms['spEntityId']);
+        $this->assertArrayHasKey('trustProfile', $requestParms);
+        $this->assertEquals('query', $requestParms['trustProfile']);
+        $thissParms = $session->getData(ThissIdPDisco::class, 'thissParms');
+        $this->assertIsArray($thissParms);
+        $this->assertArrayHasKey('persistence_url', $thissParms);
+        $this->assertEquals('https://use.thiss.io/ps/', $thissParms['persistence_url']);
+        $this->assertArrayHasKey('mdq_url', $thissParms);
+        $this->assertIsString($thissParms['mdq_url']);
+        $this->assertStringContainsString('simplesaml/module.php/thissdisco/entities/', $thissParms['mdq_url']);
+        $this->assertArrayHasKey('trustProfile', $thissParms);
+        $this->assertIsString($thissParms['trustProfile']);
+        $this->assertEquals('query', $thissParms['trustProfile']);
     }
 
     public function testTrustProfile(): void

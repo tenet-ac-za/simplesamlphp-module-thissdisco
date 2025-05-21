@@ -131,6 +131,20 @@ final class ThissDiscoTest extends TestCase
                 'trustProfile' => 'sirtfi',
             ],
         );
+        $session->setData(
+            \SimpleSAML\Module\thissdisco\ThissIdPDisco::class,
+            'thissParms',
+            [
+                'mdq_url' => 'mdq_url',
+                'search_url' => 'search_url',
+                'persistence_url' => 'persistence_url',
+                'persistence_context ' => 'persistence_context',
+                'learn_more_url' => 'learn_more_url',
+                'trustProfile' => 'trustProfile',
+                'discovery_response_warning' => true,
+                'discovery_response_warning_url' => 'discovery_response_warning_url',
+            ],
+        );
         $request = Request::create('/thissdisco/thissdisco.js', 'GET',);
         $request->overrideGlobals();
 
@@ -140,13 +154,15 @@ final class ThissDiscoTest extends TestCase
         $this->assertEquals('text/javascript', $response->headers->get('Content-Type'));
         $this->assertIsArray($response->data);
         $this->assertArrayHasKey('persistence_url', $response->data);
-        $this->assertEquals('https://use.thiss.io/ps/', $response->data['persistence_url']);
+        $this->assertEquals('persistence_url', $response->data['persistence_url']);
         $this->assertArrayHasKey('mdq_url', $response->data);
         $this->assertIsString($response->data['mdq_url']);
-        $this->assertStringContainsString('simplesaml/module.php/thissdisco/entities/', $response->data['mdq_url']);
+        $this->assertEquals('mdq_url', $response->data['mdq_url']);
         $this->assertArrayHasKey('spEntityId', $response->data);
+        $this->assertIsString($response->data['spEntityId']);
         $this->assertEquals('https://myapp.example.org', $response->data['spEntityId']);
         $this->assertArrayHasKey('trustProfile', $response->data);
-        $this->assertEquals('sirtfi', $response->data['trustProfile']);
+        $this->assertIsString($response->data['trustProfile']);
+        $this->assertEquals('trustProfile', $response->data['trustProfile']);
     }
 }

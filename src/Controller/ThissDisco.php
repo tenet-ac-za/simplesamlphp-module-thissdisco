@@ -7,7 +7,6 @@ namespace SimpleSAML\Module\thissdisco\Controller;
 use Exception;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
-use SimpleSAML\Module;
 use SimpleSAML\Session;
 use SimpleSAML\Module\thissdisco\ThissIdPDisco;
 use SimpleSAML\XHTML\Template;
@@ -135,23 +134,14 @@ class ThissDisco
     {
         $session = Session::getSessionFromRequest();
         $requestParams = $session->getData(ThissIdPDisco::class, 'requestParms');
-
         if (!isset($requestParams)) {
             throw new Error\Exception('Could not get request parameters from session');
         }
 
-        $mdq = $this->moduleConfig->getOptionalArray('mdq', []);
-        $mdq_url = $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities/');
-        $search_url = $mdq['search'] ?? $mdq['lookup_base'] ?? Module::getModuleURL('thissdisco/entities');
-
-        $persistence = $this->moduleConfig->getOptionalArray('persistence', []);
-        $persistence_url = $persistence['url'] ?? Module::getModuleURL('thissdisco/persistence');
-        $persistence_context = $persistence['context'] ?? self::class;
-
-        $learn_more_url = $this->moduleConfig->getOptionalString('learn_more_url', null);
-        $discovery_response_warning = $this->moduleConfig->getOptionalValue('discovery_response_warning', false);
-        if (!is_bool($discovery_response_warning)) {
-            $discovery_response_warning = true;
+        /* business logic centralised in ThissIdPDisco */
+        $thissParms = $session->getData(ThissIdPDisco::class, 'thissParms');
+        if (!isset($thissParms)) {
+            throw new Error\Exception('Could not get thiss config parameters from session');
         }
 
         $t = new Template($this->config, 'thissdisco:thissdiscojs.twig');
@@ -160,13 +150,16 @@ class ThissDisco
         $t->headers->set('Vary', 'Accept-Encoding, Cookie, Content-Language');
 
         $t->data['spEntityId'] = $requestParams['spEntityId'];
-        $t->data['mdq_url'] = $mdq_url;
-        $t->data['search_url'] = $search_url;
-        $t->data['persistence_url'] = $persistence_url;
-        $t->data['persistence_context'] = $persistence_context;
-        $t->data['learn_more_url'] = $learn_more_url;
-        $t->data['ignore_discovery_response_warning'] = $discovery_response_warning ? 'false' : 'true';
-        $t->data['trustProfile'] = $requestParams['trustProfile']
+        $t->data['mdq_url'] = $thissParms['mdq_url'] ?? null;
+        $t->data['search_url'] = $thissParms['search_url'] ?? null;
+        $t->data['persistence_url'] = $thissParms['persistence_url'] ?? null;
+        $t->data['persistence_context'] = $thissParms['persistence_context'] ?? ThissIdPDisco::class;
+        $t->data['learn_more_url'] = $thissParms['learn_more_url'] ?? null;
+        $t->data['discovery_response_warning'] = $thissParms['discovery_response_warning'] ? 'true' : 'false';
+        $t->data['discovery_response_warning_url'] = $thissParms['discovery_response_warning_url'];
+        $t->data['ignore_discovery_response_warning'] = $thissParms['discovery_response_warning'] ? 'false' : 'true';
+        $t->data['trustProfile'] = $thissParms['trustProfile']
+            ?? $requestParams['trustProfile']
             ?? $request->query->get('trustProfile')
             ?? null;
         return $t;
