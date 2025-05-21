@@ -18,6 +18,14 @@
   vertical-align: -0.125em;
 }
 
+/* bootstrap reset breaks pure-css, so re-anchor this */
+* {
+  box-sizing: initial;
+}
+.thissdisco-dsclient * {
+  box-sizing: border-box;
+}
+
 /**
  * The portions of this CSS that follow are derived from thiss-js,
  * but have been modified to anchor them to the thiss-js UI and allow
