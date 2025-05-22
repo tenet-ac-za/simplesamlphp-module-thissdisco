@@ -671,8 +671,10 @@
 
 .thissdisco-dsclient-header.horizontal-header {
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
+  gap: 10px 2rem;
   align-items: baseline;
+  padding: 0px 0px 20px 0px;
 }
 .thissdisco-dsclient-header.horizontal-header .horizontal-header-item {
   flex: none;
@@ -680,7 +682,7 @@
 
 .thissdisco-dsclient-header .account {
   font-size: 13px;
-  padding: 0px 0px 2rem 0px;
+  /* padding: 0px 0px 2rem 0px; // move to header */
 }
 
 .thissdisco-dsclient-header .account-pill {
@@ -694,7 +696,7 @@
 .thissdisco-dsclient-header .warning-header {
   padding: 4px;
   border-radius: 3px;
-  margin-left: 2rem;
+  /* margin-left: 2rem; // use flex gap */
   border: 1px solid rgb(133, 99, 29);
   background: #fff2d5;
 }
