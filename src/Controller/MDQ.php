@@ -27,9 +27,6 @@ use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
  */
 class MDQ
 {
-    /** @var \SimpleSAML\Auth\Source|string */
-    protected $authSource = Auth\Source::class;
-
     /** @var \SimpleSAML\Locale\Language */
     protected Language $language;
 
@@ -732,7 +729,7 @@ class MDQ
         $md = [];
         try {
             /** @var \SimpleSAML\Module\saml\Auth\Source\SP $source */
-            foreach ($this->authSource::getSourcesOfType('saml:SP') as $source) {
+            foreach (Auth\Source::getSourcesOfType('saml:SP') as $source) {
                 $metadata = $source->getHostedMetadata();
                 $metadata['metadata-set'] ??= 'saml20-sp-remote';
                 $metadata['metadata-index'] ??= $metadata['entityid'];
