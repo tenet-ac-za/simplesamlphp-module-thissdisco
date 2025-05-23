@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleSAML\Module\thissdisco;
 
 use SimpleSAML\Assert;
+use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Logger;
@@ -54,26 +55,22 @@ class ThissIdPDisco extends IdPDisco
      *  - any global profile from module_thissdisco.php
      *  - no profile (null)
      *
+     * @param ?array $spmd SP metatata
      * @return ?string trust profile name
      */
-    private function getTrustProfile(): ?string
+    private function getTrustProfile(?array $spmd): ?string
     {
         $trustProfile = $this->request->get('trustProfile', null);
         if ($trustProfile === null) {
-            $trustProfile = $this->moduleConfig->getOptionalString('trustProfile', null);
-            try {
-                $spmd = $this->metadata->getMetaData($this->spEntityId, 'saml20-sp-remote');
-                if ($spmd && array_key_exists('thissdisco.trustProfile', $spmd)) {
-                    $trustProfile = $spmd['thissdisco.trustProfile'];
-                }
-            } catch (Error\MetadataNotFound) {
-                // ignore the error
+            if (is_array($spmd) && array_key_exists('thissdisco.trustProfile', $spmd)) {
+                $trustProfile = $spmd['thissdisco.trustProfile'];
             }
         }
         Logger::debug(sprintf(
-            'idpDisco.%s: trust profile for %s is %s',
+            'idpDisco.%s: trust profile for %s%s is %s',
             $this->instance,
-            $this->spEntityId,
+            $spmd['entityid'],
+            $spmd['entityid'] != $this->spEntityId ? ' [via ' . $this->spEntityId . ']' : '',
             $trustProfile ?? '[none]',
         ));
         return $trustProfile;
@@ -118,7 +115,6 @@ class ThissIdPDisco extends IdPDisco
         $persistence_context = $persistence['context'] ?? self::class;
 
         $learn_more_url = $this->moduleConfig->getOptionalString('learn_more_url', null);
-        $trustProfile = $this->getTrustProfile();
 
         $discovery_response_warning = $this->moduleConfig->getOptionalValue('discovery_response_warning', false);
         if (!is_bool($discovery_response_warning)) {
@@ -134,6 +130,36 @@ class ThissIdPDisco extends IdPDisco
             $discovery_response_warning_url = 'https://seamlessaccess.atlassian.net/wiki/x/B4C_Vw';
         }
 
+        try {
+            $spmd = $this->metadata->getMetaData($this->spEntityId, 'saml20-sp-remote');
+            if (
+                $this->moduleConfig->getOptionalBoolean('useunsafereturn', false)
+                && $this->request->query->has('return')
+            ) {
+                /**
+                 * As with discopower, this attempts to let protocol bridges retrieve the SP metadata
+                 * from the other side of the protocol bridge by retrieving the state.
+                 * Because the disco is not explicitly passed the state ID, we can use a crude hack to
+                 * infer it from the return parameter. This should be relatively safe because we're not
+                 * going to trust it for anything other than finding the `discopower.filter` elements,
+                 * and because the SP could bypass all of this anyway by specifying a known IdP in scoping.
+                 */
+                parse_str(parse_url($this->request->query->get('return'), PHP_URL_QUERY), $returnState);
+                if (array_key_exists('AuthID', $returnState)) {
+                    $state = Auth\State::loadState($returnState['AuthID'], 'saml:sp:sso', true);
+                    if ($state && array_key_exists('SPMetadata', $state)) {
+                        $spmd = $state['SPMetadata'];
+                        $this->log('Updated SP metadata from ' . $this->spEntityId . ' to ' . $spmd['entityid']);
+                    }
+                }
+            }
+        } catch (Error\MetadataNotFound | Error\NoState $e) {
+            // ignore
+        } finally {
+            $trustProfile = $this->getTrustProfile($spmd ?? null);
+            $originalEntityId = $spmd['entityid'] ?? $this->spEntityId;
+        }
+
         /* save them for thissdisco.js */
         $this->session->setData(
             self::class,
@@ -147,6 +173,7 @@ class ThissIdPDisco extends IdPDisco
                 'trustProfile' => $trustProfile,
                 'discovery_response_warning' => $discovery_response_warning,
                 'discovery_response_warning_url' => $discovery_response_warning_url,
+                'originEntityId' => $originalEntityId,
             ],
         );
 
@@ -159,6 +186,12 @@ class ThissIdPDisco extends IdPDisco
         $t->data['trustProfile'] = $trustProfile;
         $t->data['discovery_response_warning'] = $discovery_response_warning ? 'true' : 'false';
         $t->data['discovery_response_warning_url'] = $discovery_response_warning_url;
+        /* these two will be the same unless we are via a protocol bridge */
+        $t->data['spEntityId'] = $this->spEntityId;
+        $t->data['originEntityId'] = $originalEntityId;
+        /* As a theme designer, it always irritates me when modules have metadata
+         * but don't make it available for use in a theme. We have it here, so ... */
+        $t->data['source'] = $spmd ?? [];
 
         /* add the basic disco params */
         $t->data['return'] = $this->returnURL;

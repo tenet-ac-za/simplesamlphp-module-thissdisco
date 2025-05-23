@@ -5,12 +5,12 @@
  * It is derived from the thiss-js discovery service at
  * https://github.com/TheIdentitySelector/thiss-js/blob/2.1.57/src/ds/index.js
  */
-
 $(document).ready(function() {
     /**
      * Local configuration for thissio-js discovery widget
      */
-    let entityID = '{{ spEntityId }}';
+    let entityID = '{{ spEntityId }}'; // calling SP
+    let originEntityId = '{{ originEntityId }}'; // original SP in a protocol bridge
     let mdq_url = '{{ mdq_url}}';
     let search_url = '{{ search_url }}';
     let persistence_url = '{{ persistence_url}}';
@@ -169,7 +169,7 @@ $(document).ready(function() {
             }
 
             try {
-                thiss.json_mdq_get_sp(entityID, mdq_url).then(spEntity => {
+                thiss.json_mdq_get_sp(originEntityId, mdq_url).then(spEntity => {
                     let strict = true;
                     if (trustProfile && 'tinfo' in spEntity &&
                               'profiles' in spEntity.tinfo &&
@@ -277,8 +277,8 @@ $(document).ready(function() {
                 clearTimeout(timer); timer = null;
             }
 
-            if (entityID) {
-                thiss.json_mdq_get_sp(entityID, mdq_url).then(spEntity => {
+            if (originEntityId) {
+                thiss.json_mdq_get_sp(originEntityId, mdq_url).then(spEntity => {
                     let strict = true;
                     if (trustProfile && 'tinfo' in spEntity &&
                               'profiles' in spEntity.tinfo &&
@@ -359,7 +359,11 @@ $(document).ready(function() {
                 $("#search").addClass("d-none");
             }
         }
-    }).discovery_client("sp").then(entity => {
+    });
+    /* change from
+     * // .discovery_client("sp").then(entity => {
+     * to allow protocol bridges to get the right name */
+    thiss.json_mdq_get_sp(originEntityId, mdq_url).then(entity => {
         $(".sp_title").text(entity.title);
         $("#discovery-response-warning-site").text(entity.title);
 
@@ -381,7 +385,7 @@ $(document).ready(function() {
         if (goodReturn === false) {
             $("#warning-discovery-response").removeClass("d-none");
         }
-    })
+    });
 
     /* merge the langauge selector with SSP's translations */
     $('#locale-selector').on('change', function() {
@@ -393,5 +397,6 @@ $(document).ready(function() {
             window.location.search = lang;
         }
     });
+{% block thisdiscojs_ready_after %}{% endblock %}
 });
 {% endautoescape %}

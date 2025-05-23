@@ -143,6 +143,7 @@ final class ThissDiscoTest extends TestCase
                 'trustProfile' => 'trustProfile',
                 'discovery_response_warning' => true,
                 'discovery_response_warning_url' => 'discovery_response_warning_url',
+                'originEntityId' => 'https://myapp.example.org',
             ],
         );
         $request = Request::create('/thissdisco/thissdisco.js', 'GET',);
@@ -161,6 +162,8 @@ final class ThissDiscoTest extends TestCase
         $this->assertArrayHasKey('spEntityId', $response->data);
         $this->assertIsString($response->data['spEntityId']);
         $this->assertEquals('https://myapp.example.org', $response->data['spEntityId']);
+        $this->assertIsString($response->data['originEntityId']);
+        $this->assertEquals('https://myapp.example.org', $response->data['originEntityId']);
         $this->assertArrayHasKey('trustProfile', $response->data);
         $this->assertIsString($response->data['trustProfile']);
         $this->assertEquals('trustProfile', $response->data['trustProfile']);

@@ -167,7 +167,7 @@ final class ThissIdPDiscoTest extends TestCase
         $rm = new ReflectionMethod(ThissIdPDisco::class, 'getTrustProfile');
         $rm->setAccessible(true);
 
-        $result = $rm->invoke($thissidpdisco);
+        $result = $rm->invoke($thissidpdisco, null);
         $this->assertEquals(null, $result);
     }
 
@@ -183,11 +183,14 @@ final class ThissIdPDiscoTest extends TestCase
         );
         $request->overrideGlobals();
         $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
+        $metadata = MetaDataStorageHandler::getMetadataHandler();
+        $spmd = $metadata->getMetaData('https://example.org/sp', 'saml20-sp-remote');
+
 
         $rm = new ReflectionMethod(ThissIdPDisco::class, 'getTrustProfile');
         $rm->setAccessible(true);
 
-        $result = $rm->invoke($thissidpdisco);
+        $result = $rm->invoke($thissidpdisco, $spmd);
         $this->assertEquals('dontTrustMe', $result);
     }
 
@@ -204,11 +207,13 @@ final class ThissIdPDiscoTest extends TestCase
         );
         $request->overrideGlobals();
         $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
+        $metadata = MetaDataStorageHandler::getMetadataHandler();
+        $spmd = $metadata->getMetaData('https://example.org/sp', 'saml20-sp-remote');
 
         $rm = new ReflectionMethod(ThissIdPDisco::class, 'getTrustProfile');
         $rm->setAccessible(true);
 
-        $result = $rm->invoke($thissidpdisco);
+        $result = $rm->invoke($thissidpdisco, $spmd);
         $this->assertEquals('queryParam', $result);
     }
 }

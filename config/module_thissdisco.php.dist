@@ -88,19 +88,20 @@ $config = [
      *             transformed identifier cache.
      */
     'cachetype' => 'phpfiles',
-    //'cachedir' => '/path/to/cache/dir',
-    //'cachedir' => 'redis://localhost',
+    // 'cachedir' => '/path/to/cache/dir',
+    // 'cachedir' => 'redis://localhost',
     'cachelength' => 0, // forever
     'cachelength.negative' => 3600,
     'crontags' => ['daily'],
 
     /*
-     * The name of an entity selection profile ("trust profile") to use.
-     * Setting this overrides any profile set on the disco URL, and can
-     * itself be overridden in SP metadata. Note that the profile itself
-     * needs to be defined below or in the SP metadata.
+     * The name of a default entity selection profile ("trust profile") to
+     * use if no other is given. This value can be overridden by setting
+     * 'thissdisco.trustProfile' in the SP metadata, or by specifying the
+     * trustProfile parameter on the disco request. Note that the profile
+     * itself needs to be defined below or in the SP's metadata.
      */
-    //'trustProfile' => 'sirtfi',
+    // 'trustProfile' => 'sirtfi',
 
     /*
      * Entity selection profile ("trust profile") descriptions to include
@@ -125,4 +126,12 @@ $config = [
             'strict' => true,
         ],
     ],
+
+    /*
+     * If you are configuring a protocol bridge, setting this to `true` will
+     * parse the URL return parameter and use it to find trustProfile
+     * configuration in SP metadata on the other side of the bridge.
+     * Because it introduces a small risk, the default is `false`.
+     */
+    // 'useunsafereturn' => false,
 ];
