@@ -147,8 +147,14 @@ class ThissDisco
         $t = new Template($this->config, 'thissdisco:thissdiscojs.twig');
         $t->headers->set('Content-Type', 'text/javascript');
         $t->headers->set('Content-Language', $t->getTranslator()->getLanguage()->getLanguage());
-        $t->headers->set('X-ThissDisco-EntityID', $thissParms['originEntityId']);
-        $t->headers->set('Vary', 'Accept-Encoding, Cookie, Content-Language, X-ThissDisco-EntityID');
+        $t->headers->set('Vary', 'Accept-Encoding, Cookie, Content-Language');
+        $t->setCache([
+            'etag' => sha1(serialize($requestParams)),
+            'max_age' => $this->moduleConfig->getOptionalInteger('cachelength.browser', 43200),
+            'private' => true,
+            'no_cache' => false,
+            'no_store' => false,
+        ]);
 
         $t->data['spEntityId'] = $requestParams['spEntityId'];
         $t->data['originEntityId'] = $thissParms['originEntityId'] ?? $requestParams['spEntityId'];

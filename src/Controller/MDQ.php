@@ -791,6 +791,14 @@ class MDQ
         $trustProfileName = $request->query->get('trustprofile', $request->query->get('trustProfile', null));
 
         $response = new JsonResponse();
+        $browserCache = $this->moduleConfig->getOptionalInteger('cachelength.browser', 43200);
+        if ($browserCache > 0) {
+            $etag = sha1(($identifier ?? '') . '::' . $request->getQueryString());
+            $response->setEtag($etag, true);
+            if ($response->isNotModified($request)) {
+                return $response;
+            }
+        }
 
         if ($identifier !== null) {
             /**
@@ -846,11 +854,22 @@ class MDQ
 
         $response->setData($data);
         if (empty($data)) {
-            $response->setPrivate();
-            $response->headers->addCacheControlDirective('no-store');
+            $response->setCache([
+                'max_age' => $this->moduleConfig->getOptionalInteger('cachelength.negative', 60),
+                'private' => true,
+                'no_store' => true,
+                'no_cache' => true,
+                'must_revalidate' => true,
+            ]);
         } else {
-            $response->setMaxAge($this->negativecachelength);
-            $response->setSharedMaxAge($this->negativecachelength);
+            $response->setCache([
+                'max_age' => $browserCache,
+                's_maxage' => $browserCache / 2,
+                'private' => false,
+                'no_store' => false,
+                'no_cache' => false,
+                'must_revalidate' => true,
+            ]);
         }
         $response->setEncodingOptions(
             JsonResponse::DEFAULT_ENCODING_OPTIONS | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,

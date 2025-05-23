@@ -95,6 +95,13 @@ $config = [
     'crontags' => ['daily'],
 
     /*
+     * 'cachelength.browser' affects how the resulting entities discoJSON MDQ
+     *             objects might be stored in the client browser's local cache
+     *             (HTTP Cache-Control max-age). Defaults to 43200 seconds.
+     */
+    'cachelength.browser' => 43200,
+
+    /*
      * The name of a default entity selection profile ("trust profile") to
      * use if no other is given. This value can be overridden by setting
      * 'thissdisco.trustProfile' in the SP metadata, or by specifying the
