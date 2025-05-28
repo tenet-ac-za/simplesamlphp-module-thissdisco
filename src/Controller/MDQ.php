@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SimpleSAML\Module\thissdisco\Controller;
 
 use Exception;
+use DateTimeImmutable;
 use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
@@ -363,6 +364,10 @@ class MDQ
             }
         }
 
+        if (array_key_exists('expire', $entity)) {
+            $data['expire'] = $entity['expire'];
+        }
+
         return $data;
     }
 
@@ -586,7 +591,11 @@ class MDQ
 
             array_push(
                 $data,
-                $this->entityAsDiscoJSON($entity),
+                array_filter(
+                    $this->entityAsDiscoJSON($entity),
+                    fn($k) => $k !== 'expire',
+                    ARRAY_FILTER_USE_KEY,
+                ),
             );
 
             /* maximum number of search results */
@@ -820,6 +829,11 @@ class MDQ
             );
             if (empty($data)) {
                 $response->setStatusCode(Response::HTTP_NOT_FOUND);
+            } elseif (isset($data['expire'])) {
+                $maxAge = time() - $data['expire'];
+                $browserCache = max($browserCache, $maxAge);
+                $response->setExpires(new DateTimeImmutable('@' . $data['expire']));
+                unset($data['expire']);
             }
         } else {
             /**
