@@ -40,3 +40,13 @@ thissdisco-persistance:
     path: /persistence
     defaults:
         _controller: SimpleSAML\Module\thissdisco\Controller\Persistence
+
+# make things easier for people transitioning from discopower
+thissdisco-discopower-compat:
+    path: /disco.php
+    defaults:
+        _controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+        route: thissdisco-main
+        permanent: true
+        keepQueryParams: true
+    methods: [GET]
