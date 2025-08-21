@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Test\Module\thissdisco;
 
-use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
-use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\MDQCache;
+use SimpleSAML\TestUtils\ClearStateTestCase;
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\MDQCache
  */
-final class MDQCacheTest extends TestCase
+final class MDQCacheTest extends ClearStateTestCase
 {
     /** @var \SimpleSAML\Configuration */
     protected Configuration $config;
@@ -23,9 +22,7 @@ final class MDQCacheTest extends TestCase
 
     protected function setUp(): void
     {
-        MetaDataStorageHandler::clearInternalState();
-        Configuration::clearInternalState();
-
+        parent::setUp();
         $this->asConfig = Configuration::loadFromArray(
             [],
             '[ARRAY]',

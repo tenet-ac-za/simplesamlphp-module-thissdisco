@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Test\Module\thissdisco\Controller;
 
-use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
-use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\Controller;
+use SimpleSAML\TestUtils\ClearStateTestCase;
 use Symfony\Component\HttpFoundation\{JsonResponse, Request};
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ
  */
-final class MDQTest extends TestCase
+final class MDQTest extends ClearStateTestCase
 {
     /** @var \SimpleSAML\Configuration */
     protected Configuration $config;
@@ -31,9 +30,7 @@ final class MDQTest extends TestCase
 
     protected function setUp(): void
     {
-        MetaDataStorageHandler::clearInternalState();
-        Configuration::clearInternalState();
-
+        parent::setUp();
         $this->moduleConfig = Configuration::loadFromArray(
             ['cachetype' => 'array', 'cachedir' => 'phpunit'],
             '[ARRAY]',

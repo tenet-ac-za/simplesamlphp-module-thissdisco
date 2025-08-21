@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Test\Module\thissdisco;
 
-use PHPUnit\Framework\TestCase;
 use Exception;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -12,12 +11,13 @@ use SimpleSAML\Configuration;
 use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\ThissIdPDisco;
 use SimpleSAML\Session;
+use SimpleSAML\TestUtils\ClearStateTestCase;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\ThissIdPDisco
  */
-final class ThissIdPDiscoTest extends TestCase
+final class ThissIdPDiscoTest extends ClearStateTestCase
 {
     /** @var \SimpleSAML\Configuration */
     protected Configuration $config;
@@ -30,10 +30,7 @@ final class ThissIdPDiscoTest extends TestCase
 
     protected function setUp(): void
     {
-        MetaDataStorageHandler::clearInternalState();
-        Configuration::clearInternalState();
-        Session::clearInternalState();
-
+        parent::setUp();
         $this->moduleConfig = Configuration::loadFromArray(
             [
                 'persistence' => [

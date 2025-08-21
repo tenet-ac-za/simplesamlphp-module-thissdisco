@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Test\Module\thissdisco;
 
-use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
-use SimpleSAML\Metadata\MetaDataStorageHandler;
+use SimpleSAML\TestUtils\ClearStateTestCase;
 
 // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 require_once(dirname(__FILE__, 3) . '/hooks/hook_cron.php');
 // phpcs:enable
 
-final class HookCronTest extends TestCase
+final class HookCronTest extends ClearStateTestCase
 {
     /** @var \SimpleSAML\Configuration */
     protected Configuration $config;
@@ -22,9 +21,7 @@ final class HookCronTest extends TestCase
 
     protected function setUp(): void
     {
-        MetaDataStorageHandler::clearInternalState();
-        Configuration::clearInternalState();
-
+        parent::setUp();
         $empty = Configuration::loadFromArray([], '[ARRAY]', 'simplesaml',);
         Configuration::setPreLoadedConfig($empty, 'module_cron.php');
         Configuration::setPreLoadedConfig($empty, 'authsources.php');
