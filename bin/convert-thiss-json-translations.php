@@ -5,7 +5,10 @@ declare(strict_types=1);
 
 /**
  * Simple, probably someone hacky script to convert the thiss-js JSON translations
- * into PO files for use with gettext and SimpleSAMLphp.
+ * into PO files for use with gettext and SimpleSAMLphp. This is really intended
+ * as a one-off script to convert the existing translations, and not something
+ * that will be run regularly. It's kept here to allow future maintainers to understand
+ * the process and potentially adapt it for future needs.
  */
 
 $dest = $_SERVER['argv'][1] ?? dirname(__DIR__) . '/locales';
