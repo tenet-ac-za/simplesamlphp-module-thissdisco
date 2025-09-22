@@ -740,10 +740,10 @@ class MDQ
             foreach (
                 /*
                  * Making this a variable allows us to configure derivative classes
-                 * of saml:SP (\SimpleSAML\Module\saml\Auth\Source\SP) more easily.
-                 * However, there's an implicit assumption that all sources will
-                 * behave like saml:SP. So this is an advanced development option
-                 * only, and is deliberately not documented in the config reference.
+                 * of saml:SP more easily. However, there's an implicit assumption
+                 * that all sources will behave like saml:SP. So this is an advanced
+                 * development option only, and is deliberately not documented in the
+                 * config reference.
                  */
                 $this->moduleConfig->getOptionalArrayizeString('authsource.types', ['saml:SP']) as $type
             ) {
