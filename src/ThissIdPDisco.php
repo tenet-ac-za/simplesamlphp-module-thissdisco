@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\thissdisco;
 
+use Exception;
 use SimpleSAML\Assert;
 use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
@@ -71,7 +72,7 @@ class ThissIdPDisco extends IdPDisco
         Logger::debug(sprintf(
             'idpDisco.%s: trust profile for %s%s is %s',
             $this->instance,
-            $spmd['entityid'],
+            $spmd['entityid'] ?? '[unknown]',
             $spmd['entityid'] != $this->spEntityId ? ' [via ' . $this->spEntityId . ']' : '',
             $trustProfile ?? '[none]',
         ));
@@ -135,6 +136,7 @@ class ThissIdPDisco extends IdPDisco
 
         try {
             $spmd = $this->metadata->getMetaData($this->spEntityId, 'saml20-sp-remote');
+        } catch (Exception $e) {
             if (
                 $this->moduleConfig->getOptionalBoolean('useunsafereturn', false)
                 && $this->request->query->has('return')
@@ -147,39 +149,41 @@ class ThissIdPDisco extends IdPDisco
                  * going to trust it for anything other than finding the `thissdisco.trustProfile` elements,
                  * and because the SP could bypass all of this anyway by specifying a known IdP in scoping.
                  */
-                parse_str(parse_url($this->request->query->get('return'), PHP_URL_QUERY), $returnState);
-                if (array_key_exists('AuthID', $returnState)) {
-                    /* first preference is to get it from the state */
-                    $state = Auth\State::loadState($returnState['AuthID'], 'saml:sp:sso', true);
-                    if ($state && array_key_exists('SPMetadata', $state)) {
-                        $spmd = $state['SPMetadata'];
-                        $this->log(sprintf(
-                            'Updated SP metadata from %s to %s via state',
-                            $this->spEntityId,
-                            $spmd['entityid'],
-                        ));
+                try {
+                    parse_str(parse_url($this->request->query->get('return'), PHP_URL_QUERY), $returnState);
+                    if (array_key_exists('AuthID', $returnState)) {
+                        /* first preference is to get it from the state */
+                        $state = Auth\State::loadState($returnState['AuthID'], 'saml:sp:sso', true);
+                        if ($state && array_key_exists('SPMetadata', $state)) {
+                            $spmd = $state['SPMetadata'];
+                            $this->log(sprintf(
+                                'Updated SP metadata from %s to %s via state',
+                                $this->spEntityId,
+                                $spmd['entityid'],
+                            ));
+                        }
+                        /*
+                        elseif (
+                            preg_match('/[?&]spentityid=([^&]*)/', $returnState['AuthID'], $matches)
+                            && isset($matches[1])
+                        ) {
+                            // if the session fails, we could get it from the spentityid
+                            // param in the return. But that is more vulnerable to tampering,
+                            // so this code is commented out.
+                            $spentityid = urldecode($matches[1]);
+                            $spmd = $this->metadata->getMetaData($spentityid, 'saml20-sp-remote');
+                            $this->log(sprintf(
+                                'Updated SP metadata from %s to %s via spentityid',
+                                $this->spEntityId,
+                                $spentityid,
+                            ));
+                        }
+                        */
                     }
-                    /*
-                    elseif (
-                        preg_match('/[?&]spentityid=([^&]*)/', $returnState['AuthID'], $matches)
-                        && isset($matches[1])
-                    ) {
-                        // if the session fails, we could get it from the spentityid
-                        // param in the return. But that is more vulnerable to tampering,
-                        // so this code is commented out.
-                        $spentityid = urldecode($matches[1]);
-                        $spmd = $this->metadata->getMetaData($spentityid, 'saml20-sp-remote');
-                        $this->log(sprintf(
-                            'Updated SP metadata from %s to %s via spentityid',
-                            $this->spEntityId,
-                            $spentityid,
-                        ));
-                    }
-                    */
+                } catch (Exception $e) {
+                    // ignore
                 }
             }
-        } catch (Error\MetadataNotFound | Error\NoState $e) {
-            // ignore
         } finally {
             $trustProfile = $this->getTrustProfile($spmd ?? null);
             $originalEntityId = $spmd['entityid'] ?? $this->spEntityId;
