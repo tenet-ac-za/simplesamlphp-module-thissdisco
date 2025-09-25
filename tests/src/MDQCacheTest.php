@@ -20,6 +20,7 @@ final class MDQCacheTest extends ClearStateTestCase
     /** @var \SimpleSAML\Configuration */
     protected Configuration $asConfig;
 
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -43,6 +44,7 @@ final class MDQCacheTest extends ClearStateTestCase
         Configuration::setPreLoadedConfig($this->config, 'config.php');
     }
 
+
     public function testConstruct(): void
     {
         $moduleConfig = Configuration::loadFromArray(
@@ -54,6 +56,7 @@ final class MDQCacheTest extends ClearStateTestCase
         $cache = new MDQCache($this->config, $moduleConfig);
         $this->assertInstanceOf(MDQCache::class, $cache);
     }
+
 
     public function testConstructInvalidDriver(): void
     {
@@ -67,6 +70,7 @@ final class MDQCacheTest extends ClearStateTestCase
         $this->expectExceptionMessageMatches('/cachetype must be one of/');
         $cache = new MDQCache($this->config, $moduleConfig);
     }
+
 
     public function testConstructArrayDriver(): void
     {
@@ -110,6 +114,7 @@ final class MDQCacheTest extends ClearStateTestCase
         $this->assertTrue($result, 'prune()');
     }
 
+
     public function testConstructFilesPathNotSet(): void
     {
         $moduleConfig = Configuration::loadFromArray(
@@ -121,6 +126,7 @@ final class MDQCacheTest extends ClearStateTestCase
         $cache = new MDQCache($this->config, $moduleConfig);
         $this->assertInstanceOf(MDQCache::class, $cache, 'prune()');
     }
+
 
     public function testConstructFilesInvalidPath(): void
     {
@@ -134,6 +140,7 @@ final class MDQCacheTest extends ClearStateTestCase
         $this->expectExceptionMessageMatches('/cachedir directory does not exist/');
         $cache = new MDQCache($this->config, $moduleConfig);
     }
+
 
     public function testConstructRedisInvalidDSN(): void
     {
@@ -149,6 +156,7 @@ final class MDQCacheTest extends ClearStateTestCase
         );
         $cache = new MDQCache($this->config, $moduleConfig);
     }
+
 
     public function testConstructRedis(): void
     {

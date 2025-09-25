@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\thissdisco\Controller;
 
-use Exception;
 use DateTimeImmutable;
+use Exception;
 use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
@@ -13,7 +13,9 @@ use SimpleSAML\Locale\Language;
 use SimpleSAML\Logger;
 use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\MDQCache;
-use Symfony\Component\HttpFoundation\{Request, Response, JsonResponse};
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Metadata Query (MDQ) service Controller.
@@ -49,6 +51,7 @@ class MDQ
     /** @var array<string> the metadata sets we should concern ourselves with */
     private array $metadataSets = ['saml20-idp-remote', 'saml20-idp-hosted', 'saml20-sp-remote'];
 
+
     /**
      * Controller constructor.
      *
@@ -70,10 +73,12 @@ class MDQ
         $this->searchmax = $this->moduleConfig->getOptionalInteger('search.maxresults', 0);
     }
 
+
     public function __invoke(Request $request, ?string $identifier): Response
     {
         return $this->mdq($request, $identifier);
     }
+
 
     /**
      * Generate a transformed identifier from an entityID
@@ -114,6 +119,7 @@ class MDQ
         return $entityHash;
     }
 
+
     /**
      * Get an entityID from a cached transformed identifier
      *
@@ -146,6 +152,7 @@ class MDQ
         return $identifer;
     }
 
+
     /**
      * Convert a lanaguage array to a string
      *
@@ -165,6 +172,7 @@ class MDQ
         }
         return null;
     }
+
 
     /**
      * Process the trust information / entity selection profile for an entity.
@@ -212,6 +220,7 @@ class MDQ
         }
         return $selectionProfiles;
     }
+
 
     /**
      * Converts the entity to a discojson data array.
@@ -371,6 +380,7 @@ class MDQ
         return $data;
     }
 
+
     /**
      * Retrieve a specific entity as discoJSON
      *
@@ -408,6 +418,7 @@ class MDQ
         }
         return [];
     }
+
 
     /**
      * Extension to getEntity() with trustinfo/entity selection handling
@@ -530,6 +541,7 @@ class MDQ
         }
     }
 
+
     /**
      * Search for entities in the metadata
      *
@@ -605,6 +617,7 @@ class MDQ
         }
         return $data;
     }
+
 
     /**
      * Extension to searchEntities() with trustinfo/entity selection handling
@@ -761,6 +774,7 @@ class MDQ
         return $md;
     }
 
+
     /**
      * Get a list of all possible metadata
      *
@@ -789,6 +803,7 @@ class MDQ
         }
         return $md;
     }
+
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.

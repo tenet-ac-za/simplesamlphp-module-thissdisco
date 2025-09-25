@@ -7,10 +7,12 @@ namespace SimpleSAML\Module\thissdisco\Controller;
 use Exception;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
-use SimpleSAML\Session;
 use SimpleSAML\Module\thissdisco\ThissIdPDisco;
+use SimpleSAML\Session;
 use SimpleSAML\XHTML\Template;
-use Symfony\Component\HttpFoundation\{Request, Response, StreamedResponse};
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * The ThissDisco Controller.
@@ -24,6 +26,7 @@ class ThissDisco
     /** @var \SimpleSAML\Configuration The configuration for the module */
     private Configuration $moduleConfig;
 
+
     public function __construct(
         protected Configuration $config,
     ) {
@@ -33,10 +36,12 @@ class ThissDisco
         $this->moduleConfig = Configuration::getConfig('module_thissdisco.php');
     }
 
+
     public function __invoke(Request $request): Response
     {
         return $this->main($request);
     }
+
 
     /**
      * Render the discovery service.
@@ -121,6 +126,7 @@ class ThissDisco
         }
         return $response;
     }
+
 
     /**
      * Retrieve paramaters from the session (originally from the request) and

@@ -34,6 +34,7 @@ class ThissIdPDisco extends IdPDisco
     /** @var \Symfony\Component\HttpFoundation\Request The current request */
     protected Request $request;
 
+
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.
      * @param array  $metadataSets Array with metadata sets we find remote entities in.
@@ -45,6 +46,7 @@ class ThissIdPDisco extends IdPDisco
         $this->request = $request;
         parent::__construct($metadataSets, $instance);
     }
+
 
     /**
      * Get an appropriate trust profile
@@ -75,6 +77,7 @@ class ThissIdPDisco extends IdPDisco
         ));
         return $trustProfile;
     }
+
 
     public function handleRequest(): void
     {

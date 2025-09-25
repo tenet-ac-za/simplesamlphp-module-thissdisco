@@ -8,8 +8,13 @@ use SimpleSAML\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Logger;
-use Symfony\Component\Cache\Adapter\{ArrayAdapter,FilesystemAdapter,MemcachedAdapter};
-use Symfony\Component\Cache\Adapter\{NullAdapter,PdoAdapter,PhpFilesAdapter,RedisAdapter};
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+use Symfony\Component\Cache\Adapter\NullAdapter;
+use Symfony\Component\Cache\Adapter\PdoAdapter;
+use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 /**
  * Caching for MDQ
@@ -21,6 +26,7 @@ class MDQCache
 {
     /** @var \Symfony\Component\Cache\PruneableInterface|\Symfony\Component\Cache\Adapter\AdapterInterface */
     private $cache;
+
 
     public function __construct(
         protected Configuration $config,
@@ -164,6 +170,7 @@ class MDQCache
         }
     }
 
+
     /**
      * getter
      *
@@ -181,6 +188,7 @@ class MDQCache
         }
         return $default;
     }
+
 
     /**
      * setter
@@ -200,6 +208,7 @@ class MDQCache
         return $this->cache->save($cached);
     }
 
+
     /**
      * key exists in cache
      *
@@ -212,6 +221,7 @@ class MDQCache
         return $cached->isHit();
     }
 
+
     /**
      * remove a key from cache
      *
@@ -223,6 +233,7 @@ class MDQCache
         return $this->cache->deleteItem($key);
     }
 
+
     /**
      * clear the cache (mainly for unit testing)
      *
@@ -232,6 +243,7 @@ class MDQCache
     {
         return $this->cache->clear();
     }
+
 
     /**
      * prune the cache

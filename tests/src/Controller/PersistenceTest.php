@@ -7,7 +7,8 @@ namespace SimpleSAML\Test\Module\thissdisco\Controller;
 use SimpleSAML\Configuration;
 use SimpleSAML\Module\thissdisco\Controller;
 use SimpleSAML\TestUtils\ClearStateTestCase;
-use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\Controller\Persistence
@@ -19,6 +20,7 @@ final class PersistenceTest extends ClearStateTestCase
 
     /** @var \SimpleSAML\Module\thissdisco\Controller\Persistence */
     protected Controller\Persistence $controller;
+
 
     protected function setUp(): void
     {
@@ -36,6 +38,7 @@ final class PersistenceTest extends ClearStateTestCase
         Configuration::setPreLoadedConfig($this->config, 'config.php');
         $this->controller = new Controller\Persistence($this->config);
     }
+
 
     public function testPersistence(): void
     {

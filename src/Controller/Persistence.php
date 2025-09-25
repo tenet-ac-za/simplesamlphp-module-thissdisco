@@ -6,7 +6,8 @@ namespace SimpleSAML\Module\thissdisco\Controller;
 
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
-use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Placeholder controller for a non-existent persistence service.
@@ -30,10 +31,12 @@ class Persistence
         }
     }
 
+
     public function __invoke(Request $request): Response
     {
         return $this->persistence($request);
     }
+
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request The current request.

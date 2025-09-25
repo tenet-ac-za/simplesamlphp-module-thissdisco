@@ -12,7 +12,7 @@ use SimpleSAML\Metadata\MetaDataStorageHandler;
 use SimpleSAML\Module\thissdisco\ThissIdPDisco;
 use SimpleSAML\Session;
 use SimpleSAML\TestUtils\ClearStateTestCase;
-use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\ThissIdPDisco
@@ -27,6 +27,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
 
     /** @var \SimpleSAML\Configuration */
     protected Configuration $asConfig;
+
 
     protected function setUp(): void
     {
@@ -70,6 +71,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
         Configuration::setPreLoadedConfig($this->config, 'config.php');
     }
 
+
     public function testDiscoNoParams(): void
     {
         $request = Request::create('/thissdisco/disco', 'GET', []);
@@ -80,6 +82,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
         $this->expectExceptionMessageMatches('/Missing parameter/');
         $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
     }
+
 
     public function testDiscoConstruct(): void
     {
@@ -96,6 +99,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
         $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
         $this->assertInstanceOf(ThissIdPDisco::class, $thissidpdisco);
     }
+
 
     public function testDiscoHandler(): void
     {
@@ -148,6 +152,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
         $this->assertEquals('query', $thissParms['trustProfile']);
     }
 
+
     public function testTrustProfile(): void
     {
         $request = Request::create(
@@ -167,6 +172,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
         $result = $rm->invoke($thissidpdisco, null);
         $this->assertEquals(null, $result);
     }
+
 
     public function testTrustProfileFromMd(): void
     {
@@ -190,6 +196,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
         $result = $rm->invoke($thissidpdisco, $spmd);
         $this->assertEquals('dontTrustMe', $result);
     }
+
 
     public function testTrustProfileOverride(): void
     {

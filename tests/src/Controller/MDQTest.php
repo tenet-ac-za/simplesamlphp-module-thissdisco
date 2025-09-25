@@ -9,7 +9,8 @@ use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Module\thissdisco\Controller;
 use SimpleSAML\TestUtils\ClearStateTestCase;
-use Symfony\Component\HttpFoundation\{JsonResponse, Request};
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ
@@ -27,6 +28,7 @@ final class MDQTest extends ClearStateTestCase
 
     /** @var \SimpleSAML\Module\thissdisco\Controller\MDQ */
     protected Controller\MDQ $controller;
+
 
     protected function setUp(): void
     {
@@ -72,6 +74,7 @@ final class MDQTest extends ClearStateTestCase
         $this->controller = new Controller\MDQ($this->config);
     }
 
+
     /** @param array<string, string> $parameters */
     protected function createRequest(array $parameters = []): Request
     {
@@ -85,6 +88,7 @@ final class MDQTest extends ClearStateTestCase
         );
         return $request;
     }
+
 
     public function testEntities(): void
     {
@@ -101,6 +105,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertCount(4, $decoded);
     }
 
+
     public function testEntitityId(): void
     {
         $request = $this->createRequest();
@@ -115,6 +120,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertArrayHasKey('entity_id', $decoded);
         $this->assertEquals('https://example.org/idp', $decoded['entity_id']);
     }
+
 
     public function testEntitityHash(): void
     {
@@ -131,6 +137,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertEquals('https://example.org/idp', $decoded['entity_id']);
     }
 
+
     public function testEntitityNonexistent(): void
     {
         $request = $this->createRequest();
@@ -145,6 +152,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertIsList($decoded);
         $this->assertCount(0, $decoded);
     }
+
 
     public function testEntitiesSearch(): void
     {
@@ -168,6 +176,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertEquals('https://example.com/idp', $decoded[1]['entity_id']);
     }
 
+
     public function testEntitiesFilter(): void
     {
         $request = $this->createRequest(['entity_filter' => 'sp']);
@@ -190,6 +199,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertEquals('https://example.org/sp', $decoded[1]['entity_id']);
     }
 
+
     public function testEntitiesFilterTags(): void
     {
         $request = $this->createRequest(['entity_filter' => 'tag:southafrica']);
@@ -208,6 +218,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertArrayHasKey('entity_id', $decoded[0]);
         $this->assertEquals('https://example.com/idp', $decoded[0]['entity_id']);
     }
+
 
     public function testEntitiesTrustProfile(): void
     {
@@ -231,6 +242,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertEquals('https://example.com/idp', $decoded[0]['entity_id']);
     }
 
+
     public function testEntitiesInvalidTrustProfile(): void
     {
         $request = $this->createRequest([
@@ -252,6 +264,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertArrayHasKey('entity_id', $decoded[0]);
     }
 
+
     public function testEntityTrustProfile(): void
     {
         $request = $this->createRequest([
@@ -268,6 +281,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertIsArray($decoded);
         $this->assertArrayHasKey('entity_id', $decoded);
     }
+
 
     public function testEntityTrustProfileNotMatch(): void
     {
@@ -324,6 +338,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertArrayHasKey('sirtfi', $result['profiles']);
     }
 
+
     /** @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::filterLangs */
     public function testfilterLangs(): void
     {
@@ -340,6 +355,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertIsString($result);
         $this->assertEquals('Afrikaans', $result);
     }
+
 
     /** @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::filterLangs */
     public function testfilterLangsDefault(): void
@@ -358,6 +374,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertEquals('English', $result);
     }
 
+
     /** @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::filterLangs */
     public function testfilterLangsFallback(): void
     {
@@ -374,6 +391,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertIsString($result);
         $this->assertEquals('Xhosa', $result);
     }
+
 
     /** @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::entityAsDiscoJSON */
     public function testentityAsDiscoJSON(): void
@@ -404,6 +422,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertEquals('true', $result['hidden']);
     }
 
+
     /**
      * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::getTransformedFromEntityId
      */
@@ -423,6 +442,7 @@ final class MDQTest extends ClearStateTestCase
         $this->assertEquals('{SHA256}a10c7261a94cbf6c81720a9ab7c95381f2c4d60d1962a00c0a7d78b662d1635a', $result);
     }
 
+
     public function testgetTransformedFromEntityIdInvalidHash(): void
     {
         $m = new ReflectionMethod(Controller\MDQ::class, 'getTransformedFromEntityId');
@@ -432,6 +452,7 @@ final class MDQTest extends ClearStateTestCase
         $this->expectExceptionMessage('Invalid hash algorithm: {invalid}');
         $result = $m->invoke($this->controller, 'https://example.com/invalid', 'invalid');
     }
+
 
     /**
      * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::getEntityIdFromTransformed
@@ -454,6 +475,7 @@ final class MDQTest extends ClearStateTestCase
         $result = $m->invoke($this->controller, '{sha1}a6697b13dcebd5398d2d2d21465ca5a518ba2853');
         $this->assertEquals('https://example.org/idp', $result);
     }
+
 
     /**
      * @covers \SimpleSAML\Module\thissdisco\Controller\MDQ::getEntityIdFromTransformed

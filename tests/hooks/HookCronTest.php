@@ -19,6 +19,7 @@ final class HookCronTest extends ClearStateTestCase
     /** @var \SimpleSAML\Configuration */
     protected Configuration $moduleConfig;
 
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -47,11 +48,13 @@ final class HookCronTest extends ClearStateTestCase
         Configuration::setPreLoadedConfig($this->config, 'config.php');
     }
 
+
     public function testHookCronExists(): void
     {
         $hook = function_exists('thissdisco_hook_cron');
         $this->assertTrue($hook);
     }
+
 
     public function testHookCron(): void
     {

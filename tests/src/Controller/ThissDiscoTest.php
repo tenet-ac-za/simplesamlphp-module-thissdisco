@@ -10,7 +10,8 @@ use SimpleSAML\Module\thissdisco\Controller;
 use SimpleSAML\Session;
 use SimpleSAML\TestUtils\ClearStateTestCase;
 use SimpleSAML\XHTML\Template;
-use Symfony\Component\HttpFoundation\{Request, StreamedResponse};
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\Controller\ThissDisco
@@ -28,6 +29,7 @@ final class ThissDiscoTest extends ClearStateTestCase
 
     /** @var \SimpleSAML\Module\thissdisco\Controller\ThissDisco */
     protected Controller\ThissDisco $controller;
+
 
     protected function setUp(): void
     {
@@ -73,6 +75,7 @@ final class ThissDiscoTest extends ClearStateTestCase
         $this->controller = new Controller\ThissDisco($this->config);
     }
 
+
     public function testDiscoNoParams(): void
     {
         $request = Request::create('/thissdisco/disco', 'GET', []);
@@ -83,6 +86,7 @@ final class ThissDiscoTest extends ClearStateTestCase
         $this->expectExceptionMessageMatches('/DISCOPARAMS/');
         $this->controller->main($request);
     }
+
 
     public function testDisco(): void
     {
@@ -107,6 +111,7 @@ final class ThissDiscoTest extends ClearStateTestCase
         );
     }
 
+
     public function testThissDiscoJsNoSession(): void
     {
         $request = Request::create('/thissdisco/thissdisco.js', 'GET',);
@@ -116,6 +121,7 @@ final class ThissDiscoTest extends ClearStateTestCase
 
         $response = $this->controller->thissdiscojs($request);
     }
+
 
     public function testThissDiscoJs(): void
     {
