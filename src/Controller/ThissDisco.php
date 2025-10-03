@@ -30,9 +30,6 @@ class ThissDisco
     public function __construct(
         protected Configuration $config,
     ) {
-        if (!isset($this->config)) {
-            $this->config = Configuration::getInstance();
-        }
         $this->moduleConfig = Configuration::getConfig('module_thissdisco.php');
     }
 

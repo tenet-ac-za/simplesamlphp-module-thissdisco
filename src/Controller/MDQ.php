@@ -62,9 +62,6 @@ class MDQ
     public function __construct(
         protected Configuration $config,
     ) {
-        if (!isset($this->config)) {
-            $this->config = Configuration::getInstance();
-        }
         $this->language = new Language($this->config);
         $this->mdHandler = MetaDataStorageHandler::getMetadataHandler();
         $this->moduleConfig = Configuration::getConfig('module_thissdisco.php');

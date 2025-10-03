@@ -26,9 +26,6 @@ class Persistence
     public function __construct(
         protected Configuration $config,
     ) {
-        if (!isset($this->config)) {
-            $this->config = Configuration::getInstance();
-        }
     }
 
 
