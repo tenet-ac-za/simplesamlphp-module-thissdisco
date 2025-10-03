@@ -308,7 +308,7 @@ final class MDQTest extends ClearStateTestCase
     public function testCacheWarmup(): void
     {
         $result = $this->controller->cacheWarmup();
-        $this->assertIsInt($result);
+        $this->assertIsInt($result); // @phpstan-ignore method.alreadyNarrowedType
         $this->assertEquals(6, $result);
     }
 

@@ -156,7 +156,7 @@ final class ThissDiscoTest extends ClearStateTestCase
         $this->assertInstanceOf(Template::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals('text/javascript', $response->headers->get('Content-Type'));
-        $this->assertIsArray($response->data);
+        $this->assertIsArray($response->data); // @phpstan-ignore method.alreadyNarrowedType
         $this->assertArrayHasKey('persistence_url', $response->data);
         $this->assertEquals('persistence_url', $response->data['persistence_url']);
         $this->assertArrayHasKey('mdq_url', $response->data);
