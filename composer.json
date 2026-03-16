@@ -29,6 +29,7 @@
         "php": "^8.3",
         "simplesamlphp/assert": "^2.0.0",
         "simplesamlphp/composer-module-installer": "^1.6",
+        "simplesamlphp/simplesamlphp": ">=2.5.0 <2.6.0",
         "simplesamlphp/simplesamlphp-assets-jquery": "^2.5",
         "symfony/cache": "^7.4"
     },
@@ -37,7 +38,6 @@
         "npm-asset/fortawesome--fontawesome-free": "^6.7.2",
         "npm-asset/theidentityselector--thiss-ds": "^2.1.52",
         "oomphinc/composer-installers-extender": "^2.0.1",
-        "simplesamlphp/simplesamlphp": ">=2.5.0 <2.6.0",
         "simplesamlphp/simplesamlphp-test-framework": "^1.11.2"
     },
     "suggest": {
