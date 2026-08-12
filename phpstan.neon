@@ -3,6 +3,6 @@ parameters:
   paths:
     - src
     - hooks
-includes:
-  - phpstan-baseline.neon
+#includes:
+#  - phpstan-baseline.neon
 
