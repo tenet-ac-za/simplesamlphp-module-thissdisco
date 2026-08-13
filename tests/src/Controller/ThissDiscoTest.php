@@ -9,9 +9,7 @@ use SimpleSAML\Error;
 use SimpleSAML\Module\thissdisco\Controller;
 use SimpleSAML\Session;
 use SimpleSAML\TestUtils\ClearStateTestCase;
-use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @covers \SimpleSAML\Module\thissdisco\Controller\ThissDisco

@@ -99,7 +99,6 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
 
         $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
         $this->assertInstanceOf(ThissIdPDisco::class, $thissidpdisco); // @phpstan-ignore method.alreadyNarrowedType
-
     }
 
 

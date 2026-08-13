@@ -126,7 +126,6 @@ final class MDQCacheTest extends ClearStateTestCase
         Configuration::setPreLoadedConfig($moduleConfig, 'module_thissdisco.php');
         $cache = new MDQCache($this->config, $moduleConfig);
         $this->assertInstanceOf(MDQCache::class, $cache, 'prune()'); // @phpstan-ignore method.alreadyNarrowedType
-
     }
 
 
