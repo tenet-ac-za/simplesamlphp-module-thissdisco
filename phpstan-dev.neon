@@ -4,5 +4,6 @@ parameters:
     - tests
   scanDirectories:
     - hooks
+    - tools
 #includes:
 #  - phpstan-baseline-dev.neon

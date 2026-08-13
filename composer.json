@@ -19,7 +19,6 @@
         "allow-plugins": {
             "composer/installers": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "oomphinc/composer-installers-extender": true,
             "phpstan/extension-installer": true,
             "simplesamlphp/composer-module-installer": true,
             "simplesamlphp/composer-xmlprovider-installer": true
@@ -37,7 +36,6 @@
         "npm-asset/bootstrap": "~5.3",
         "npm-asset/fortawesome--fontawesome-free": "~6.7",
         "npm-asset/theidentityselector--thiss-ds": "~2.1.55",
-        "oomphinc/composer-installers-extender": "~2.0.1",
         "simplesamlphp/simplesamlphp-test-framework": "~1.11"
     },
     "suggest": {
@@ -51,10 +49,23 @@
             "url": "https://asset-packagist.org"
         }
     ],
+    "scripts": {
+        "sync-npm-assets": "@php tools/sync-npm-assets.php",
+        "post-install-cmd": [
+            "@sync-npm-assets"
+        ],
+        "post-update-cmd": [
+            "@sync-npm-assets"
+        ]
+    },
     "extra": {
-        "installer-types": ["npm-asset"],
-        "installer-paths": {
-            "public/assets/npm-asset/{$name}/": ["type:npm-asset"]
+        "sync-npm-assets-rules": {
+            "theidentityselector--thiss-ds": {
+                "include": [
+                    "dist",
+                    "LICENSE.txt"
+                ]
+            }
         }
     },
     "autoload": {

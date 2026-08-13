@@ -8,3 +8,15 @@ It's discovery user interface widget is derived from The Identity Selector's [th
 The client side is implemented using the [thiss-ds-js client libraries](https://github.com/TheIdentitySelector/thiss-ds-js). These are directly imported without changes, and thus the entire interface should be compatible with SeamlessAccess's persistance service. See the [advanced integration notes](https://seamlessaccess.atlassian.net/wiki/spaces/DOCUMENTAT/pages/38240282/Advanced+Integration) for how this might be achieved.
 
 [Documentation is available](docs/thissdisco.md) in the docs/ directory.
+
+## NPM asset sync
+
+NPM assets are installed via Asset Packagist as Composer packages (`npm-asset/*`) and are synced into `public/assets/npm-asset/` by the Composer script `sync-npm-assets`.
+
+The sync runs automatically on `post-install-cmd` and `post-update-cmd`.
+
+Package-specific sync filters are configured in `composer.json` under:
+
+`extra.npm-asset-sync-rules`
+
+Each rule is keyed by the npm-asset directory name and can define an `include` list. If no rule exists for a package, the whole package directory is synced.
