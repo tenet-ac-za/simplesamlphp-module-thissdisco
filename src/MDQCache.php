@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\thissdisco;
 
-use SimpleSAML\Assert;
+use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Logger;
@@ -50,7 +50,7 @@ class MDQCache
                 break;
 
             case 'memcache':
-                Assert\Assert::classExists(
+                Assert::classExists(
                     'Memcached',
                     'Memcached PECL extension required to use memcached as a cachetype for thissdisco',
                 );
@@ -60,7 +60,7 @@ class MDQCache
                     );
                 }
                 $dsntest = is_array($cachedir) ? $cachedir[0] : $cachedir;
-                Assert\Assert::startsWith(
+                Assert::startsWith(
                     $dsntest,
                     'memcached://',
                     'Error in thissdisco cachedir for cachetype memcache: '
@@ -73,11 +73,11 @@ class MDQCache
                 break;
 
             case 'pdo':
-                Assert\Assert::classExists(
+                Assert::classExists(
                     'PDO',
                     'PDO extension required to use pdo as a cachetype for thissdisco',
                 );
-                Assert\Assert::string(
+                Assert::string(
                     $cachedir,
                     'thissdisco cachedir must be a PDO DSN',
                     Error\ConfigurationError::class,
@@ -87,17 +87,17 @@ class MDQCache
                 break;
 
             case 'phpfiles':
-                Assert\Assert::nullOrstring(
+                Assert::nullOrString(
                     $cachedir,
                     'thissdisco cachedir must be a directory',
                     Error\ConfigurationError::class,
                 );
-                Assert\Assert::nullOrdirectory(
+                Assert::nullOrDirectory(
                     $cachedir,
                     'thissdisco cachedir directory does not exist',
                     Error\ConfigurationError::class,
                 );
-                Assert\Assert::nullOrwritable(
+                Assert::nullOrWritable(
                     $cachedir,
                     'thissdisco cachedir ' . $cachedir . ' is not writable',
                     Error\ConfigurationError::class,
@@ -114,17 +114,17 @@ class MDQCache
                 // fall through to filesystem
 
             case 'filesystem':
-                Assert\Assert::nullOrstring(
+                Assert::nullOrString(
                     $cachedir,
                     'thissdisco cachedir must be a directory',
                     Error\ConfigurationError::class,
                 );
-                Assert\Assert::nullOrdirectory(
+                Assert::nullOrDirectory(
                     $cachedir,
                     'thissdisco cachedir directory does not exist',
                     Error\ConfigurationError::class,
                 );
-                Assert\Assert::nullOrwritable(
+                Assert::nullOrWritable(
                     $cachedir,
                     'thissdisco cachedir ' . $cachedir . ' is not writable',
                     Error\ConfigurationError::class,
@@ -139,12 +139,12 @@ class MDQCache
                         'Redis extension or predis/predis is required to use redis as a cachetype for thissdisco',
                     );
                 }
-                Assert\Assert::string(
+                Assert::string(
                     $cachedir,
                     'thissdisco cachedir must be a redis DSN',
                     Error\ConfigurationError::class,
                 );
-                Assert\Assert::startsWith(
+                Assert::startsWith(
                     $cachedir,
                     'redis',
                     'Error in thissdisco cachedir for cachetype redis: '
