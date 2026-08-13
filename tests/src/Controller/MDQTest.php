@@ -65,6 +65,7 @@ final class MDQTest extends ClearStateTestCase
                 'metadata.sources' => [
                     ['type' => 'flatfile', 'directory' => dirname(__FILE__, 2) . '/test-metadata'],
                 ],
+                'logging.handler' => 'stderr',
             ],
             '[ARRAY]',
             'simplesaml',
@@ -95,7 +96,6 @@ final class MDQTest extends ClearStateTestCase
         $request = $this->createRequest();
 
         $response = $this->controller->mdq($request, null);
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -111,7 +111,6 @@ final class MDQTest extends ClearStateTestCase
         $request = $this->createRequest();
 
         $response = $this->controller->mdq($request, 'https://example.org/idp');
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -127,7 +126,6 @@ final class MDQTest extends ClearStateTestCase
         $request = $this->createRequest();
 
         $response = $this->controller->mdq($request, '{SHA1}a6697b13dcebd5398d2d2d21465ca5a518ba2853');
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -143,7 +141,6 @@ final class MDQTest extends ClearStateTestCase
         $request = $this->createRequest();
 
         $response = $this->controller->mdq($request, 'nonexistent');
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertFalse($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -159,7 +156,6 @@ final class MDQTest extends ClearStateTestCase
         $request = $this->createRequest(['q' => 'another']);
 
         $response = $this->controller->mdq($request, null);
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -182,7 +178,6 @@ final class MDQTest extends ClearStateTestCase
         $request = $this->createRequest(['entity_filter' => 'sp']);
 
         $response = $this->controller->mdq($request, null);
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -205,7 +200,6 @@ final class MDQTest extends ClearStateTestCase
         $request = $this->createRequest(['entity_filter' => 'tag:southafrica']);
 
         $response = $this->controller->mdq($request, null);
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -228,7 +222,6 @@ final class MDQTest extends ClearStateTestCase
         ]);
 
         $response = $this->controller->mdq($request, null);
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -251,7 +244,6 @@ final class MDQTest extends ClearStateTestCase
         ]);
 
         $response = $this->controller->mdq($request, null);
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -273,7 +265,6 @@ final class MDQTest extends ClearStateTestCase
         ]);
 
         $response = $this->controller->mdq($request, 'https://example.com/idp');
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());
@@ -291,7 +282,6 @@ final class MDQTest extends ClearStateTestCase
         ]);
 
         $response = $this->controller->mdq($request, 'https://example.org/idp');
-        $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertFalse($response->isSuccessful());
         $this->assertIsString($response->getContent());
         $this->assertJson($response->getContent());

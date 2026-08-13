@@ -37,6 +37,7 @@ final class MDQCacheTest extends ClearStateTestCase
                 'metadata.sources' => [
                     ['type' => 'flatfile', 'directory' => dirname(__FILE__) . '/test-metadata'],
                 ],
+                'logging.handler' => 'stderr',
             ],
             '[ARRAY]',
             'simplesaml',
@@ -54,7 +55,7 @@ final class MDQCacheTest extends ClearStateTestCase
         );
         Configuration::setPreLoadedConfig($moduleConfig, 'module_thissdisco.php');
         $cache = new MDQCache($this->config, $moduleConfig);
-        $this->assertInstanceOf(MDQCache::class, $cache);
+        $this->assertInstanceOf(MDQCache::class, $cache); // @phpstan-ignore method.alreadyNarrowedType
     }
 
 
@@ -124,7 +125,8 @@ final class MDQCacheTest extends ClearStateTestCase
         );
         Configuration::setPreLoadedConfig($moduleConfig, 'module_thissdisco.php');
         $cache = new MDQCache($this->config, $moduleConfig);
-        $this->assertInstanceOf(MDQCache::class, $cache, 'prune()');
+        $this->assertInstanceOf(MDQCache::class, $cache, 'prune()'); // @phpstan-ignore method.alreadyNarrowedType
+
     }
 
 

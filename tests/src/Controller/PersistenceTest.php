@@ -31,6 +31,7 @@ final class PersistenceTest extends ClearStateTestCase
                 'store.type' => 'phpsession',
                 'session.phpsession.cookiename' => 'PHPUnitSession',
                 'session.cookie.name' => 'PHPUnitSession',
+                'logging.handler' => 'stderr',
             ],
             '[ARRAY]',
             'simplesaml',
@@ -48,7 +49,6 @@ final class PersistenceTest extends ClearStateTestCase
         );
 
         $response = $this->controller->persistence($request);
-        $this->assertInstanceOf(Response::class, $response);
         $this->assertFalse($response->isSuccessful());
         $this->assertEquals(Response::HTTP_NOT_IMPLEMENTED, $response->getStatusCode());
     }

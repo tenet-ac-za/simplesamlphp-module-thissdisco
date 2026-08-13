@@ -66,6 +66,7 @@ final class ThissDiscoTest extends ClearStateTestCase
                     ['type' => 'flatfile', 'directory' => dirname(__FILE__, 2) . '/test-metadata'],
                 ],
                 'trusted.url.domains' => ['localhost', 'example.com',],
+                'logging.handler' => 'stderr',
             ],
             '[ARRAY]',
             'simplesaml',
@@ -101,7 +102,6 @@ final class ThissDiscoTest extends ClearStateTestCase
         $request->overrideGlobals();
 
         $response = $this->controller->main($request);
-        $this->assertInstanceOf(StreamedResponse::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertTrue($response->headers->has('content-security-policy'));
         $this->assertIsString($response->headers->get('content-security-policy', ''));
@@ -153,7 +153,6 @@ final class ThissDiscoTest extends ClearStateTestCase
         $request->overrideGlobals();
 
         $response = $this->controller->thissdiscojs($request);
-        $this->assertInstanceOf(Template::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertEquals('text/javascript', $response->headers->get('Content-Type'));
         $this->assertIsArray($response->data); // @phpstan-ignore method.alreadyNarrowedType

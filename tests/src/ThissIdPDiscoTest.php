@@ -64,6 +64,7 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
                     ['type' => 'flatfile', 'directory' => dirname(__FILE__) . '/test-metadata'],
                 ],
                 'trusted.url.domains' => ['localhost', 'example.com',],
+                'logging.handler' => 'stderr',
             ],
             '[ARRAY]',
             'simplesaml',
@@ -97,7 +98,8 @@ final class ThissIdPDiscoTest extends ClearStateTestCase
         $request->overrideGlobals();
 
         $thissidpdisco = new ThissIdPDisco($request, ['saml20-idp-remote'], 'thissiodisco',);
-        $this->assertInstanceOf(ThissIdPDisco::class, $thissidpdisco);
+        $this->assertInstanceOf(ThissIdPDisco::class, $thissidpdisco); // @phpstan-ignore method.alreadyNarrowedType
+
     }
 
 
