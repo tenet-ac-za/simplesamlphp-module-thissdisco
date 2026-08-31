@@ -20,4 +20,7 @@
 !fortawesome--fontawesome-free/webfonts/
 !fortawesome--fontawesome-free/webfonts/fa-solid-900.ttf
 !fortawesome--fontawesome-free/webfonts/fa-solid-900.woff2
-
+!jquery-migrate/
+!jquery-migrate/LICENSE.txt
+!jquery-migrate/dist/
+!jquery-migrate/dist/jquery-migrate.min.*
